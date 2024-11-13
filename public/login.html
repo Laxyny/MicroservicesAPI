@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+</head>
+
+<body>
+    <h1>Connexion</h1>
+    <form id="login-form">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" required>
+        <br><br>
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" required>
+        <br><br>
+        <button type="submit">Se connecter</button>
+    </form>
+    <div id="message"></div>
+    <img id="photo"></img>
+    <button id="rickroll" style="visibility: hidden; color: #ffffff; background-color: #ff0000;" type="submit">NE PAS CLIQUER !!!!!!</button>
+
+    <script>
+        const apiUrl = 'http://localhost:3000/login';
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: username, password: password })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('message').innerText = "Connexion réussie";
+
+                    document.getElementById('photo').src = "https://ih1.redbubble.net/image.5107473723.9972/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u1.jpg";
+                    document.getElementById('photo').style.width = "250px";
+                    document.getElementById('photo').style.height = "350px";
+
+                    document.getElementById('rickroll').style.visibility = "visible";
+                    document.getElementById('rickroll').addEventListener('click', () => {
+                        window.location.href = "https://cdn.mtdv.me/video/rick.mp4";
+                    });
+                } else {
+                    document.getElementById('message').innerText = data.message || "Erreur lors de la connexion.";
+                }
+            } catch (error) {
+                document.getElementById('message').innerText = "Erreur de connexion à l'API.";
+                console.error("Erreur de connexion :", error);
+            }
+        });
+    </script>
+</body>
+
+</html>
