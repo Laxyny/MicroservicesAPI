@@ -36,7 +36,7 @@ exports.getUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const { email, name, password } = req.body;
+    const { email, name, password, role } = req.body;
 
     if (!password || !name || !email) {
       return res.status(400).json({ message: 'Tout les champs doivent être remplis' });
@@ -50,7 +50,8 @@ exports.createUser = async (req, res) => {
     const newUser = {
       email: email,
       name: name,
-      password: password
+      password: password,
+      role: role ?? "user"
     };
 
     const createdUser = await userModel.create(newUser);

@@ -9,7 +9,6 @@ function generateDeviceFingerprint(req) {
 function generateToken(req, user) {
     const tokenPayload = {
         userId: user._id.toString(),
-        role: "user",
         issuedAt: Date.now(),
         expiresIn: Date.now() + (900 * 1000),
         nonce: 0,

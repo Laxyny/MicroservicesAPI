@@ -19,6 +19,16 @@
         <label for="password">Mot de passe :</label>
         <input type="password" id="password" required>
         <br><br>
+        <br><br>
+        
+        <label for="role">Rôle :</label>
+        <br>
+        <input type="radio" id="role-user" name="role" value="user" checked>
+        <label for="role-user">Client</label>
+        <br>
+        <input type="radio" id="role-seller" name="role" value="seller">
+        <label for="role-seller">Vendeur</label>
+        <br><br>
         <button type="submit">Créer un compte</button>
     </form>
     <div id="message"></div>
@@ -32,12 +42,13 @@
             const email = document.getElementById('email').value;
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
 
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({email: email, name: username, password: password })
+                    body: JSON.stringify({email: email, name: username, password: password, role: role })
                 });
 
                 const data = await response.json();
