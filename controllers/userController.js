@@ -123,6 +123,11 @@ exports.loginUser = async (req, res) => {
 
       const tokenString = Buffer.from(JSON.stringify(tokenData)).toString('base64');
 
+      res.cookie('authToken', tokenString, {
+        httpOnly: true,
+        maxAge: 900000, // 15 min
+      });
+
       res.json({ message: 'Authentification réussie', token: tokenString });
     } else {
       console.log("Mot de passe incorrect");

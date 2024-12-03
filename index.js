@@ -6,6 +6,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const userController = require('./controllers/userController');
+const cookieParser = require('cookie-parser');
+const authMiddleware = require('./middlewares/authMiddleware');
 
 const uri = "mongodb+srv://user:Test1234@cluster.eovny.mongodb.net/?retryWrites=true&w=majority&appName=Cluster";
 
@@ -18,6 +20,7 @@ const client = new MongoClient(uri, {
 });
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
@@ -33,6 +36,10 @@ async function run() {
         userController.init(usercollection, tokenCollection);
 
         app.use('/', userRoutes);
+
+        app.get('/', authMiddleware, (req, res) => {
+            res.send('<h1>Homepage</h1>');
+        });
 
         // Route pour afficher le form de connexion
         app.get('/login', (req, res) => {
@@ -52,7 +59,7 @@ async function run() {
 
         // Middleware
         app.use((req, res, next) => {
-            res.status(404).json({ message: "La route demandée n'existe pas." });
+            res.status(404).send('<h1> 404 Page non trouvée</h1>');
         });
 
 
