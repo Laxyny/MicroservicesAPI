@@ -42,7 +42,7 @@ async function run() {
         app.use('/', userRoutes);
 
         app.get('/', authMiddleware, (req, res) => {
-            res.send('<h1>Homepage</h1>');
+            res.sendFile(__dirname + '/public/homepage.html');
         });
 
         // Route pour afficher le form de connexion

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomePage</title>
+</head>
+
+<body>
+    <h1>HomePage</h1>
+    <p id="welcome-message"></p>
+    <button id="logout-button">Se déconnecter</button>
+
+    <script>
+        const apiUrl = 'http://localhost:3000/user';
+        const logoutUrl = 'http://localhost:3000/logout';
+
+        async function fetchUserData() {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    credentials: 'include', // Permet d'envoyer les cookies
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('welcome-message').innerText = `Bienvenue, ${user.name}, vous êtes ${user.role}.`;
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données utilisateur :', error);
+                window.location.href = '/login'
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch(logoutUrl, {
+                    method: 'POST',
+                    credentials: 'include', // Permet d'envoyer les cookies
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Erreur lors de la déconnexion :', error);
+            }
+        }
+
+        fetchUserData();
+
+        document.getElementById('logout-button').addEventListener('click', logout);
+    </script>
+</body>
+
+</html>

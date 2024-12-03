@@ -138,3 +138,31 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de l\'authentification' });
   }
 };
+
+exports.getUserFromToken = async (req, res) => {
+  try {
+    const token = req.cookies.authToken;
+
+    if (!token) {
+      return res.status(401).json({ message: 'Non authentifié' });
+    }
+
+    const tokenData = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userId = tokenData.userId;
+
+    const user = await userModel.getById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    res.json({ name: user.name, email: user.email, role: user.role });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données utilisateur :', error);
+    res.status(500).json({ message: 'Erreur interne du serveur' });
+  }
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie('authToken');
+  res.json({ message: 'Déconnexion réussie' });
+};
