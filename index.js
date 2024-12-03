@@ -50,6 +50,12 @@ async function run() {
             res.status(500).json({ message: 'Erreur interne du serveur' });
         });
 
+        // Middleware
+        app.use((req, res, next) => {
+            res.status(404).json({ message: "La route demandée n'existe pas." });
+        });
+
+
         // Démarrer le serveur
         app.listen(port, () => {
             console.log(`API en cours d'exécution sur http://localhost:${port}`);
