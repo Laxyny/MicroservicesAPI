@@ -39,6 +39,11 @@ async function run() {
             res.sendFile(__dirname + '/public/login.html');
         });
 
+        //Route pour le register
+        app.get('/register', (req, res) => {
+            res.sendFile(__dirname + '/public/register.html');
+        });
+
         // Gérer les erreurs 500 (erreurs serveur)
         app.use((err, req, res, next) => {
             console.error(err.stack);

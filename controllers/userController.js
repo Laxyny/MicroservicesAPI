@@ -1,6 +1,7 @@
 const { UserModel, verifyPassword } = require('../models/userModel');
 const TokenModel = require('../models/tokenModel');
 const { generateToken } = require('../services/tokenService');
+const crypto = require('crypto');
 
 let userModel;
 let tokenModel
@@ -35,13 +36,19 @@ exports.getUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { email, name, password } = req.body;
 
-    if (!password) {
-      return res.status(400).json({ message: 'Mot de passe requis' });
+    if (!password || !name || !email) {
+      return res.status(400).json({ message: 'Tout les champs doivent être remplis' });
+    }
+
+    const existingUser = await userModel.getByEmail(email)
+    if (existingUser) {
+      return res.status(400).json({ message: 'Un compte existe déjà avec cet email' });
     }
 
     const newUser = {
+      email: email,
       name: name,
       password: password
     };
@@ -86,9 +93,11 @@ exports.deleteUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await userModel.collection.findOne({ name });
+    const user = await userModel.collection.findOne({
+      email: email
+    });
 
     if (!user) {
       console.log("Utilisateur non trouvé");

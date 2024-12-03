@@ -55,6 +55,13 @@ class UserModel {
 		return await this.collection.findOne({ _id: new ObjectId(id) });
 	}
 
+	async getByEmail(email) {
+		return await this.collection.findOne({
+			email: email
+		});
+	}
+	
+
 	async create(newUser) {
 		const salt = generateSalt();
 		const hashedPassword = hashPassword(newUser.password, salt);
