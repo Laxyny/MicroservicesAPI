@@ -29,29 +29,41 @@ exports.init = (storeCollection) => {
     }
   };
 
-  exports.createStore = async (req, res) => {
+exports.createStore = async (req, res) => {
     try {
-      const { name, description, site, logo} = req.body;
-  
-      if (!name) {
-        return res.status(400).json({ message: 'Le nom de la boutique est requis' });
-      }
-  
-      const newStore = {
-        name: name,
-        description: description,
-        site:site,
-        logo:logo
-      };
-  
-      const createdStore = await storeModel.create(newStore);
-      res.status(201).json(createdStore);
-    } catch (err) {
-      res.status(500).json({ message: 'Erreur lors de la création du magasin' });
-    }
-  };
+        const { name, description, site, logo } = req.body;
 
-  exports.updateStore = async (req, res) => {
+        // Vérifiez si l'utilisateur connecté a le rôle "seller"
+        const userId = req.user.userId; 
+        const userRole = req.user.role; 
+
+        if (!userId || userRole !== "seller") {
+            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent créer un magasin" });
+        }
+
+        if (!name) {
+            return res.status(400).json({ message: "Le nom de la boutique est requis" });
+        }
+
+        const newStore = {
+            name: name,
+            description: description,
+            site: site,
+            logo: logo,
+            userId: userId // Associer le magasin à l'utilisateur
+        };
+
+        const createdStore = await storeModel.create(newStore);
+        res.status(201).json(createdStore);
+    } catch (err) {
+        console.error("Erreur lors de la création du magasin :", err);
+        res.status(500).json({ message: "Erreur lors de la création du magasin" });
+    }
+};
+
+
+
+exports.updateStore = async (req, res) => {
     try {
       const id = req.params.id;
       const updatedFields = {
@@ -68,7 +80,7 @@ exports.init = (storeCollection) => {
     }
   };
 
-  exports.deleteStore = async (req, res) => {
+exports.deleteStore = async (req, res) => {
     try {
       const id = req.params.id;
       const success = await storeModel.deleteById(id);
