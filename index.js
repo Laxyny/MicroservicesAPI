@@ -6,6 +6,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const userController = require('./controllers/userController');
+const storeController = require('./controllers/storeController');
 
 const uri = "mongodb+srv://user:Test1234@cluster.eovny.mongodb.net/?retryWrites=true&w=majority&appName=Cluster";
 
@@ -28,9 +29,11 @@ async function run() {
         const database = client.db("Stockage");
 
         const usercollection = database.collection("Users");
-        const tokenCollection = database.collection("Tokens")
-
+        const tokenCollection = database.collection("Tokens");
+        const storeCollection = database.collection("Stores");
+        
         userController.init(usercollection, tokenCollection);
+        storeController.init(storeCollection);
 
         app.use('/', userRoutes);
 
