@@ -41,6 +41,11 @@ exports.createStore = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent créer un magasin" });
         }
 
+        const existingStore = await storeModel.getByNameAndOwner(name, userId);
+        if (existingStore) {
+            return res.status(400).json({ message: 'Vous avez déjà créé Ce magasin' });
+        }
+
         if (!name) {
             return res.status(400).json({ message: "Le nom de la boutique est requis" });
         }
