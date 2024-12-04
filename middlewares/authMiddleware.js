@@ -1,4 +1,4 @@
-const authMiddleware = (requiredRole) => (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     const token = req.cookies.authToken;
 
     if (!token) {
@@ -15,11 +15,6 @@ const authMiddleware = (requiredRole) => (req, res, next) => {
         if (tokenData.expiresIn < now) {
             res.clearCookie('authToken'); // Supprime les cookies
             return res.redirect('/login');
-        }
-
-        // Vérification du rôle si un rôle spécifique est requis
-        if (requiredRole && tokenData.role !== requiredRole) {
-            return res.status(403).json({ message: "Accès refusé : rôle insuffisant" });
         }
 
         req.user = tokenData;
