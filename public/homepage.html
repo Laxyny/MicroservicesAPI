@@ -27,6 +27,15 @@
                 if (response.ok) {
                     const user = await response.json();
                     document.getElementById('welcome-message').innerText = `Bienvenue, ${user.name}, vous êtes ${user.role}.`;
+
+                    if (user.role === 'seller') {
+                        const sellerLink = document.createElement('button');
+                        sellerLink.innerText = 'Créer une boutique';
+                        sellerLink.addEventListener('click', () => {
+                            window.location.href = '/seller';
+                        });
+                        document.body.appendChild(sellerLink);
+                    }
                 } else {
                     window.location.href = '/login';
                 }

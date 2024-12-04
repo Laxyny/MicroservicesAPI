@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const storeController = require('../controllers/storeController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const sellerMiddleware = require('../middlewares/sellerMiddleware');
 
 //Routes Users
 router.get('/users', userController.getAllUsers);
@@ -16,11 +17,12 @@ router.put('/updateUser/:id', userController.updateUser);
 router.delete('/deleteUser/:id', userController.deleteUser);
 
 //Routes Stores
-router.get('/stores', storeController.getAllStores);
-router.get('/store/:id', storeController.getStore);
-router.post('/createStore', storeController.createStore);
+router.get('/seller', authMiddleware, sellerMiddleware); // Ne sert a rien pour le moment
+router.get('/seller/stores', authMiddleware, sellerMiddleware, storeController.getAllStores);
+router.get('/seller/store/:id', authMiddleware, sellerMiddleware, storeController.getStore);
+router.post('/seller/createStore', authMiddleware, sellerMiddleware, storeController.createStore);
 
-router.put('/updateStore/:id', storeController.updateStore);
-router.delete('/deleteStore/:id', storeController.deleteStore);
+router.put('/seller/updateStore/:id', authMiddleware, sellerMiddleware, storeController.updateStore);
+router.delete('/seller/deleteStore/:id', authMiddleware, sellerMiddleware, storeController.deleteStore);
 
 module.exports = router;

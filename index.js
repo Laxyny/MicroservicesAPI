@@ -35,7 +35,7 @@ async function run() {
         const usercollection = database.collection("Users");
         const tokenCollection = database.collection("Tokens");
         const storeCollection = database.collection("Stores");
-        
+
         userController.init(usercollection, tokenCollection);
         storeController.init(storeCollection);
 
@@ -65,7 +65,6 @@ async function run() {
         app.use((req, res, next) => {
             res.status(404).send('<h1> 404 Page non trouvée</h1>');
         });
-
 
         // Démarrer le serveur
         app.listen(port, () => {
