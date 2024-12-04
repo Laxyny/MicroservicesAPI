@@ -17,6 +17,10 @@ class StoreModel {
         return await this.collection.findone({ name: name});
     }
 
+    async getByNameAndOwner(name, userId) {
+        return await this.collection.findOne({ name: name, userId: userId });
+    }
+
     async create(newStore) {
         const storeToInsert = {
             ...newStore,
