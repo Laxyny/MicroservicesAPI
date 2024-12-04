@@ -13,6 +13,10 @@ class StoreModel {
         return await this.collection.findOne({ _id: new ObjectId(id) });
     }
 
+    async getByName(name){
+        return await this.collection.findone({ name: name});
+    }
+
     async create(newStore) {
         const storeToInsert = {
             ...newStore,
