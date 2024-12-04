@@ -43,7 +43,7 @@ exports.createStore = async (req, res) => {
 
         const existingStore = await storeModel.getByNameAndOwner(name, userId);
         if (existingStore) {
-            return res.status(400).json({ message: 'Vous avez déjà créé Ce magasin' });
+            return res.status(400).json({ message: 'Vous avez déjà créé ce magasin' });
         }
 
         if (!name) {
