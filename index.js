@@ -5,11 +5,13 @@ const port = 3000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
+const sellerRoutes = require('./routes/sellerRoutes');
 const userController = require('./controllers/userController');
 const storeController = require('./controllers/storeController');
 
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
+const sellerMiddleware = require('./middlewares/sellerMiddleware');
 
 const uri = "mongodb+srv://user:Test1234@cluster.eovny.mongodb.net/?retryWrites=true&w=majority&appName=Cluster";
 
@@ -40,6 +42,7 @@ async function run() {
         storeController.init(storeCollection);
 
         app.use('/', userRoutes);
+        app.use('/', sellerRoutes);
 
         app.get('/', authMiddleware, (req, res) => {
             res.sendFile(__dirname + '/public/homepage.html');
@@ -53,6 +56,11 @@ async function run() {
         //Route pour le register
         app.get('/register', (req, res) => {
             res.sendFile(__dirname + '/public/register.html');
+        });
+
+        //route pour créer son magasin
+        app.get('/seller/createStore', authMiddleware, sellerMiddleware, (req, res) => {
+            res.sendFile(__dirname + '/public/createStore.html');
         });
 
         // Gérer les erreurs 500 (erreurs serveur)
