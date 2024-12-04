@@ -5,7 +5,7 @@ const storeController = require('../controllers/storeController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const sellerMiddleware = require('../middlewares/sellerMiddleware');
 
-//Routes Users
+// Routes Users
 router.get('/users', userController.getAllUsers);
 router.get('/user', authMiddleware, userController.getUserFromToken);
 router.get('/user/:id', userController.getUser);
@@ -21,7 +21,6 @@ router.get('/seller', authMiddleware, sellerMiddleware); // Ne sert a rien pour 
 router.get('/seller/stores', authMiddleware, sellerMiddleware, storeController.getAllStores);
 router.get('/seller/store/:id', authMiddleware, sellerMiddleware, storeController.getStore);
 router.post('/seller/createStore', authMiddleware, sellerMiddleware, storeController.createStore);
-
 router.put('/seller/updateStore/:id', authMiddleware, sellerMiddleware, storeController.updateStore);
 router.delete('/seller/deleteStore/:id', authMiddleware, sellerMiddleware, storeController.deleteStore);
 
