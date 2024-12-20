@@ -9,11 +9,11 @@ export class ApiLoginService {
 
     constructor(private http: HttpClient) { }
 
-    postLogin(name: string, password: string): Observable<any> {
+    postLogin(email: string, password: string): Observable<any> {
         return this.http.post(
             'http://localhost:3000/login',
             {
-                name: name,
+                email: email,
                 password: password
             }
         );

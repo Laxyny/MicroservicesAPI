@@ -22,9 +22,8 @@ export class LoginComponent {
   constructor(private http: HttpClient, private loginService: ApiLoginService) { }
 
   onSubmit() {
-    this.loginService.postLogin(this.email, this.password).subscribe(
-      (response) => {
-        console.log(response);
+    this.loginService.postLogin(this.email, this.password).subscribe(data => {
+        console.log(data);
         this.message = 'Connexion OK';
       },
       (error) => {
