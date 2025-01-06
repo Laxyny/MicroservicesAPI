@@ -23,4 +23,7 @@ export class ApiStoresService {
             }, { withCredentials: true }
         );
     }
+    deleteStore(storeId: string): Observable<any> {
+        return this.http.delete(`http://localhost:3000/seller/deleteStore/${storeId}`, { withCredentials: true });
+    }
 }

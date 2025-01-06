@@ -1,9 +1,13 @@
 <h1>Détails de la boutique</h1>
-
 <div *ngIf="store">
     <p><strong>Nom :</strong> {{ store.name }}</p>
     <p><strong>Description :</strong> {{ store.description }}</p>
     <p><strong>Site web :</strong> <a [href]="store.site" target="_blank">{{ store.site }}</a></p>
     <p><strong>Logo :</strong></p>
     <img [src]="store.logo" alt="Logo de la boutique" style="max-width: 150px;" />
+
+    <button (click)="deleteStore()">Supprimer cette boutique</button>
+</div>
+<div *ngIf="!store">
+    <p>Chargement des détails de la boutique...</p>
 </div>
