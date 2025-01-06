@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { HttpClient, } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet, Router, RouterModule } from '@angular/router';
 import { ApiLoginService } from '../services/api_login.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -19,16 +20,24 @@ export class LoginComponent {
   password: string = '';
   message: string = '';
 
-  constructor(private http: HttpClient, private loginService: ApiLoginService) { }
+  constructor(private loginService: ApiLoginService, private router: Router, private authService: AuthService) { }
 
   onSubmit() {
-    this.loginService.postLogin(this.email, this.password).subscribe(data => {
-        console.log(data);
-        this.message = 'Connexion OK';
+    this.loginService.postLogin(this.email, this.password).subscribe(
+      (response) => {
+        console.log('Réponse du backend :', response);
+        this.message = 'Connexion réussie, redirection en cours...';
+        this.authService.checkAuthStatus().then((isAuthenticated) => {
+          if (isAuthenticated) {
+            this.router.navigate(['/homepage']);
+          } else {
+            console.error('Échec de l\'authentification après connexion');
+          }
+        });
       },
       (error) => {
-        console.log(error);
-        this.message = 'Connexion pas OK';
+        console.error('Erreur lors de la connexion :', error);
+        this.message = 'Connexion échouée.';
       }
     );
   }

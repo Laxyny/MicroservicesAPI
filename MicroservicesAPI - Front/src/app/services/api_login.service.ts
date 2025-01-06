@@ -15,7 +15,8 @@ export class ApiLoginService {
             {
                 email: email,
                 password: password
-            }
+            },
+            { withCredentials: true }
         );
     }
 }

@@ -30,7 +30,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static('public'));
-app.use(cors());
+
+//Middleware pour le front
+app.use(cors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+}));
 
 async function run() {
     try {
