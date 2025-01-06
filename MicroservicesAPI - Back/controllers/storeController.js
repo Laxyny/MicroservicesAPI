@@ -34,7 +34,52 @@ exports.getUserStore = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const store = await storeModel.getById(userId);
+    const store = await storeModel.collection.findOne({ userId: userId });
+    if (!store) {
+      return res.status(404).json({ message: "Aucun magasin trouvé pour cet utilisateur." });
+    }
+
+    res.json(store);
+  } catch (err) {
+    console.error("Erreur lors de la récupération du magasin :", err);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
+exports.getUserStore = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const store = await storeModel.collection.findOne({ userId: userId });
+    if (!store) {
+      return res.status(404).json({ message: "Aucun magasin trouvé pour cet utilisateur." });
+    }
+
+    res.json(store);
+  } catch (err) {
+    console.error("Erreur lors de la récupération du magasin :", err);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
+exports.getUserStore = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const store = await storeModel.collection.findOne({ userId: userId });
+    if (!store) {
+      return res.status(404).json({ message: "Aucun magasin trouvé pour cet utilisateur." });
+    }
+
+    res.json(store);
+  } catch (err) {
+    console.error("Erreur lors de la récupération du magasin :", err);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
+exports.getUserStore = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const store = await storeModel.collection.findOne({ userId: userId });
     if (!store) {
       return res.status(404).json({ message: "Aucun magasin trouvé pour cet utilisateur." });
     }
@@ -46,6 +91,21 @@ exports.getUserStore = async (req, res) => {
   }
 };
 
+exports.getUserStores = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const stores = await storeModel.collection.find({ userId: userId }).toArray(); // Trouve toutes les boutiques
+    if (!stores || stores.length === 0) {
+      return res.status(404).json({ message: "Aucune boutique trouvée pour cet utilisateur." });
+    }
+
+    res.json(stores); // Retourne toutes les boutiques
+  } catch (err) {
+    console.error("Erreur lors de la récupération des boutiques :", err);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
 
 exports.createStore = async (req, res) => {
   const token = req.cookies.authToken;

@@ -19,6 +19,7 @@ const sellerMiddleware = async (req, res, next) => {
         }
 
         next();
+        console.log('Utilisateur authentifié dans sellerMiddleware :', req.user);
     } catch (err) {
         console.error('Erreur dans le sellerMiddleware :', err);
         res.status(500).json({ message: 'Erreur interne du serveur.' });

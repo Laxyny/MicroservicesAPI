@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { NgIf } from '@angular/common';
+import { NgFor, NgForOf, NgIf } from '@angular/common';
+import { ApiGetMyStoresService } from '../services/api_getMyStores.service';
 
 @Component({
   selector: 'app-homepage',
   imports: [
     NgIf,
+    NgFor,
     RouterModule,
   ],
   templateUrl: './homepage.component.html',
@@ -15,13 +17,12 @@ import { NgIf } from '@angular/common';
 export class HomepageComponent implements OnInit {
   welcomeMessage: string = '';
   isSeller: boolean = false;
-  store: any = null;
+  stores: any[] = [];
 
   private apiUrl = 'http://localhost:3000/user';
   private logoutUrl = 'http://localhost:3000/logout';
-  private storeUrl = 'http://localhost:3000/seller/store';
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiGetMyStoresService) { }
 
   ngOnInit() {
     this.fetchUserData();
@@ -34,7 +35,7 @@ export class HomepageComponent implements OnInit {
         this.isSeller = user.role === 'seller';
 
         if (this.isSeller) {
-          this.fetchStoreData();
+          this.fetchStoresData();
         }
       },
       error: () => {
@@ -44,13 +45,14 @@ export class HomepageComponent implements OnInit {
     });
   }
 
-  fetchStoreData() {
-    this.http.get(this.storeUrl, { withCredentials: true }).subscribe({
-      next: (store: any) => {
-        this.store = store;
+  fetchStoresData() {
+    this.getMyStores.getMyStores().subscribe({
+      next: (stores: any[]) => {
+        this.stores = stores;
       },
-      error: () => {
-        this.store = null;
+      error: (error) => {
+        console.error('Erreur lors de la récupération des boutiques :', error);
+        this.stores = [];
       }
     });
   }
@@ -68,5 +70,9 @@ export class HomepageComponent implements OnInit {
 
   goToCreateStore() {
     this.router.navigate(['/seller/createStore']);
+  }
+
+  goToStoreDetails(storeId: string) {
+    this.router.navigate([`/seller/store/${storeId}`]);
   }
 }

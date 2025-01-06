@@ -1,14 +1,20 @@
-<h1>HomePage</h1>
+<h1>Homepage</h1>
 <p>{{ welcomeMessage }}</p>
+
 <button (click)="logout()">Se déconnecter</button>
 
-<div *ngIf="isSeller" style="margin-top: 20px;">
-    <h2>Votre boutique</h2>
-    <button (click)="goToCreateStore()">Créer une boutique</button>
-    <div id="store-details" *ngIf="store">
-        <p><strong>Nom :</strong> {{ store.name }}</p>
-        <p><strong>Description :</strong> {{ store.description }}</p>
-        <p><strong>Site web :</strong> <a [href]="store.site" target="_blank">{{ store.site }}</a></p>
-        <p><strong>Logo :</strong><br> <img [src]="store.logo" alt="Logo de la boutique" style="max-width: 150px;" /></p>
-    </div>
+<h2>Vos boutiques</h2>
+
+<div *ngIf="stores.length > 0; else noStores">
+    <ul>
+        <li *ngFor="let store of stores">
+            <a (click)="goToStoreDetails(store._id)">{{ store.name }}</a>
+        </li>
+    </ul>
 </div>
+
+<ng-template #noStores>
+    <p>Vous n'avez aucune boutique.</p>
+</ng-template>
+
+<button (click)="goToCreateStore()">Créer une boutique</button>

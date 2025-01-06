@@ -8,7 +8,8 @@ const { upload } = require('../services/cloudinaryConfig');
 //Routes Stores
 router.get('/seller', authMiddleware, sellerMiddleware); // Ne sert a rien pour le moment
 router.get('/seller/store', authMiddleware, sellerMiddleware, storeController.getUserStore);
-router.get('/seller/stores', authMiddleware, sellerMiddleware, storeController.getAllStores);
+router.get('/seller/stores', authMiddleware, sellerMiddleware, storeController.getUserStores);
+router.get('/seller/liststores', authMiddleware, sellerMiddleware, storeController.getAllStores);
 router.get('/seller/store/:id', authMiddleware, sellerMiddleware, storeController.getStore);
 router.post('/seller/createStore', authMiddleware, sellerMiddleware, storeController.createStore);
 router.put('/seller/updateStore/:id', authMiddleware, sellerMiddleware, storeController.updateStore);
