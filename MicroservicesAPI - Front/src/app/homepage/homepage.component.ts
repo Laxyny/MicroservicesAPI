@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { NgFor, NgForOf, NgIf } from '@angular/common';
-import { ApiGetMyStoresService } from '../services/api_getMyStores.service';
+import { ApiStoresService } from '../services/stores.service';
 
 @Component({
   selector: 'app-homepage',
@@ -22,7 +22,7 @@ export class HomepageComponent implements OnInit {
   private apiUrl = 'http://localhost:3000/user';
   private logoutUrl = 'http://localhost:3000/logout';
 
-  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiGetMyStoresService) { }
+  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService) { }
 
   ngOnInit() {
     this.fetchUserData();

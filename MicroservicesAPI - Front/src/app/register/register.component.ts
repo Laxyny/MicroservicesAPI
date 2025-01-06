@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiRegisterService } from '../services/api_register.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +20,7 @@ export class RegisterComponent {
   role: string = 'user';
   message: string = '';
 
-  constructor(private http: HttpClient, private registerService: ApiRegisterService) { }
+  constructor(private http: HttpClient, private registerService: AuthService) { }
 
   onSubmit() {
     this.registerService.postRegister(this.email, this.name, this.password, this.role).subscribe(data => {

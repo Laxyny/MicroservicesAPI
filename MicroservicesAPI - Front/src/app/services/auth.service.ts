@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -35,5 +36,33 @@ export class AuthService {
 
     getAuthStatus(): boolean {
         return this.isLoggedIn;
+    }
+
+    postLogin(email: string, password: string): Observable<any> {
+        return this.http.post(
+            'http://localhost:3000/login',
+            {
+                email: email,
+                password: password
+            },
+            { withCredentials: true }
+        );
+    }
+
+    postRegister(
+        email: string,
+        name: string,
+        password: string,
+        role: string
+    ): Observable<any> {
+        return this.http.post(
+            'http://localhost:3000/register',
+            {
+                email: email,
+                name: name,
+                password: password,
+                role: role
+            }
+        );
     }
 }

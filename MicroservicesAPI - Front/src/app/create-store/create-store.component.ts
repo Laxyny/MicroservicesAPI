@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiCreateStoreService } from '../services/api_createStore.service';
+import { ApiStoresService } from '../services/stores.service';
 
 @Component({
   selector: 'app-create-store',
@@ -22,7 +22,7 @@ export class CreateStoreComponent {
 
   private apiLogoUrl = 'http://localhost:3000/seller/upload-logo';
 
-  constructor(private http: HttpClient, private createStoreService: ApiCreateStoreService) { }
+  constructor(private http: HttpClient, private createStoreService: ApiStoresService) { }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

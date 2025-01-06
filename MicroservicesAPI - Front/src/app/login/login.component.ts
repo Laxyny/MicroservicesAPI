@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet, Router, RouterModule } from '@angular/router';
-import { ApiLoginService } from '../services/api_login.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -20,7 +19,7 @@ export class LoginComponent {
   password: string = '';
   message: string = '';
 
-  constructor(private loginService: ApiLoginService, private router: Router, private authService: AuthService) { }
+  constructor(private loginService: AuthService, private router: Router, private authService: AuthService) { }
 
   onSubmit() {
     this.loginService.postLogin(this.email, this.password).subscribe(

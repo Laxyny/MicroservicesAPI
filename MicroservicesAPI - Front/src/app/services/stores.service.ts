@@ -5,9 +5,12 @@ import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class ApiCreateStoreService {
-
+export class ApiStoresService {
     constructor(private http: HttpClient) { }
+
+    getMyStores(): Observable<any> {
+        return this.http.get('http://localhost:3000/seller/stores', { withCredentials: true });
+    }
 
     postCreateStore(name: string, description: string, logo: string, site: string): Observable<any> {
         return this.http.post(
