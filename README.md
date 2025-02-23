@@ -18,6 +18,17 @@ Pour utiliser les différents microservices, il faut installer les différents p
 ```bash
   npm i
 ```
+
+## Configuration
+
+Pour utiliser la connexion via Google, il faut modifier les différentes lignes avec vos identifiants Google Cloud dans le fichier **passportConfig.js**
+
+```bash
+  clientID: 'CLIENT_ID'
+```
+```bash
+  clientSecret: 'CLIENT_SECRET'
+```
     
 ## Lancement
 
