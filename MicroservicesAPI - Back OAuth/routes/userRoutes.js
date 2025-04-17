@@ -19,4 +19,16 @@ router.delete('/deleteUser/:id', userController.deleteUser);
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), userController.loginWithGoogle);
 
+router.get('/auth/google-url', (req, res) => {
+    const googleAuthURL = 'http://localhost:5000/auth/google';
+    res.json({ url: googleAuthURL });
+});
+
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        res.redirect('http://localhost:4200/homepage'); // Redirige vers le front
+    }, userController.loginWithGoogle
+);
+
 module.exports = router;

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial;
+            margin: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: left;
+        }
+
+        img.chart {
+            width: 100%;
+            max-width: 700px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{ branding }} – Rapport boutique {{ store.store.name }}</h1>
+    <h2>Données générales</h2>
+    <p>Ventes totales : {{ store.sales }} €</p>
+    {% if products %}
+    <h2>Produits</h2>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Prix</th>
+            <th>Catégorie</th>
+        </tr>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.price }}</td>
+            <td>{{ p.category }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if charts.sales_chart %}
+    <h2>Graphique des ventes</h2>
+    <img class="chart" src="data:image/png;base64,{{ charts.sales_chart }}" />
+    {% endif %}
+</body>
+
+</html>

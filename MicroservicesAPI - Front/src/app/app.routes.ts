@@ -7,16 +7,19 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { CreateStoreComponent } from './create-store/create-store.component';
 import { AuthGuard } from './guards/auth.guard';
 import { StoreDetailsComponent } from './store-details/store-details.component';
+import { ProductDetailsComponent } from './product-details/product-details.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: '', component: HomeComponent },
+    { path: 'auth/google/callback', component: HomepageComponent, canActivate: [AuthGuard] },
     //{ path: '', redirectTo: '/login', pathMatch: 'full' },
 
     //Homepage
     { path: 'homepage', component: HomepageComponent, canActivate: [AuthGuard] },
     { path: 'seller/store/:id', component: StoreDetailsComponent }, //Aller sur la page d'une boutique
+    { path: 'product/:id', component: ProductDetailsComponent, canActivate: [AuthGuard] }, //Aller sur la page d'un produit
 
     //Create store
     { path: 'seller/createStore', component: CreateStoreComponent, canActivate: [AuthGuard] },

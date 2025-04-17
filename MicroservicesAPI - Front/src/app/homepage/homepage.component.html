@@ -3,9 +3,23 @@
 <p>{{ welcomeMessage }}</p>
 <button (click)="logout()">Se déconnecter</button>
 
+<div *ngIf="products.length > 0; else noProducts">
+    <h2>Produits</h2>
+    <ul>
+        <li *ngFor="let product of products">
+            <a (click)="goToProductDetails(product._id)">
+                {{ product.name }}
+            </a>
+        </li>
+    </ul>
+</div>
+
+<ng-template #noProducts>
+    <p>Aucun produit disponible pour le moment.</p>
+</ng-template>
+
 <div *ngIf="isSeller">
     <h2>Vos boutiques</h2>
-
     <div *ngIf="stores.length > 0; else noStores">
         <ul>
             <li *ngFor="let store of stores">

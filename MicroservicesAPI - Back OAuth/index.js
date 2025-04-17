@@ -38,7 +38,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Middleware pour le front
+//Middleware pour le front()
 app.use(cors({
     origin: 'http://localhost:4200',
     credentials: true,

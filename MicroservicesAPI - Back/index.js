@@ -1,7 +1,5 @@
 const express = require('express');
-const cors = require(
-    'cors'
-)
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
@@ -9,8 +7,11 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const sellerRoutes = require('./routes/sellerRoutes');
+const productRoutes = require('./routes/productRoutes');
+
 const userController = require('./controllers/userController');
 const storeController = require('./controllers/storeController');
+const productController = require('./controllers/productController');
 
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -46,12 +47,15 @@ async function run() {
         const usercollection = database.collection("Users");
         const tokenCollection = database.collection("Tokens");
         const storeCollection = database.collection("Stores");
+        const productCollection = database.collection("Product");
 
         userController.init(usercollection, tokenCollection);
         storeController.init(storeCollection);
+        productController.init(productCollection);
 
         app.use('/', userRoutes);
         app.use('/', sellerRoutes);
+        app.use('/', productRoutes);
 
         app.get('/', authMiddleware, (req, res) => {
             res.sendFile(__dirname + '/public/homepage.html');

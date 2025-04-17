@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { NgFor, NgForOf, NgIf } from '@angular/common';
 import { ApiStoresService } from '../services/stores.service';
+import { ApiProductsService } from '../services/products.service';
 
 @Component({
   selector: 'app-homepage',
@@ -18,14 +19,16 @@ export class HomepageComponent implements OnInit {
   welcomeMessage: string = '';
   isSeller: boolean = false;
   stores: any[] = [];
+  products: any[] = [];
 
   private apiUrl = 'http://localhost:3000/user';
   private logoutUrl = 'http://localhost:3000/logout';
 
-  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService) { }
+  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getAllProducts: ApiProductsService) { }
 
   ngOnInit() {
     this.fetchUserData();
+    this.fetchProductsData();
   }
 
   fetchUserData() {
@@ -43,6 +46,22 @@ export class HomepageComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  fetchProductsData() {
+    this.getAllProducts.getAllProducts().subscribe({
+      next: (products: any[]) => {
+        this.products = products;
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des boutiques :', error);
+        this.stores = [];
+      }
+    });
+  }
+
+  goToProductDetails(productId: string) {
+    this.router.navigate([`/product/${productId}`]);
   }
 
   fetchStoresData() {

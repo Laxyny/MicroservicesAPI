@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -9,4 +11,11 @@ import { RouterLink } from '@angular/router';
 })
 export class HomeComponent {
 
+  constructor(private loginService: AuthService, private router: Router, private authService: AuthService) { }
+
+  message: string = '';
+
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:5000/auth/google';
+  }
 }
