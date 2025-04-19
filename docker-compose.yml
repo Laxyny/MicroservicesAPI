@@ -1,0 +1,40 @@
+services:
+    back:
+        build: "./MicroservicesAPI - Back"
+        container_name: ms_back
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_BACK}:3000"
+        networks: [ msnet ]
+
+    oauth:
+        build: "./MicroservicesAPI - Back OAuth"
+        container_name: ms_oauth
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_OAUTH}:5000"
+        networks: [ msnet ]
+
+    reports:
+        build: "./MicroservicesAPI - Back Rapports"
+        container_name: ms_reports
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_REPORTS}:7000"
+        networks: [ msnet ]
+
+    front:
+        build:
+            context: "./MicroservicesAPI - Front"
+            dockerfile: Dockerfile
+        container_name: ms_front
+        ports:
+            - "${PORT_FRONT}:4200"
+        networks: [ msnet ]
+
+networks:
+    msnet:
+        driver: bridge
