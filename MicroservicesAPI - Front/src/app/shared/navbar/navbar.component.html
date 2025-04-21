@@ -1,0 +1,21 @@
+<nav class="navbar">
+    <a href="/homepage" class="text-wrapper">
+        <div class="brand">Le Petit Livreur</div>
+    </a>
+
+    <div class="search-wrapper">
+        <input type="text" placeholder="Rechercher un produit..." class="search-input" (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()" />
+    </div>
+
+    <div class="account" (click)="toggleMenu()">
+        <img src="https://cdn-icons-png.flaticon.com/512/848/848006.png" alt="user" class="user-icon" />
+
+        <div class="dropdown" [class.show]="menuOpen">
+            <p>{{ user?.name }}</p>
+            <small>{{ user?.role === 'seller' ? 'Vendeur' : 'Client' }}</small>
+            <button class="settings-btn">Paramètres</button>
+            <button class="logout-btn" (click)="logout()">Deconnexion</button>
+        </div>
+    </div>
+</nav>

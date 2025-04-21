@@ -12,21 +12,23 @@ export class ApiProductsService {
         return this.http.get('http://localhost:3000/product/listProducts', { withCredentials: true });
     }
 
-    getMyProduct(): Observable<any> {
-        return this.http.get('http://localhost:3000/product/products', { withCredentials: true });
+    getStoreProduct(storeId: string): Observable<any> {
+        return this.http.get(`http://localhost:3000/product/products/${storeId}`, { withCredentials: true });
     }
 
-    postCreateStore(name: string, description: string, logo: string, site: string): Observable<any> {
-        return this.http.post(
-            'http://localhost:3000/product/createProduct',
+    postCreateProduct(name: string, description: string, price: number, categoryId: string, image: string, storeId: string): Observable<any> {
+        return this.http.post('http://localhost:3000/product/createProduct',
             {
                 name: name,
                 description: description,
-                logo: logo,
-                site: site
+                price: price,
+                categoryId: categoryId,
+                image: image,
+                storeId: storeId
             }, { withCredentials: true }
         );
     }
+
     deleteProduct(storeId: string): Observable<any> {
         return this.http.delete(`http://localhost:3000/product/deleteProduct/${storeId}`, { withCredentials: true });
     }

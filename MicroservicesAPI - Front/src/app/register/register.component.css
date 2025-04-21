@@ -1,0 +1,134 @@
+:host::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+    animation: lightMove 6s infinite linear;
+    pointer-events: none;
+    filter: blur(50px);
+    z-index: 0;
+} /*A SUPPRIMER POUR GARDER FOND STATIQUE, A CHECK AVEC THÉO*/
+
+@keyframes lightMove {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(50%, 50%);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f0f0f, #1e1e1e);
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    animation: fadeIn 1s ease-out;
+    overflow: hidden;
+    position: relative;
+}
+
+.auth-container {
+    text-align: center;
+    z-index: 1;
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #03DAC6;
+    text-shadow: 0 4px 10px rgba(3, 218, 198, 0.5);
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    box-sizing: border-box;
+}
+
+.auth-form input::placeholder {
+    color: #ccc;
+}
+
+.auth-form input:focus {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.radio-group {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.radio-group label {
+    font-weight: 500;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    background-color: #03dac6;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(3, 218, 198, 0.4);
+}
+
+.switch-auth {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #bbb;
+}
+
+.switch-auth a {
+    color: #03DAC6;
+    margin-left: 6px;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.switch-auth a:hover {
+    color: #fff;
+}
+
+.message {
+    margin-top: 15px;
+    font-style: italic;
+    color: #bbb;
+    text-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+}

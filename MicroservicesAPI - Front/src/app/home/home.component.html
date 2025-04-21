@@ -1,6 +1,15 @@
-<h1>Bienvenue</h1>
-<button routerLink="/login">Se connecter</button>
-<button routerLink="/register">Créer un compte</button>
+<div class="home-container">
+    <h1>Bienvenue sur <span>Le Petit Livreur</span></h1>
 
-<button (click)="loginWithGoogle()">Connexion avec Google</button>
-<div>{{ message }}</div>
+    <div class="buttons-container">
+        <button class="login" routerLink="/login">Se connecter</button>
+        <button class="register" routerLink="/register">Créer un compte</button>
+    </div>
+
+    <button class="google-btn" (click)="loginWithGoogle()">
+        <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google Logo" />
+        <span>Connexion avec Google</span>
+    </button>
+
+    <div class="message" *ngIf="message">{{ message }}</div>
+</div>

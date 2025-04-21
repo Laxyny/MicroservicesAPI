@@ -1,0 +1,125 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f0f, #1e1e1e);
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+/*:host::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+    animation: lightMove 6s infinite linear;
+    pointer-events: none;
+    filter: blur(50px);
+    z-index: 0;
+}
+
+@keyframes lightMove {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(50%, 50%);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}*/
+
+.create-store-container {
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(3, 218, 198, 0.1);
+    width: 100%;
+    max-width: 500px;
+    z-index: 1;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    color: #03DAC6;
+    text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
+}
+
+.store-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #ccc;
+}
+
+input[type="text"],
+input[type="file"] {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+}
+
+input[type="file"] {
+    padding: 8px;
+    background: transparent;
+    border: 1px dashed #03DAC6;
+    color: #aaa;
+    cursor: pointer;
+}
+
+button {
+    padding: 14px;
+    background-color: #03DAC6;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button.disabled-btn {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(3, 218, 198, 0.3);
+}
+
+.field-error {
+    font-size: 0.85rem;
+    color: #ff6b6b;
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
+
+
+.message {
+    margin-top: 20px;
+    font-style: italic;
+    text-align: center;
+    color: #ccc;
+}

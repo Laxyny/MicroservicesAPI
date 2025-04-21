@@ -1,13 +1,16 @@
-<h1>Connexion</h1>
-<form (ngSubmit)="onSubmit()">
-    <label for="email">Email :</label>
-    <input type="email" id="email" [(ngModel)]="email" name="email" required>
+<div class="auth-container">
+    <h1><span>Connexion</span></h1>
+    <form (ngSubmit)="onSubmit()" class="auth-form">
 
-    <br><br>
-    <label for="password">Mot de passe :</label>
-    <input type="password" id="password" [(ngModel)]="password" name="password" required>
-    
-    <br><br>
-    <button type="submit">Se connecter</button>
-</form>
-<div>{{ message }}</div>
+        <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+        <div class="message" *ngIf="message">{{ message }}</div>
+    </form>
+
+    <div class="switch-auth">
+        <span>Pas encore de compte ?</span>
+        <a routerLink="/register">Créer un compte</a>
+    </div>
+</div>

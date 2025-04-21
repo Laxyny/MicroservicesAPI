@@ -1,13 +1,94 @@
-<h1>Détails de la boutique</h1>
-<div *ngIf="store">
-    <p><strong>Nom :</strong> {{ store.name }}</p>
-    <p><strong>Description :</strong> {{ store.description }}</p>
-    <p><strong>Site web :</strong> <a [href]="store.site" target="_blank">{{ store.site }}</a></p>
-    <p><strong>Logo :</strong></p>
-    <img [src]="store.logo" alt="Logo de la boutique" style="max-width: 150px;" />
+<app-navbar></app-navbar>
 
-    <button (click)="deleteStore()">Supprimer cette boutique</button>
+<div class="store-wrapper" *ngIf="store; else loading">
+    <div class="store-details-container">
+        <div class="store-header">
+            <img [src]="store.logo" alt="Logo boutique" class="store-logo" />
+            <div class="store-header-info">
+                <h1 class="store-name">{{ store.name }}</h1>
+                <p class="store-date">Rejoint le {{ store.createdAt | date: 'dd/MM/yyyy' }}</p>
+            </div>
+        </div>
+
+        <div class="store-info">
+            <p class="description">{{ store.description }}</p>
+            <p class="website">
+                <strong>Site web : </strong>
+                <a [href]="store.site.startsWith('http') ? store.site : 'https://' + store.site" target="_blank"
+                    rel="noopener noreferrer" class="store-site-link">
+                    {{ store.site }}
+                </a>
+            </p>
+            <div>
+                <button (click)="deleteStore()" class="delete-btn">Supprimer cette boutique</button>
+                <button (click)="toggleProductForm()" class="createProduct-btn">Ajouter un produit</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="overlay" *ngIf="showAddProductForm">
+        <div class="modal">
+            <h2>Créer un produit</h2>
+
+            <form (ngSubmit)="submitProduct()" #productForm="ngForm">
+                <label>Nom du produit</label>
+                <input type="text" [(ngModel)]="productName" name="name" required maxlength="30" />
+
+                <label>Description</label>
+                <input type="text" [(ngModel)]="productDescription" name="description" required maxlength="255" />
+
+                <label>Prix (€)</label>
+                <input type="number" [(ngModel)]="productPrice" name="price" min="0" max="1000000" required />
+
+                <label>Catégorie</label>
+                <input type="text" [(ngModel)]="productCategoryId" name="category" required maxlength="30" />
+
+                <label>Image (225 x 160)</label>
+                <input type="file" id="avatar" name="avatar" (change)="onFileSelected($event)"
+                    accept="image/png, image/jpeg" required />
+
+                <small class="field-error" *ngIf="image === null">
+                    Veuillez sélectionner une image.
+                </small>
+
+                <div class="form-buttons">
+                    <button [disabled]="!isFormValid()" [ngClass]="{ 'disabled-btn': !isFormValid() }">
+                        Ajouter le produit
+                    </button>
+                    <button type="button" class="cancel" (click)="toggleProductForm()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<div *ngIf="!store">
-    <p>Chargement des détails de la boutique...</p>
-</div>
+
+
+
+<section class="product-list-section">
+    <h2>Produits vendus par {{ store.name }}</h2>
+
+    <div *ngIf="products.length > 0; else noProducts" class="product-grid">
+        <div class="product-card" *ngFor="let product of products" (click)="goToProductDetails(product._id)">
+            <div class="image-wrapper">
+                <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
+            </div>
+            <div class="product-details">
+                <h3>{{ product.name }}</h3>
+                <p class="description">{{ product.description }}</p>
+                <p class="price">{{ product.price }} €</p>
+            </div>
+            <button>Voir</button>
+        </div>
+    </div>
+
+    <ng-template #noProducts>
+        <p class="info">Aucun produit disponible pour le moment.</p>
+    </ng-template>
+</section>
+
+<ng-template #loading>
+    <p class="loading-text">Chargement des détails de la boutique...</p>
+</ng-template>

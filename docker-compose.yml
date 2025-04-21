@@ -33,6 +33,9 @@ services:
         container_name: ms_front
         ports:
             - "${PORT_FRONT}:4200"
+        volumes:
+            - ./MicroservicesAPI - Front:/app
+            - /app/node_modules
         networks: [ msnet ]
 
 networks:

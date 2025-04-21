@@ -45,36 +45,7 @@ exports.getUserProduct = async (req, res) => {
         res.status(500).json({ message: "Erreur interne du serveur" });
     }
 };
-exports.getUserProduct = async (req, res) => {
-    try {
-        const userId = req.user.userId;
 
-        const product = await productModel.collection.findOne({ userId: userId });
-        if (!product) {
-            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
-        }
-
-        res.json(product);
-    } catch (err) {
-        console.error("Erreur lors de la récupération du produit :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
-    }
-};
-exports.getUserProduct = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-
-        const product = await productModel.collection.findOne({ userId: userId });
-        if (!product) {
-            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
-        }
-
-        res.json(product);
-    } catch (err) {
-        console.error("Erreur lors de la récupération du produit :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
-    }
-};
 exports.getUserProduct = async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -91,16 +62,47 @@ exports.getUserProduct = async (req, res) => {
     }
 };
 
-exports.getUserProducts = async (req, res) => {
+exports.getUserProduct = async (req, res) => {
     try {
         const userId = req.user.userId;
 
-        const products = await productModel.collection.find({ userId: userId }).toArray(); // Trouve toutes les produits
+        const product = await productModel.collection.findOne({ userId: userId });
+        if (!product) {
+            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
+        }
+
+        res.json(product);
+    } catch (err) {
+        console.error("Erreur lors de la récupération du produit :", err);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+exports.getUserProduct = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const product = await productModel.collection.findOne({ userId: userId });
+        if (!product) {
+            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
+        }
+
+        res.json(product);
+    } catch (err) {
+        console.error("Erreur lors de la récupération du produit :", err);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+exports.getStoreProducts = async (req, res) => {
+    try {
+        const storeId = req.params.storeId;
+        const products = await productModel.getByStoreId(storeId);
         if (!products || products.length === 0) {
             return res.status(404).json({ message: "Aucun produit trouvée pour cet utilisateur." });
         }
 
-        res.json(products); // Retourne toutes les produits
+        res.json(products);
     } catch (err) {
         console.error("Erreur lors de la récupération des produits :", err);
         res.status(500).json({ message: "Erreur interne du serveur" });
@@ -110,7 +112,7 @@ exports.getUserProducts = async (req, res) => {
 exports.createProduct = async (req, res) => {
     const token = req.cookies.authToken;
     try {
-        const { name, description, site, logo } = req.body;
+        const { name, description, price, categoryId, image, storeId } = req.body;
 
         const userId = req.user.userId;
 
@@ -136,9 +138,10 @@ exports.createProduct = async (req, res) => {
         const newProduct = {
             name: name,
             description: description,
-            site: site,
-            logo: logo,
-            userId: userId
+            price: price,
+            categoryId: categoryId,
+            image: image,
+            storeId: storeId
         };
 
         const createdProduct = await productModel.create(newProduct);
@@ -179,3 +182,18 @@ exports.deleteProduct = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la suppression du produit' });
     }
 };
+
+exports.getProductImages = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await productModel.getById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Produit non trouvé' });
+        }
+        res.json({ image: product.image });
+    }
+    catch (err) {
+        console.error("Erreur lors de la récupération de l\'image du produit :", err);
+        res.status(500).json({ message: 'Erreur lors de la récupération de l\'image du produit' });
+    }
+}

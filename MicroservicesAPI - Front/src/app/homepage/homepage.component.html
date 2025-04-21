@@ -1,36 +1,45 @@
-<h1>Homepage</h1>
+<app-navbar></app-navbar>
 
-<p>{{ welcomeMessage }}</p>
-<button (click)="logout()">Se déconnecter</button>
+<section class="product-list-section">
+    <h2>Produits disponibles</h2>
 
-<div *ngIf="products.length > 0; else noProducts">
-    <h2>Produits</h2>
-    <ul>
-        <li *ngFor="let product of products">
-            <a (click)="goToProductDetails(product._id)">
-                {{ product.name }}
-            </a>
-        </li>
-    </ul>
-</div>
+    <div *ngIf="products.length > 0; else noProducts" class="product-grid">
+        <div class="product-card" *ngFor="let product of products" (click)="goToProductDetails(product._id)">
+            <div class="image-wrapper">
+                <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
+            </div>
+            <div class="product-details">
+                <h3>{{ product.name }}</h3>
+                <p class="description">{{ product.description }}</p>
+                <p class="price">{{ product.price }} €</p>
+            </div>
+            <button>Voir</button>
+        </div>
+    </div>
 
-<ng-template #noProducts>
-    <p>Aucun produit disponible pour le moment.</p>
-</ng-template>
+    <ng-template #noProducts>
+        <p class="info">Aucun produit disponible pour le moment.</p>
+    </ng-template>
+</section>
 
-<div *ngIf="isSeller">
+<section *ngIf="isSeller" class="store-section">
     <h2>Vos boutiques</h2>
-    <div *ngIf="stores.length > 0; else noStores">
-        <ul>
-            <li *ngFor="let store of stores">
-                <a (click)="goToStoreDetails(store._id)">{{ store.name }}</a>
-            </li>
-        </ul>
+
+    <div *ngIf="stores.length > 0; else noStores" class="store-grid">
+        <div class="store-card" *ngFor="let store of stores" (click)="goToStoreDetails(store._id)">
+            <div class="store-header">
+                <h3>{{ store.name }}</h3>
+                <img *ngIf="store.logo" [src]="store.logo" alt="logo boutique" class="store-logo-mini" />
+            </div>
+
+            <p>{{ store.description }}</p>
+            <button>Gérer</button>
+        </div>
     </div>
 
     <ng-template #noStores>
-        <p>Vous n'avez aucune boutique.</p>
+        <p class="info">Vous n'avez aucune boutique.</p>
     </ng-template>
 
-    <button (click)="goToCreateStore()">Créer une boutique</button>
-</div>
+    <button class="create-store-btn" (click)="goToCreateStore()">Créer une boutique</button>
+</section>

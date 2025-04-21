@@ -32,10 +32,23 @@ export class CreateStoreComponent {
     }
   }
 
+  isFormValid(): boolean {
+    return this.name.length > 0 && this.description.length > 0 && this.logo !== null && this.site.length > 0;
+  }  
 
   async onSubmit(): Promise<void> {
     if (!this.logo) {
       this.message = 'Veuillez sélectionner un logo.';
+      return;
+    }
+
+    if (this.name.length > 30) {
+      this.message = 'Le nom de la boutique ne peut pas dépasser 30 caractères.';
+      return;
+    }
+
+    if (this.description.length > 255) {
+      this.message = 'La description de la boutique ne peut pas dépasser 255 caractères.';
       return;
     }
   
@@ -44,13 +57,11 @@ export class CreateStoreComponent {
       formData.append('file', this.logo);
       console.log('FormData envoyé :', this.logo);
   
-      // Requête pour uploader le logo
       const uploadResponse: any = await this.http.post(this.apiLogoUrl, formData, { withCredentials: true }).toPromise();
       console.log('Réponse upload logo :', uploadResponse);
   
       const logoUrl = uploadResponse.imageUrl;
   
-      // Requête pour créer la boutique
       this.createStoreService.postCreateStore(this.name, this.description, logoUrl, this.site).subscribe(
         (response) => {
           console.log('Réponse création boutique :', response);

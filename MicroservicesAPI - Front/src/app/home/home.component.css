@@ -1,0 +1,148 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f0f0f, #1e1e1e);
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    animation: fadeIn 1s ease-out;
+    overflow: hidden;
+    position: relative;
+}
+
+:host::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+    animation: lightMove 6s infinite linear;
+    pointer-events: none;
+    filter: blur(50px);
+    z-index: 0;
+}
+
+@keyframes lightMove {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(50%, 50%);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.home-container {
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    text-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+h1 span {
+    color: #03DAC6;
+    text-shadow: 0 4px 10px rgba(3, 218, 198, 0.5);
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+button {
+    border: none;
+    padding: 12px 28px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewX(-45deg);
+    transition: all 0.3s ease-in-out;
+    z-index: 0;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.login {
+    background-color: #6200ee;
+    color: #fff;
+}
+
+.register {
+    background-color: #03dac6;
+    color: #000;
+}
+
+.google-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: #fff;
+    color: #121212;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.google-btn:hover {
+    background-color: #eaeaea;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+
+.google-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+.message {
+    margin-top: 25px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #bbb;
+    font-style: italic;
+    text-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+}

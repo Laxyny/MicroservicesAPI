@@ -13,6 +13,10 @@ class ProductModel {
         return await this.collection.findOne({ _id: new ObjectId(id) });
     }
 
+    async getByStoreId(id) {
+        return await this.collection.find({ storeId: id }).toArray();
+    }
+
     async getByName(name){
         return await this.collection.findone({ name: name});
     }
@@ -21,10 +25,9 @@ class ProductModel {
         return await this.collection.findOne({ name: name, userId: userId });
     }
 
-    async create(newStore) {
+    async create(newProduct) {
         const storeToInsert = {
-            ...newStore,
-            createdAt: new Date(),
+            ...newProduct,
         };
 
         const result = await this.collection.insertOne(storeToInsert);

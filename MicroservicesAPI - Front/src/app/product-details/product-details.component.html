@@ -1,19 +1,38 @@
-<h1>Détails du produit</h1>
+<app-navbar></app-navbar>
 
-<div *ngIf="product; else loading">
-    <p><strong>Nom :</strong> {{ product.name }}</p>
-    <p><strong>Description :</strong> {{ product.description }}</p>
-    <p><strong>Prix :</strong> {{ product.price }}€</p>
+<div class="product-details-container">
+    <div class="product-left">
+        <div class="zoom-container">
+            <div class="zoom-image-container">
+                <img [src]="product?.image" alt="{{ product?.name }}" class="main-image" />
+                <div class="zoom-result"></div>
+            </div>
+        </div>
+    </div>
 
-    <p><strong>Image :</strong></p>
-    <img [src]="product.picture" alt="Image du produit" style="max-width:200px" />
+    <div class="product-right product-box">
+        <h1 class="product-title">{{ product?.name }}</h1>
+        <p class="product-ref">Réf. produit : {{ product?._id }}</p>
 
-    <!-- A MODIFIER -->
-    <button *ngIf="product.isSeller" (click)="deleteProduct()">
-        Supprimer ce produit
-    </button>
+        <div class="product-price">
+            <span>{{ product?.price }} €</span>
+        </div>
+
+        <p class="product-description">
+            <strong>Description :</strong><br />
+            {{ product?.description }}
+        </p>
+
+        <div class="product-info">
+            <p><strong>Catégorie : </strong> {{ product?.categoryId }}</p>
+            <p>
+                <strong>Vendu par : </strong>
+                <a class="store-link" [routerLink]="['/seller/store', product?.storeId]">
+                    {{ store?.name || 'Inconnu' }}
+                </a>
+            </p>
+        </div>
+
+        <button class="buy-button">Acheter</button>
+    </div>
 </div>
-
-<ng-template #loading>
-    <p>Chargement des détails du produit…</p>
-</ng-template>

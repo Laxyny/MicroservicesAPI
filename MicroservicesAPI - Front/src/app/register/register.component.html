@@ -1,23 +1,22 @@
-<h1>Créer son compte</h1>
-<form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-    <label for="email">Email :</label>
-    <input type="email" id="email" name="email" [(ngModel)]="email" required>
-    <br><br>
-    <label for="username">Nom d'utilisateur :</label>
-    <input type="text" id="username" name="username" [(ngModel)]="name" required>
-    <br><br>
-    <label for="password">Mot de passe :</label>
-    <input type="password" id="password" name="password" [(ngModel)]="password" required>
-    <br><br>
+<div class="auth-container">
+    <h1><span>Créer un compte</span></h1>
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="auth-form">
 
-    <label for="role">Rôle :</label>
-    <br>
-    <input type="radio" id="role-user" name="role" [(ngModel)]="role" value="user" checked>
-    <label for="role-user">Client</label>
-    <br>
-    <input type="radio" id="role-seller" name="role" [(ngModel)]="role" value="seller">
-    <label for="role-seller">Vendeur</label>
-    <br><br>
-    <button type="submit" [disabled]="!registerForm.form.valid">Créer un compte</button>
-</form>
-<div>{{ message }}</div>
+        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="Email" required>
+        <input type="text" id="username" name="username" [(ngModel)]="name" placeholder="Nom d'utilisateur" required>
+        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Mot de passe" required>
+
+        <div class="radio-group">
+            <label><input type="radio" name="role" [(ngModel)]="role" value="user" checked> Client</label>
+            <label><input type="radio" name="role" [(ngModel)]="role" value="seller"> Vendeur</label>
+        </div>
+
+        <button type="submit" [disabled]="!registerForm.form.valid">Créer un compte</button>
+        <div class="message" *ngIf="message">{{ message }}</div>
+    </form>
+
+    <div class="switch-auth">
+        <span>Déjà un compte ?</span>
+        <a routerLink="/login">Se connecter</a>
+    </div>
+</div>
