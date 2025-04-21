@@ -1,0 +1,38 @@
+<div class="settings-container" *ngIf="user">
+    <h1>Paramètres du compte</h1>
+
+    <div class="section">
+        <label>Nom</label>
+        <input type="text" [(ngModel)]="user.name" [readonly]="isGoogleAccount" />
+
+        <label>Email</label>
+        <input type="email" [(ngModel)]="user.email" [readonly]="isGoogleAccount" />
+
+        <div class="form-group">
+            <label for="role">Rôle</label>
+            <select id="role" [(ngModel)]="user.role">
+                <option [value]="user.role">{{ user.role === 'seller' ? 'Vendeur' : 'Client' }}</option>
+                <option [value]="user.role === 'seller' ? 'user' : 'seller'">
+                    {{ user.role === 'seller' ? 'Client' : 'Vendeur' }}
+                </option>
+            </select>
+        </div>
+
+        <div *ngIf="isGoogleAccount" class="info-note">
+            Compte Google : certaines informations ne sont pas modifiables
+        </div>
+
+        <div>
+            <button class="update-btn" (click)="updateUser()" [disabled]="isUpdating">
+                {{ isUpdating ? 'Mise à jour...' : 'Mettre à jour' }}
+            </button>
+            <button class="delete-btn" (click)="deleteUser()" [disabled]="isDeleting">
+                {{ isDeleting ? 'Suppression...' : 'Supprimer mon profil' }}
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="roleChangeError" class="warning">
+        Vous devez d'abord supprimer vos boutiques et produits pour changer de rôle.
+    </div>
+</div>

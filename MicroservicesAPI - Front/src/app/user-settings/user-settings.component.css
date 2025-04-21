@@ -1,0 +1,103 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f0f, #1e1e1e);
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    padding-top: 80px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.settings-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 30px;
+    background: #1f1f1f;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #00ffe0;
+    margin-bottom: 2rem;
+}
+
+.section label {
+    display: block;
+    color: #ccc;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 2px solid #00f0e0;
+    background-color: #222;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+input[readonly],
+select[disabled] {
+    background-color: #333;
+    border-style: dashed;
+    opacity: 0.7;
+}
+
+.info-note {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 10px;
+}
+
+.warning {
+    color: #ff4d4d;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.update-btn {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #00ffe0;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.delete-btn {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.update-btn:hover {
+    background-color: #00cfcf;
+}
+
+.delete-btn:hover {
+    background-color: #ff4d4d;
+}

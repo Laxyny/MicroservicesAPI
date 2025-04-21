@@ -5,6 +5,7 @@ import { NgFor, NgForOf, NgIf } from '@angular/common';
 import { ApiStoresService } from '../services/stores.service';
 import { ApiProductsService } from '../services/products.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
+import { FooterComponent } from "../shared/footer/footer.component";
 
 @Component({
   selector: 'app-homepage',
@@ -12,21 +13,19 @@ import { NavbarComponent } from "../shared/navbar/navbar.component";
     NgIf,
     NgFor,
     RouterModule,
-    NavbarComponent
+    NavbarComponent,
+    FooterComponent
 ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
 export class HomepageComponent implements OnInit {
-  welcomeMessage: string = '';
-  isSeller: boolean = false;
-  stores: any[] = [];
   products: any[] = [];
   user: any = null;
+  stores: any[] = [];
   storeNamesById: { [key: string]: string } = {};
 
   private apiUrl = 'http://localhost:3000/user';
-  private logoutUrl = 'http://localhost:3000/logout';
 
   constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService) { }
 
@@ -47,12 +46,6 @@ export class HomepageComponent implements OnInit {
     this.http.get(this.apiUrl, { withCredentials: true }).subscribe({
       next: (user: any) => {
         this.user = user;
-        this.welcomeMessage = `Bienvenue, ${user.name}, vous êtes ${user.role}.`;
-        this.isSeller = user.role === 'seller';
-
-        if (this.isSeller) {
-          this.fetchStoresData();
-        }
       },
       error: () => {
         console.log('Erreur Homepage redirection vers /login')
@@ -87,25 +80,5 @@ export class HomepageComponent implements OnInit {
 
   goToProductDetails(productId: string) {
     this.router.navigate([`/product/${productId}`]);
-  }
-
-  fetchStoresData() {
-    this.getMyStores.getMyStores().subscribe({
-      next: (stores: any[]) => {
-        this.stores = stores;
-      },
-      error: (error) => {
-        console.error('Erreur lors de la récupération des boutiques :', error);
-        this.stores = [];
-      }
-    });
-  }
-
-  goToCreateStore() {
-    this.router.navigate(['/seller/createStore']);
-  }
-
-  goToStoreDetails(storeId: string) {
-    this.router.navigate([`/seller/store/${storeId}`]);
   }
 }

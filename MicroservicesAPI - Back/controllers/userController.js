@@ -65,7 +65,9 @@ exports.updateUser = async (req, res) => {
   try {
     const id = req.params.id;
     const updatedFields = {
-      name: req.body.name
+      name: req.body.name,
+      email: req.body.email,
+      role: req.body.role,
     };
     const success = await userModel.updateById(id, updatedFields);
     if (!success) {
@@ -155,7 +157,7 @@ exports.getUserFromToken = async (req, res) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    res.json({ name: user.name, email: user.email, role: user.role });
+    res.json(user);
   } catch (error) {
     console.error('Erreur lors de la récupération des données utilisateur :', error);
     res.status(500).json({ message: 'Erreur interne du serveur' });

@@ -23,7 +23,7 @@ exports.getStore = async (req, res) => {
     if (store) {
       res.json(store);
     } else {
-      res.status(404).json({ message: 'Magasin non trouvé' });
+      res.status(200).json({ message: 'Magasin non trouvé' });
     }
   } catch (err) {
     res.status(500).json({ message: 'Erreur lors de la récupération du magasin' });
@@ -34,9 +34,9 @@ exports.getUserStore = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const store = await storeModel.collection.findOne({ userId: userId });
+    const store = await storeModel.collection.find({ userId: userId }).toArray();
     if (!store) {
-      return res.status(404).json({ message: "Aucun magasin trouvé pour cet utilisateur." });
+      return res.status(200).json({ message: "Aucun magasin trouvé pour cet utilisateur." });
     }
 
     res.json(store);

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiProductsService } from '../services/products.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { ApiCategoriesService } from '../services/categories.service';
+import { FooterComponent } from "../shared/footer/footer.component";
 
 @Component({
   selector: 'app-store-details',
@@ -16,8 +17,9 @@ import { ApiCategoriesService } from '../services/categories.service';
     NgIf,
     FormsModule,
     CommonModule,
-    NavbarComponent
-  ]
+    NavbarComponent,
+    FooterComponent
+]
 })
 export class StoreDetailsComponent implements OnInit {
   store: any = null;

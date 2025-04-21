@@ -1,10 +1,11 @@
+import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [NgIf],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -44,6 +45,14 @@ export class NavbarComponent {
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
+  }
+
+  goToMyStore() {
+    this.router.navigate(['/seller/my-store']);
+  }
+
+  settings() {
+    this.router.navigate(['/user/settings']);
   }
 
   logout() {

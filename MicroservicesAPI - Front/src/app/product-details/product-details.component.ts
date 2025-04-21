@@ -6,12 +6,13 @@ import { ApiProductsService } from '../services/products.service';
 import { ApiStoresService } from '../services/stores.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { ApiCategoriesService } from '../services/categories.service';
+import { FooterComponent } from "../shared/footer/footer.component";
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css'],
-  imports: [CommonModule, RouterModule, NavbarComponent]
+  imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent]
 })
 export class ProductDetailsComponent implements OnInit {
   product: any = null;

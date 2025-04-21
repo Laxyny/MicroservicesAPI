@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<div class="page-container">
+    <app-navbar *ngIf="shouldShowLayout()"></app-navbar>
+
+    <div class="content-wrap">
+        <router-outlet></router-outlet>
+    </div>
+
+    <app-footer *ngIf="shouldShowLayout()"></app-footer>
+</div>

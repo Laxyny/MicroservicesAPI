@@ -29,6 +29,11 @@ export class AuthService {
         });
     }
 
+    getUser(): Promise<any> {
+        return this.http.get('http://localhost:3000/user', { withCredentials: true })
+            .toPromise();
+    }
+
     logout() {
         this.isLoggedIn = false;
         this.router.navigate(['/login']);
