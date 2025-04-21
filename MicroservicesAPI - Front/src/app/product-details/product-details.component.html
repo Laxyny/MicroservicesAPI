@@ -24,7 +24,7 @@
         </p>
 
         <div class="product-info">
-            <p><strong>Catégorie : </strong> {{ product?.categoryId }}</p>
+            <p><strong>Catégorie : </strong> {{ category?.name }}</p>
             <p>
                 <strong>Vendu par : </strong>
                 <a class="store-link" [routerLink]="['/seller/store', product?.storeId]">

@@ -44,7 +44,23 @@
                 <input type="number" [(ngModel)]="productPrice" name="price" min="0" max="1000000" required />
 
                 <label>Catégorie</label>
-                <input type="text" [(ngModel)]="productCategoryId" name="category" required maxlength="30" />
+                <div class="category-dropdown-wrapper">
+                    <input type="text" placeholder="Rechercher une catégorie..." [(ngModel)]="categorySearch"
+                        (focus)="showCategoryDropdown = true" (input)="filterCategories()" name="categorySearch" />
+
+                    <div class="dropdown-category-list" *ngIf="showCategoryDropdown">
+                        <div class="dropdown-item" *ngFor="let category of filteredCategories"
+                            (click)="selectCategory(category)">
+                            {{ category.name }}
+                        </div>
+
+                        <div class="create-category">
+                            <input type="text" placeholder="Créer une nouvelle catégorie"
+                                [(ngModel)]="newCategoryName" name="newCategoryName"/>
+                            <button type="button" (click)="createCategory()">Créer</button>
+                        </div>
+                    </div>
+                </div>
 
                 <label>Image (225 x 160)</label>
                 <input type="file" id="avatar" name="avatar" (change)="onFileSelected($event)"

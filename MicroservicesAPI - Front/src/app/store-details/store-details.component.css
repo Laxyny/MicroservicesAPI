@@ -246,6 +246,61 @@ button[disabled] {
     cursor: not-allowed;
 }
 
+.category-dropdown-wrapper {
+    position: relative;
+}
+
+.dropdown-category-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    margin-top: 4px;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+.dropdown-item:hover {
+    background-color: #03dac666;
+}
+
+.create-category {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-top: 1px solid #444;
+}
+
+.create-category input {
+    margin-bottom: 6px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #1f1f1f;
+    border: 1px solid #444;
+    color: white;
+}
+
+.create-category button {
+    background-color: #03DAC6;
+    color: black;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+
 
 
 

@@ -6,6 +6,7 @@ import { ApiStoresService } from '../services/stores.service';
 import { FormsModule } from '@angular/forms';
 import { ApiProductsService } from '../services/products.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
+import { ApiCategoriesService } from '../services/categories.service';
 
 @Component({
   selector: 'app-store-details',
@@ -16,7 +17,7 @@ import { NavbarComponent } from "../shared/navbar/navbar.component";
     FormsModule,
     CommonModule,
     NavbarComponent
-]
+  ]
 })
 export class StoreDetailsComponent implements OnInit {
   store: any = null;
@@ -30,6 +31,12 @@ export class StoreDetailsComponent implements OnInit {
 
   products: any[] = [];
 
+  categories: any[] = [];
+  filteredCategories: any[] = [];
+  newCategoryName = '';
+  categorySearch = '';
+  showCategoryDropdown = false;
+
   private apiUploadUrl = 'http://localhost:3000/product/upload-image';
 
   constructor(
@@ -37,7 +44,8 @@ export class StoreDetailsComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private deleteStoreService: ApiStoresService,
-    private apiProductsService: ApiProductsService
+    private apiProductsService: ApiProductsService,
+    private apiCategories: ApiCategoriesService
   ) { }
 
   ngOnInit(): void {
@@ -45,6 +53,14 @@ export class StoreDetailsComponent implements OnInit {
     if (storeId) {
       this.fetchStoreDetails(storeId);
       this.fetchStoreProducts(storeId);
+      this.loadCategories();
+
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.category-dropdown-wrapper')) {
+          this.showCategoryDropdown = false;
+        }
+      });
     }
   }
 
@@ -172,6 +188,45 @@ export class StoreDetailsComponent implements OnInit {
 
   goToProductDetails(productId: string) {
     this.router.navigate([`/product/${productId}`]);
+  }
+
+
+
+
+
+  loadCategories(): void {
+    this.apiCategories.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.filteredCategories = categories;
+      },
+      error: (err) => console.error('Erreur chargement catégories', err)
+    });
+  }
+
+  filterCategories(): void {
+    this.filteredCategories = this.categories.filter(c =>
+      c.name.toLowerCase().includes(this.categorySearch.toLowerCase())
+    );
+  }
+
+  selectCategory(cat: any): void {
+    this.productCategoryId = cat._id;
+    this.categorySearch = cat.name;
+    this.showCategoryDropdown = false;
+  }
+
+  createCategory(): void {
+    if (!this.newCategoryName.trim()) return;
+
+    this.apiCategories.postCreateCategory(this.newCategoryName).subscribe({
+      next: () => {
+        alert('Catégorie créée avec succès.');
+        this.newCategoryName = '';
+        this.loadCategories();
+      },
+      error: (err) => console.error('Erreur ajout catégorie', err)
+    });
   }
 
 }

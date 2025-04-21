@@ -8,10 +8,12 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const sellerRoutes = require('./routes/sellerRoutes');
 const productRoutes = require('./routes/productRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 const userController = require('./controllers/userController');
 const storeController = require('./controllers/storeController');
 const productController = require('./controllers/productController');
+const categoryController = require('./controllers/categoryController');
 
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -48,14 +50,17 @@ async function run() {
         const tokenCollection = database.collection("Tokens");
         const storeCollection = database.collection("Stores");
         const productCollection = database.collection("Product");
+        const categoryCollection = database.collection("Category");
 
         userController.init(usercollection, tokenCollection);
         storeController.init(storeCollection);
         productController.init(productCollection);
+        categoryController.init(categoryCollection);
 
         app.use('/', userRoutes);
         app.use('/', sellerRoutes);
         app.use('/', productRoutes);
+        app.use('/', categoryRoutes);
 
         app.get('/', authMiddleware, (req, res) => {
             res.sendFile(__dirname + '/public/homepage.html');

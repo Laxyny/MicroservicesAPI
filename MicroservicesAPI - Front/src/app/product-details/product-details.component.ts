@@ -5,6 +5,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { ApiProductsService } from '../services/products.service';
 import { ApiStoresService } from '../services/stores.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
+import { ApiCategoriesService } from '../services/categories.service';
 
 @Component({
   selector: 'app-product-details',
@@ -15,6 +16,7 @@ import { NavbarComponent } from "../shared/navbar/navbar.component";
 export class ProductDetailsComponent implements OnInit {
   product: any = null;
   store: any = null;
+  category: any = null;
 
   private productDetailsUrl = 'http://localhost:3000/product/product';
 
@@ -23,7 +25,8 @@ export class ProductDetailsComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private productsApi: ApiProductsService,
-    private storeApi: ApiStoresService
+    private storeApi: ApiStoresService,
+    private categoryApi: ApiCategoriesService
   ) { }
 
   ngOnInit(): void {
@@ -39,8 +42,13 @@ export class ProductDetailsComponent implements OnInit {
         next: (product: any) => {
           this.product = product;
           const storeId = product.storeId;
+          const categoryId = product.categoryId;
           if (storeId) {
             this.fetchStoreName(storeId);
+          }
+
+          if (categoryId) {
+            this.fetchCategoryName(categoryId);
           }
         },
         error: err => {
@@ -54,8 +62,18 @@ export class ProductDetailsComponent implements OnInit {
     this.storeApi.getStoreName(storeId).subscribe({
       next: (storeId: string) => this.store = storeId,
       error: err => {
-        console.error('Erreur lors du chargement du nom du magasin :', err);
+        console.error('Erreur lors du chargement du nom du magasin :', err);
         this.store = 'Inconnu';
+      }
+    });
+  }
+
+  fetchCategoryName(productId: string): void {
+    this.categoryApi.getProductCategories(productId).subscribe({
+      next: (category: any) => this.category = category,
+      error: err => {
+        console.error('Erreur lors du chargement de la catégorie :', err);
+        this.category = 'Inconnue';
       }
     });
   }
