@@ -1,4 +1,4 @@
-<section class="store-section" *ngIf="isSeller" ; else notSeller>
+<section class="store-section" *ngIf="isSeller; else notSeller">
     <h2>Vos boutiques</h2>
 
     <div *ngIf="stores.length > 0; else noStores" class="store-grid">
@@ -15,7 +15,6 @@
 
     <ng-template #noStores>
         <p class="info">Vous n'avez aucune boutique.</p>
-        <button class="create-store-btn" (click)="goToCreateStore()">Créer une boutique</button>
     </ng-template>
 
     <button class="create-store-btn" (click)="goToCreateStore()">Créer une boutique</button>

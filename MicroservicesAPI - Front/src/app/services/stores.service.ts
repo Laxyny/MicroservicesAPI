@@ -12,6 +12,10 @@ export class ApiStoresService {
         return this.http.get('http://localhost:3000/seller/stores', { withCredentials: true });
     }
 
+    checkUserStores(): Observable<any> {
+        return this.http.get('http://localhost:3000/seller/checkstores', { withCredentials: true });
+    }
+
     postCreateStore(name: string, description: string, logo: string, site: string): Observable<any> {
         return this.http.post(
             'http://localhost:3000/seller/createStore',

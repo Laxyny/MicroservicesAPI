@@ -9,6 +9,7 @@ const { upload } = require('../services/cloudinaryConfig');
 router.get('/seller', authMiddleware, sellerMiddleware); // Ne sert a rien pour le moment
 router.get('/seller/store', authMiddleware, storeController.getUserStore);
 router.get('/seller/stores',authMiddleware, storeController.getUserStores);
+router.get('/seller/checkstores/:id',authMiddleware, storeController.checkUserStores); // Verif pour sup un compte *A SUPPRIMER INUTILE*
 router.get('/seller/liststores', authMiddleware, storeController.getAllStores);
 router.get('/seller/store/:id', authMiddleware, storeController.getStore);
 router.post('/seller/createStore', authMiddleware, sellerMiddleware, storeController.createStore);

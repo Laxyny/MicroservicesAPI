@@ -8,7 +8,7 @@ import { FooterComponent } from "../shared/footer/footer.component";
 
 @Component({
   selector: 'app-my-store',
-  imports: [NavbarComponent, NgIf, NgFor, FooterComponent],
+  imports: [NgIf, NgFor],
   templateUrl: './my-store.component.html',
   styleUrl: './my-store.component.css'
 })

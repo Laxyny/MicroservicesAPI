@@ -62,6 +62,22 @@ exports.getUserStores = async (req, res) => {
   }
 };
 
+exports.checkUserStores = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const stores = await storeModel.collection.find({ userId: userId }).toArray(); // Trouve toutes les boutiques
+    if (!stores || stores.length === 0) {
+      return res.status(200).json({ message: "Aucune boutique trouvée pour cet utilisateur." });
+    }
+
+    res.json(stores); // Retourne toutes les boutiques
+  } catch (err) {
+    console.error("Erreur lors de la récupération des boutiques :", err);
+    res.status(500).json({ message: "Erreur interne du serveur" });
+  }
+};
+
 exports.createStore = async (req, res) => {
   const token = req.cookies.authToken;
   try {

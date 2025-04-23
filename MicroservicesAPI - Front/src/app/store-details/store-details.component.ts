@@ -17,8 +17,6 @@ import { FooterComponent } from "../shared/footer/footer.component";
     NgIf,
     FormsModule,
     CommonModule,
-    NavbarComponent,
-    FooterComponent
 ]
 })
 export class StoreDetailsComponent implements OnInit {
