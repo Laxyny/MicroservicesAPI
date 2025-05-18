@@ -5,9 +5,8 @@ import { CommonModule, NgIf } from '@angular/common';
 import { ApiStoresService } from '../services/stores.service';
 import { FormsModule } from '@angular/forms';
 import { ApiProductsService } from '../services/products.service';
-import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { ApiCategoriesService } from '../services/categories.service';
-import { FooterComponent } from "../shared/footer/footer.component";
+import { ReportService } from '../services/report.service';
 
 @Component({
   selector: 'app-store-details',
@@ -45,7 +44,8 @@ export class StoreDetailsComponent implements OnInit {
     private router: Router,
     private deleteStoreService: ApiStoresService,
     private apiProductsService: ApiProductsService,
-    private apiCategories: ApiCategoriesService
+    private apiCategories: ApiCategoriesService,
+    private reportService: ReportService
   ) { }
 
   ngOnInit(): void {
@@ -80,6 +80,7 @@ export class StoreDetailsComponent implements OnInit {
       });
   }
 
+  // A MODIFIER POUR VEFIF S'IL Y A DES PRODUITS ET SI OUI SUPPRIMER LES PRODUITS ASSOCIES
   deleteStore(): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette boutique ?')) {
       this.deleteStoreService.deleteStore(this.store._id).subscribe({
@@ -94,6 +95,26 @@ export class StoreDetailsComponent implements OnInit {
       });
     }
   }
+
+  generateStoreReport(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+  
+    this.reportService.generateReport(this.store._id).subscribe({
+      next: (res) => {
+        if (res.id) {
+          this.reportService.downloadReportFile(res.id);
+        } else {
+          alert('Erreur : ID du rapport non reçu.');
+        }
+      },
+      error: (err) => {
+        console.error('Erreur génération du rapport :', err);
+        alert('Une erreur est survenue lors de la génération du rapport.');
+      },
+    });
+  }
+  
 
   toggleProductForm(): void {
     this.showAddProductForm = !this.showAddProductForm;

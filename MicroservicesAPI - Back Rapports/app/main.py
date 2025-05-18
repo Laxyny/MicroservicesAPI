@@ -5,15 +5,23 @@ from app.auth import verify_token
 from app.models import ReportIn, ReportOut
 from app.pdf import build_pdf
 import os, io, datetime, bson
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 client = AsyncIOMotorClient(os.environ["MONGODB_URI"])
 db = client.get_default_database()
 fs = AsyncIOMotorGridFSBucket(db, bucket_name="reports_pdf")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/reports/generate", response_model=ReportOut)
-async def generate(report: ReportIn, user_id=Depends(verify_token)):
+async def generate(report: ReportIn):
     pdf_bytes = await build_pdf(db, report)
     file_id = await fs.upload_from_stream(
         f"{report.storeId}_{datetime.datetime.utcnow().isoformat()}.pdf",
@@ -30,7 +38,7 @@ async def generate(report: ReportIn, user_id=Depends(verify_token)):
 
 
 @app.get("/reports/{id}")
-async def download(id: str, user_id=Depends(verify_token)):
+async def download(id: str):
     doc = await db.Reports.find_one({"_id": bson.ObjectId(id)})
     if not doc:
         raise HTTPException(404)
