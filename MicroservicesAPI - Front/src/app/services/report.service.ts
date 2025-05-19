@@ -11,7 +11,12 @@ export class ReportService {
 
         return this.http.post<{ id: string }>(
             'http://localhost:7000/reports/generate',
-            { storeId: storeId },
+            {
+                storeId,
+                includeProducts: true,
+                includeCharts: true,
+                locale: 'fr'
+            },
             { withCredentials: true }
         );
 

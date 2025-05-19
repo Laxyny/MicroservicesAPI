@@ -1,63 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <style>
         body {
-            font-family: Arial;
-            margin: 30px;
+            font-family: Arial, sans-serif;
+            padding: 30px;
         }
 
-        h1 {
-            font-size: 24px;
-            text-align: center;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .header p {
+            margin: 4px 0 0 0;
+            font-size: 14px;
+        }
+
+        .logo {
+            height: 60px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-top: 30px;
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
 
-        td,
-        th {
+        th, td {
             border: 1px solid #ccc;
-            padding: 6px;
+            padding: 6px 10px;
             text-align: left;
+            font-size: 14px;
         }
 
-        img.chart {
-            width: 100%;
-            max-width: 700px;
+        th {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
-
 <body>
-    <h1>{{ branding }} – Rapport boutique {{ store.store.name }}</h1>
+    <div class="header">
+        <div>
+            <h1>Rapport de la boutique "{{ store.name }}"</h1>
+            {% if store.createdAt %}
+            <p>Date de création : {{ store.createdAt }}</p>
+            {% endif %}
+        </div>
+        {% if store.logo %}
+        <img src="{{store.logo}}" alt="Logo" class="logo" />
+        {% endif %}
+    </div>
+
     <h2>Données générales</h2>
-    <p>Ventes totales : {{ store.sales }} €</p>
-    {% if products %}
-    <h2>Produits</h2>
+    <p><strong>Ventes totales :</strong> {{ store.sales }} €</p>
+
+    {% if products and products | length > 0 %}
+    <h2>Produits vendus</h2>
     <table>
-        <tr>
-            <th>Nom</th>
-            <th>Prix</th>
-            <th>Catégorie</th>
-        </tr>
-        {% for p in products %}
-        <tr>
-            <td>{{ p.name }}</td>
-            <td>{{ p.price }}</td>
-            <td>{{ p.category }}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Catégorie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.price }} €</td>
+                <td>{{ p.category or 'Non spécifiée' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-    {% endif %}
-    {% if charts.sales_chart %}
-    <h2>Graphique des ventes</h2>
-    <img class="chart" src="data:image/png;base64,{{ charts.sales_chart }}" />
+    {% else %}
+    <p>Aucun produit enregistré pour cette boutique.</p>
     {% endif %}
 </body>
-
 </html>

@@ -8,14 +8,15 @@ env = jinja2.Environment(
 
 
 async def build_pdf(db, report):
-    store_stats = await get_store_stats(db, report)
+    store_stats = await get_store_stats(db, report)    
     product_stats = (
         await get_product_stats(db, report) if report.includeProducts else []
     )
     charts = {}
+    
     if report.includeCharts:
         fig, ax = plt.subplots()
-        ax.bar([p["name"] for p in product_stats], [p["sales"] for p in product_stats])
+        ax.bar([p["name"] for p in product_stats], [p["price"] for p in product_stats])
         buf = io.BytesIO()
         fig.savefig(buf, format="png")
         charts["sales_chart"] = base64.b64encode(buf.getvalue()).decode()
