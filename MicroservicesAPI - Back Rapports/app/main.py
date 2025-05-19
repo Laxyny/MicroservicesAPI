@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 @app.post("/reports/generate", response_model=ReportOut)
-async def generate(report: ReportIn):
+async def generate(report: ReportIn, user_id=Depends(verify_token)):
     pdf_bytes = await build_pdf(db, report)
     file_id = await fs.upload_from_stream(
         f"{report.storeId}_{datetime.datetime.utcnow().isoformat()}.pdf",
@@ -38,7 +38,7 @@ async def generate(report: ReportIn):
 
 
 @app.get("/reports/{id}")
-async def download(id: str):
+async def download(id: str, user_id=Depends(verify_token)):
     doc = await db.Reports.find_one({"_id": bson.ObjectId(id)})
     if not doc:
         raise HTTPException(404)
