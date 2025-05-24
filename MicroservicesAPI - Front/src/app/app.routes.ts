@@ -11,6 +11,7 @@ import { ProductDetailsComponent } from './product-details/product-details.compo
 import { MyStoreComponent } from './my-store/my-store.component';
 import { SellerGuard } from './guards/seller.guard';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { LegalComponent } from './legal/legal.component';
 
 export const routes: Routes = [
     //AUTH
@@ -33,6 +34,9 @@ export const routes: Routes = [
     //GESTION STORES
     { path: 'seller/createStore', component: CreateStoreComponent, canActivate: [AuthGuard, SellerGuard] },
     { path: 'seller/my-store', component: MyStoreComponent, canActivate: [AuthGuard, SellerGuard] },
+
+    //LEGAL
+    { path: 'legal/:type', component: LegalComponent },
 ];
 
 @NgModule({
