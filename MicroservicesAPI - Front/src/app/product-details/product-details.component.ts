@@ -7,12 +7,13 @@ import { ApiStoresService } from '../services/stores.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { ApiCategoriesService } from '../services/categories.service';
 import { FooterComponent } from "../shared/footer/footer.component";
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css'],
-  imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent]
+  imports: [CommonModule, RouterModule]
 })
 export class ProductDetailsComponent implements OnInit {
   product: any = null;
@@ -27,7 +28,8 @@ export class ProductDetailsComponent implements OnInit {
     private router: Router,
     private productsApi: ApiProductsService,
     private storeApi: ApiStoresService,
-    private categoryApi: ApiCategoriesService
+    private categoryApi: ApiCategoriesService,
+    private cartService: CartService
   ) { }
 
   ngOnInit(): void {
@@ -91,6 +93,12 @@ export class ProductDetailsComponent implements OnInit {
           alert('Une erreur est survenue.');
         }
       });
+    }
+  }
+
+  addToCart() {
+    if (this.product?._id) {
+      this.cartService.addToCart(this.product._id, 1);
     }
   }
 }

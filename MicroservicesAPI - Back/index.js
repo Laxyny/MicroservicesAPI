@@ -9,11 +9,13 @@ const userRoutes = require('./routes/userRoutes');
 const sellerRoutes = require('./routes/sellerRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const userController = require('./controllers/userController');
 const storeController = require('./controllers/storeController');
 const productController = require('./controllers/productController');
 const categoryController = require('./controllers/categoryController');
+const cartController = require('./controllers/cartController');
 
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -51,16 +53,19 @@ async function run() {
         const storeCollection = database.collection("Stores");
         const productCollection = database.collection("Product");
         const categoryCollection = database.collection("Category");
+        const cartCollection = database.collection("Carts");
 
         userController.init(usercollection, tokenCollection);
         storeController.init(storeCollection);
         productController.init(productCollection);
         categoryController.init(categoryCollection);
+        cartController.init(cartCollection);
 
         app.use('/', userRoutes);
         app.use('/', sellerRoutes);
         app.use('/', productRoutes);
         app.use('/', categoryRoutes);
+        app.use('/', cartRoutes);
 
         app.get('/', authMiddleware, (req, res) => {
             res.sendFile(__dirname + '/public/homepage.html');

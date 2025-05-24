@@ -1,12 +1,13 @@
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SearchService } from '../../services/search.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -17,7 +18,11 @@ export class NavbarComponent {
   user: any = null;
   searchFocused = false;
 
-  constructor(private http: HttpClient, private router: Router, private searchService: SearchService) { }
+  constructor(private http: HttpClient, private router: Router, private searchService: SearchService, private cartService: CartService) {
+    this.cartService.cartItems$.subscribe(items => {
+      this.cartItems = items;
+    })
+  }
 
   private logoutUrl = 'http://localhost:3000/logout';
   private apiUrl = 'http://localhost:3000/user';
@@ -29,7 +34,7 @@ export class NavbarComponent {
   onSearchFocus() {
     this.searchFocused = true;
   }
-  
+
   onSearchBlur() {
     setTimeout(() => this.searchFocused = false, 150);
   }
@@ -53,6 +58,23 @@ export class NavbarComponent {
 
   toggleCart() {
     this.cartOpen = !this.cartOpen;
+  }
+
+  getCartItemCount(): number {
+    return this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  }
+
+  updateQuantity(item: any, newQty: number) {
+    if (newQty < 1) return;
+    this.cartService.updateItemQuantity(item.productId, newQty);
+  }
+
+  removeFromCart(item: any) {
+    this.cartService.removeFromCart(item.productId);
+  }
+
+  getCartTotal(): number {
+    return this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   }
 
   goToCart() {
