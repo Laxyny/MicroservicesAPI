@@ -1,9 +1,10 @@
+require('dotenv').config();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { UserModel } = require('../models/userModel');
 const { MongoClient } = require('mongodb');
 
-const uri = "mongodb+srv://user:Test1234@cluster.eovny.mongodb.net/?retryWrites=true&w=majority&appName=Cluster";
+const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
 async function getUserModel() {
@@ -14,9 +15,9 @@ async function getUserModel() {
 }
 
 passport.use(new GoogleStrategy({
-    clientID: 'CLIENT_ID',
-    clientSecret: 'CLIENT_SECRET',
-    callbackURL: 'http://localhost:5000/auth/google/callback'
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
 },
     async (accessToken, refreshToken, profile, done) => {
         try {
