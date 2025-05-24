@@ -34,7 +34,9 @@ export class CartService {
         const enriched = items.map((item: any, i: number) => ({
           ...item,
           name: products[i]?.name ?? 'Produit inconnu',
+          description: products[i]?.description ?? '',
           price: products[i]?.price ?? 0,
+          image: products[i]?.image ?? '',
         }));
         this.cartItemsSubject.next(enriched);
       });

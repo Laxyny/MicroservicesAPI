@@ -12,6 +12,7 @@ import { MyStoreComponent } from './my-store/my-store.component';
 import { SellerGuard } from './guards/seller.guard';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { LegalComponent } from './legal/legal.component';
+import { CartComponent } from './cart/cart.component';
 
 export const routes: Routes = [
     //AUTH
@@ -34,6 +35,9 @@ export const routes: Routes = [
     //GESTION STORES
     { path: 'seller/createStore', component: CreateStoreComponent, canActivate: [AuthGuard, SellerGuard] },
     { path: 'seller/my-store', component: MyStoreComponent, canActivate: [AuthGuard, SellerGuard] },
+
+    //RÉCAP PANIER
+    { path: 'cart', component: CartComponent },
 
     //LEGAL
     { path: 'legal/:type', component: LegalComponent },
