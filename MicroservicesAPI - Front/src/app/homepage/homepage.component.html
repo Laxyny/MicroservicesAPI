@@ -1,8 +1,8 @@
 <section class="product-list-section">
     <h2>Produits disponibles</h2>
 
-    <div *ngIf="products.length > 0; else noProducts" class="product-grid">
-        <div class="product-card" *ngFor="let product of products" (click)="goToProductDetails(product._id)">
+    <div *ngIf="filteredProducts.length > 0; else noProducts" class="product-grid">
+        <div class="product-card" *ngFor="let product of filteredProducts" (click)="goToProductDetails(product._id)">
             <div class="image-wrapper">
                 <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
             </div>

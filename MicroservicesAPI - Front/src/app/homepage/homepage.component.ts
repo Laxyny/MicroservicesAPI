@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { NgFor, NgForOf, NgIf } from '@angular/common';
 import { ApiStoresService } from '../services/stores.service';
 import { ApiProductsService } from '../services/products.service';
+import { SearchService } from '../services/search.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { FooterComponent } from "../shared/footer/footer.component";
 
@@ -13,8 +14,6 @@ import { FooterComponent } from "../shared/footer/footer.component";
     NgIf,
     NgFor,
     RouterModule,
-    NavbarComponent,
-    FooterComponent
 ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
@@ -24,14 +23,21 @@ export class HomepageComponent implements OnInit {
   user: any = null;
   stores: any[] = [];
   storeNamesById: { [key: string]: string } = {};
+  filteredProducts: any[] = [];
 
   private apiUrl = 'http://localhost:3000/user';
 
-  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService) { }
+  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService, private searchService: SearchService) { }
 
   ngOnInit() {
     this.fetchUserData();
     this.fetchProductsData();
+
+    this.searchService.searchQuery$.subscribe(query => {
+      this.filteredProducts = this.products.filter(product =>
+        product.name.toLowerCase().includes(query.toLowerCase())
+      );
+    });
   }
 
   getImageSrc(image: string): string {
@@ -58,6 +64,7 @@ export class HomepageComponent implements OnInit {
     this.getAllProducts.getAllProducts().subscribe({
       next: (products: any[]) => {
         this.products = products;
+        this.filteredProducts = products;
 
         const storeIds = [...new Set(products.map(p => p.storeId))]; // ids uniques
         storeIds.forEach(id => {

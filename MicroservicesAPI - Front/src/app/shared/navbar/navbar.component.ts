@@ -1,20 +1,23 @@
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [NgIf],
+  imports: [NgIf, NgFor],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
   menuOpen: boolean = false;
+  cartOpen: boolean = false;
+  cartItems: any[] = [];
   user: any = null;
   searchFocused = false;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private searchService: SearchService) { }
 
   private logoutUrl = 'http://localhost:3000/logout';
   private apiUrl = 'http://localhost:3000/user';
@@ -31,6 +34,11 @@ export class NavbarComponent {
     setTimeout(() => this.searchFocused = false, 150);
   }
 
+  onSearchChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchService.setSearchQuery(value);
+  }
+
   fetchUserData() {
     this.http.get(this.apiUrl, { withCredentials: true }).subscribe({
       next: (user: any) => {
@@ -41,6 +49,15 @@ export class NavbarComponent {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  toggleCart() {
+    this.cartOpen = !this.cartOpen;
+  }
+
+  goToCart() {
+    this.router.navigate(['/cart']);
+    this.cartOpen = false;
   }
 
   toggleMenu() {

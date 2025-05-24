@@ -52,17 +52,72 @@
     box-shadow: 0 0 0 2px #03dac688;
 }
 
+.cart-icon {
+    margin: 0 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+.cart-icon:hover {
+    transform: scale(1.1);
+}
+
+.cart-dropdown {
+    position: absolute;
+    right: 60px;
+    top: 50px;
+    background: #232323;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(3,218,198,0.15);
+    min-width: 220px;
+    z-index: 100;
+    padding: 15px;
+}
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    color: #fff;
+}
+.empty-cart {
+    color: #bbb;
+    text-align: center;
+    padding: 10px 0;
+}
+.go-cart-btn {
+    margin-top: 10px;
+    width: 100%;
+    background: #03dac6;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+.cart-badge {
+    background: #ff4b4b;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 7px;
+    font-size: 0.9em;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .account {
     position: relative;
     cursor: pointer;
 }
 
 .user-icon {
-    width: 32px;
-    height: 32px;
-    padding-top: 2px;
-    border-radius: auto;
-    transition: transform 0.3s;
+    margin: 0 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
 }
 
 .account:hover .user-icon {
