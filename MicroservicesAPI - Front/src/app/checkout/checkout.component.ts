@@ -121,6 +121,7 @@ export class CheckoutComponent implements OnInit {
     }
     
     alert('Paiement effectué ! Merci pour votre commande.');
+    this.cartService.clearCart();
     this.router.navigate(['/homepage']);
   }
 }

@@ -60,4 +60,10 @@ export class CartService {
       this.refreshCart();
     });
   }
+
+  clearCart() {
+    this.http.delete<any>(this.cartUrl + '/empty', { withCredentials: true }).subscribe(() => {
+      this.refreshCart();
+    });
+  }
 }
