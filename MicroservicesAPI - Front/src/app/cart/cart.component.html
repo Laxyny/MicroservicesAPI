@@ -21,7 +21,7 @@
         </div>
         <div class="cart-summary">
             <div>Total : <strong>{{ getCartTotal() }} €</strong></div>
-            <button class="checkout-btn">Passer au paiement</button>
+            <button class="checkout-btn" (click)="goToCheckout()">Passer au paiement</button>
         </div>
     </div>
     <ng-template #emptyCart>

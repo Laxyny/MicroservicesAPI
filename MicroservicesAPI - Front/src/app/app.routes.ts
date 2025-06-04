@@ -13,6 +13,7 @@ import { SellerGuard } from './guards/seller.guard';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { LegalComponent } from './legal/legal.component';
 import { CartComponent } from './cart/cart.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 export const routes: Routes = [
     //AUTH
@@ -38,6 +39,9 @@ export const routes: Routes = [
 
     //RÉCAP PANIER
     { path: 'cart', component: CartComponent },
+
+    //PAIEMENT
+    { path: 'checkout', component: CheckoutComponent },
 
     //LEGAL
     { path: 'legal/:type', component: LegalComponent },

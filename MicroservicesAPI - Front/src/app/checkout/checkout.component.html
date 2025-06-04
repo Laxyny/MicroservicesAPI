@@ -1,0 +1,158 @@
+<section class="checkout-section">
+    <h1>Finalisation de votre commande</h1>
+
+    <div class="checkout-container">
+        <div class="checkout-left">
+            <div class="checkout-block">
+                <h2>Adresse de livraison</h2>
+                <div class="checkout-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Prénom</label>
+                            <input type="text" [(ngModel)]="shipping.firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" [(ngModel)]="shipping.lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <input type="text" [(ngModel)]="shipping.address" name="address" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Code postal</label>
+                            <input type="text" [(ngModel)]="shipping.zipCode" name="zipCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ville</label>
+                            <input type="text" [(ngModel)]="shipping.city" name="city" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" [(ngModel)]="shipping.phone" name="phone" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-block">
+                <h2>Mode de paiement</h2>
+                <div class="payment-methods">
+                    <div class="payment-method" [class.selected]="selectedPayment === 'card'" (click)="selectPayment('card')">
+                        <div class="radio-custom"></div>
+                        <div class="payment-logos">
+                            <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" alt="Visa">
+                            <img src="https://cdn-icons-png.flaticon.com/512/196/196561.png" alt="MasterCard">
+                        </div>
+                        <span>Carte bancaire</span>
+                    </div>
+
+                    <div class="payment-method" [class.selected]="selectedPayment === 'paypal'" (click)="selectPayment('paypal')">
+                        <div class="radio-custom"></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/1200px-PayPal.svg.png" alt="PayPal">
+                        <span>PayPal</span>
+                    </div>
+                </div>
+
+                <div *ngIf="selectedPayment === 'card'" class="card-form">
+                    <div class="card-visual">
+                        <div class="card-header">
+                            <div class="card-chip"></div>
+                            <div class="card-brand"></div>
+                        </div>
+                        <div class="card-number">{{ formatCardNumber(payment.cardNumber) || '**** **** **** ****' }}</div>
+                        <div class="card-info">
+                            <div>
+                                <div class="card-label">Titulaire</div>
+                                <div class="card-holder">{{ payment.cardHolder || 'VOTRE NOM' }}</div>
+                            </div>
+                            <div>
+                                <div class="card-label">Expire</div>
+                                <div class="card-expires">{{ formatExpiry(payment.cardExpiry) || 'MM/AA' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Numéro de carte</label>
+                            <input type="text" [(ngModel)]="payment.cardNumber" name="cardNumber" 
+                                placeholder="1234 5678 9012 3456" maxlength="19" 
+                                (input)="onCardNumberInput($event)" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Titulaire de la carte</label>
+                            <input type="text" [(ngModel)]="payment.cardHolder" name="cardHolder" 
+                                placeholder="NOM ET PRÉNOM" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label>Date d'expiration</label>
+                            <input type="text" [(ngModel)]="payment.cardExpiry" name="cardExpiry" 
+                                placeholder="MM/AA" maxlength="5" 
+                                (input)="onExpiryInput($event)" required>
+                        </div>
+                        <div class="form-group half">
+                            <label>Code de sécurité</label>
+                            <input type="text" [(ngModel)]="payment.cardCVC" name="cardCVC" 
+                                placeholder="123" maxlength="3" required>
+                            <small>Les 3 chiffres au dos de votre carte</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div *ngIf="selectedPayment === 'paypal'" class="paypal-form">
+                    <p>Vous allez être redirigé vers PayPal pour effectuer le paiement.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="checkout-right">
+            <div class="checkout-block order-summary">
+                <h2>Récapitulatif</h2>
+                <div class="summary-items">
+                    <div class="summary-item" *ngFor="let item of cartItems">
+                        <div class="item-quantity">{{ item.quantity }}</div>
+                        <div class="item-name">{{ item.name }}</div>
+                        <div class="item-price">{{ item.price * item.quantity }} €</div>
+                    </div>
+                </div>
+                <div class="summary-totals">
+                    <div class="summary-row">
+                        <span>Sous-total</span>
+                        <span>{{ subtotal }} €</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Livraison</span>
+                        <span>{{ shipping.cost }} €</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>{{ total + shipping.cost }} €</span>
+                    </div>
+                </div>
+                
+                <div class="terms-check">
+                    <input type="checkbox" id="terms" [(ngModel)]="termsAccepted" name="terms">
+                    <label for="terms">J'accepte les <a href="/legal/cgu" target="_blank">conditions générales de vente</a></label>
+                </div>
+                
+                <button class="pay-btn" [disabled]="!isPaymentValid()" (click)="pay()">
+                    Payer {{ total + shipping.cost }} €
+                </button>
+                
+                <div class="secure-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#03dac6" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                    </svg>
+                    <span>Paiement 100% sécurisé</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
