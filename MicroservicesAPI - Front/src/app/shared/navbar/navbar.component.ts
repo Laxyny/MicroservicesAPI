@@ -101,7 +101,7 @@ export class NavbarComponent {
   logout() {
     this.http.post(this.logoutUrl, {}, { withCredentials: true }).subscribe({
       next: () => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         console.error('Erreur lors de la déconnexion :', error);

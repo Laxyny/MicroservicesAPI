@@ -15,6 +15,15 @@
         <div class="message" *ngIf="message">{{ message }}</div>
     </form>
 
+    <div class="or-divider">
+        <span>OU</span>
+    </div>
+
+    <button class="google-btn" (click)="registerWithGoogle()">
+        <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google Logo" />
+        <span>S'inscrire avec Google</span>
+    </button>
+
     <div class="switch-auth">
         <span>Déjà un compte ?</span>
         <a routerLink="/login">Se connecter</a>

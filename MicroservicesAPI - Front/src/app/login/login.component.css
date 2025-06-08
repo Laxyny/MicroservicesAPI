@@ -10,19 +10,25 @@
     pointer-events: none;
     filter: blur(50px);
     z-index: 0;
-} /*A SUPPRIMER POUR GARDER FOND STATIQUE, A CHECK AVEC THÉO*/
+}
+
+/*A SUPPRIMER POUR GARDER FOND STATIQUE, A CHECK AVEC THÉO*/
 
 @keyframes lightMove {
     0% {
         transform: translate(0, 0);
     }
+
     50% {
         transform: translate(50%, 50%);
     }
+
     100% {
         transform: translate(0, 0);
     }
-} /*PAREILLE ICI*/
+}
+
+/*PAREILLE ICI*/
 
 
 :host {
@@ -133,4 +139,49 @@ button:hover {
     font-style: italic;
     color: #bbb;
     text-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.or-divider span {
+    padding: 0 10px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    width: 100%;
+    background-color: #fff;
+    color: #444;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+}
+
+.google-btn:hover {
+    background-color: #f1f1f1;
+}
+
+.google-btn img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
 }

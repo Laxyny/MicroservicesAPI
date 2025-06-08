@@ -169,7 +169,7 @@ exports.loginWithGoogle = async (req, res) => {
       maxAge: 900000, // 15 min
     });
 
-    res.json({ message: 'Authentification réussie', token: tokenString });
+    res.redirect('http://localhost:4200/homepage');
   } catch (e) {
     console.log(e);
   }

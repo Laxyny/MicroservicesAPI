@@ -35,4 +35,16 @@ export class RegisterComponent {
       }
     );
   }
+
+  registerWithGoogle() {
+    this.http.get('http://localhost:5000/auth/google-url').subscribe(
+      (response: any) => {
+        window.location.href = response.url;
+      },
+      (error) => {
+        console.error('Erreur lors de la récupération de l\'URL Google:', error);
+        this.message = 'Erreur lors de l\'inscription avec Google.';
+      }
+    );
+  }
 }
