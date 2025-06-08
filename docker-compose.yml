@@ -6,6 +6,9 @@ services:
             - MONGODB_URI=${MONGODB_URI}
         ports:
             - "${PORT_BACK}:3000"
+        volumes:
+            - ./MicroservicesAPI - Back:/app
+            - /app/node_modules
         networks: [ msnet ]
 
     oauth:

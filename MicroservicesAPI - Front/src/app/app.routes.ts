@@ -14,6 +14,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { LegalComponent } from './legal/legal.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { OrdersComponent } from './orders/orders.component';
+import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 
 export const routes: Routes = [
     //AUTH
@@ -25,6 +27,8 @@ export const routes: Routes = [
 
     //USER
     { path: 'user/settings', component: UserSettingsComponent, canActivate: [AuthGuard] },
+    { path: 'user/my-orders', component: OrdersComponent, canActivate: [AuthGuard] },
+
 
     //HOMEPAGE
     { path: 'homepage', component: HomepageComponent, canActivate: [AuthGuard] },
@@ -38,10 +42,11 @@ export const routes: Routes = [
     { path: 'seller/my-store', component: MyStoreComponent, canActivate: [AuthGuard, SellerGuard] },
 
     //RÉCAP PANIER
-    { path: 'cart', component: CartComponent },
+    { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
 
     //PAIEMENT
-    { path: 'checkout', component: CheckoutComponent },
+    { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
+    { path: 'order-confirmation', component: OrderConfirmationComponent, canActivate: [AuthGuard] },
 
     //LEGAL
     { path: 'legal/:type', component: LegalComponent },

@@ -56,6 +56,7 @@
             <small>{{ user?.role === 'seller' ? 'Vendeur' : 'Client' }}</small>
             <button class="settings-btn" (click)="settings()">Paramètres</button>
             <button class="settings-btn" *ngIf="user?.role === 'seller'" (click)="goToMyStore()">Mes boutiques</button>
+            <button class="settings-btn" (click)="myOrders()">Mes commandes</button>
             <button class="logout-btn" (click)="logout()">Deconnexion</button>
         </div>
     </div>

@@ -76,4 +76,12 @@ export class AuthService {
             'http://localhost:5000/auth/google/callback',
         );
     }
+
+    getUserById(userId: string): Observable<any> {
+        return this.http.get(`${this.apiUrl}/${userId}`, { withCredentials: true });
+    }
+
+    getCurrentUser(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/user`, { withCredentials: true });
+    }
 }

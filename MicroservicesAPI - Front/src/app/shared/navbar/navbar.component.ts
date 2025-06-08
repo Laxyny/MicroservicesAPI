@@ -94,6 +94,10 @@ export class NavbarComponent {
     this.router.navigate(['/user/settings']);
   }
 
+  myOrders() {
+    this.router.navigate(['/user/my-orders']);
+  }
+
   logout() {
     this.http.post(this.logoutUrl, {}, { withCredentials: true }).subscribe({
       next: () => {

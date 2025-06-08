@@ -1,0 +1,71 @@
+<section class="confirmation-section">
+    <div class="confirmation-container">
+        <div *ngIf="loading" class="loading-container">
+            <div class="spinner"></div>
+            <p>Chargement des détails de votre commande...</p>
+        </div>
+
+        <div *ngIf="!loading && !error" class="confirmation-content">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                    stroke="#4CAF50" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+
+            <h1>Commande confirmée !</h1>
+            <p class="order-id">Commande n°{{ orderId }}</p>
+
+            <p class="thank-you">Merci pour votre achat. Un email de confirmation a été envoyé à votre adresse email.
+            </p>
+
+            <div class="order-summary" *ngIf="orderDetails">
+                <h2>Récapitulatif de la commande</h2>
+
+                <div class="summary-section">
+                    <h3>Articles</h3>
+                    <div class="item-list">
+                        <div class="item" *ngFor="let item of orderDetails.items">
+                            <span class="item-name">{{ item.name }} x{{ item.quantity }}</span>
+                            <span class="item-price">{{ item.price * item.quantity }} €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <h3>Livraison</h3>
+                    <div class="address">
+                        <p>{{ orderDetails.shippingAddress.firstName }} {{ orderDetails.shippingAddress.lastName }}</p>
+                        <p>{{ orderDetails.shippingAddress.address }}</p>
+                        <p>{{ orderDetails.shippingAddress.zipCode }} {{ orderDetails.shippingAddress.city }}</p>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <h3>Paiement</h3>
+                    <p>Total: <strong>{{ orderDetails.total }} €</strong></p>
+                    <p>Méthode: {{ orderDetails.paymentMethod === 'card' ? 'Carte bancaire' : 'PayPal' }}</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="primary-btn" (click)="returnToHomepage()">Retour à l'accueil</button>
+            </div>
+        </div>
+
+        <div *ngIf="!loading && error" class="error-container">
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                    stroke="#F44336" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h1>Une erreur est survenue</h1>
+            <p>Nous n'avons pas pu récupérer les détails de votre commande.</p>
+            <button class="primary-btn" (click)="returnToHomepage()">Retour à l'accueil</button>
+        </div>
+    </div>
+</section>

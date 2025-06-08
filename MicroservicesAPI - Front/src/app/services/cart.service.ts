@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, forkJoin } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -12,6 +12,10 @@ export class CartService {
 
   constructor(private http: HttpClient) {
     this.refreshCart();
+  }
+
+  getCartItems(): Observable<any> {
+    return this.http.get<any>(this.cartUrl, { withCredentials: true });
   }
 
   refreshCart() {
@@ -61,9 +65,12 @@ export class CartService {
     });
   }
 
-  clearCart() {
-    this.http.delete<any>(this.cartUrl + '/empty', { withCredentials: true }).subscribe(() => {
-      this.refreshCart();
-    });
+  clearCart(): Observable<any> {
+    return this.http.delete<any>(`${this.cartUrl}/empty`, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          this.cartItemsSubject.next([]);
+        })
+      );
   }
 }
