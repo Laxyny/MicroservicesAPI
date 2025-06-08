@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        h1,
+        h2 {
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total-row {
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>
+            <h1>Le Petit Livreur</h1>
+            <p>FACTURE N° {{ order._id }}</p>
+            <p>Date: {{ order.date.strftime('%d/%m/%Y') }}</p>
+        </div>
+    </div>
+
+    <div class="client-info">
+        <h2>Adressé à :</h2>
+        <p>
+            {{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}<br>
+            {{ order.shippingAddress.address }}<br>
+            {{ order.shippingAddress.zipCode }} {{ order.shippingAddress.city }}
+        </p>
+    </div>
+
+    <h2>Détails de la commande</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.order_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ "%.2f"|format(item.price) }} €</td>
+                <td>{{ "%.2f"|format(item.price * item.quantity) }} €</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Sous-total :</strong></td>
+                <td>{{ "%.2f"|format(subtotal) }} €</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Frais de livraison :</strong></td>
+                <td>{{ "%.2f"|format(shipping) }} €</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                <td>{{ "%.2f"|format(order.total) }} €</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Merci pour votre achat sur Le Petit Livreur</p>
+        <p>Pour toute question concernant cette facture, contactez support@lepetitlivreur.fr</p>
+    </div>
+</body>
+
+</html>

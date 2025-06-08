@@ -380,6 +380,14 @@
     padding: 10px 20px;
 }
 
+.btn-invoice {
+    background-color: #03dac6;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+}
+
 @media (max-width: 768px) {
     .info-grid {
         grid-template-columns: 1fr;

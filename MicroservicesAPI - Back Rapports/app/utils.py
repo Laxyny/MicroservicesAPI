@@ -1,4 +1,5 @@
 from bson import ObjectId
+import datetime
 
 async def get_store_stats(db, report):
     try:
@@ -47,3 +48,26 @@ async def get_product_stats(db, report):
         product["category"] = category_map.get(cat_id, "Non spécifiée")
 
     return products
+
+async def get_order_details(db, order_id):
+    try:
+        order = await db.Orders.find_one({"_id": ObjectId(order_id)})
+        if not order:
+            return None
+            
+        order["_id"] = str(order["_id"])
+        
+        if isinstance(order["date"], str):
+            order["date"] = datetime.datetime.fromisoformat(order["date"].replace('Z', '+00:00'))
+        
+        subtotal = sum(item["price"] * item["quantity"] for item in order["items"])
+        shipping = order["total"] - subtotal
+        
+        return {
+            "order": order,
+            "subtotal": subtotal,
+            "shipping": shipping
+        }
+    except Exception as e:
+        print(f"Erreur lors de la récupération de la commande: {e}")
+        return None

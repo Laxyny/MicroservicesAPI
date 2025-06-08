@@ -7,15 +7,16 @@ import { Router } from '@angular/router';
 import { FooterComponent } from "../shared/footer/footer.component";
 import { OrderService } from '../services/orders.service';
 import { AuthService } from '../services/auth.service';
+import { InvoiceService } from '../services/invoice.service';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
   imports: [
-    NgIf, 
-    NgFor, 
-    NgClass, 
-    CommonModule, 
+    NgIf,
+    NgFor,
+    NgClass,
+    CommonModule,
     FormsModule
   ],
   templateUrl: './orders.component.html',
@@ -36,10 +37,11 @@ export class OrdersComponent implements OnInit {
   customerNames: Map<string, string> = new Map();
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
     private orderService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private invoiceService: InvoiceService
   ) { }
 
   ngOnInit() {
@@ -93,14 +95,14 @@ export class OrdersComponent implements OnInit {
       this.filteredOrders = [...this.orders];
     } else {
       const term = this.searchTerm.toLowerCase();
-      this.filteredOrders = this.orders.filter(order => 
+      this.filteredOrders = this.orders.filter(order =>
         order._id.toString().includes(term) ||
         (this.customerNames.get(order.userId) || '').toLowerCase().includes(term) ||
         order.status.toLowerCase().includes(term) ||
         order.total.toString().includes(term)
       );
     }
-    
+
     this.sort(this.sortKey, false);
     this.updatePagination();
   }
@@ -110,11 +112,11 @@ export class OrdersComponent implements OnInit {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     }
     this.sortKey = key;
-    
+
     this.filteredOrders.sort((a, b) => {
       let valueA = a[key];
       let valueB = b[key];
-      
+
       if (key === 'customer') {
         valueA = this.customerNames.get(a.userId) || '';
         valueB = this.customerNames.get(b.userId) || '';
@@ -122,7 +124,7 @@ export class OrdersComponent implements OnInit {
         valueA = new Date(valueA).getTime();
         valueB = new Date(valueB).getTime();
       }
-      
+
       if (valueA < valueB) {
         return this.sortDirection === 'asc' ? -1 : 1;
       }
@@ -131,14 +133,14 @@ export class OrdersComponent implements OnInit {
       }
       return 0;
     });
-    
+
     this.updatePagination();
   }
 
   updatePagination() {
     this.totalPages = Math.ceil(this.filteredOrders.length / this.itemsPerPage);
     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-    
+
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages || 1;
     }
@@ -162,7 +164,7 @@ export class OrdersComponent implements OnInit {
 
   closeOrderDetails(event: Event) {
     if (
-      event.target === event.currentTarget || 
+      event.target === event.currentTarget ||
       (event.target as Element).classList.contains('close-btn') ||
       (event.target as Element).classList.contains('btn-close')
     ) {
@@ -184,6 +186,22 @@ export class OrdersComponent implements OnInit {
         }
       });
     }
+  }
+
+  downloadInvoice(order: any) {
+    this.invoiceService.generateInvoice(order._id).subscribe({
+      next: (res) => {
+        if (res.id) {
+          this.invoiceService.downloadInvoice(res.id);
+        } else {
+          alert('Erreur : ID de la facture non reçu.');
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la génération de la facture :', err);
+        alert('Une erreur est survenue lors de la génération de la facture.');
+      }
+    });
   }
 
   viewOrderDetails(order: any) {

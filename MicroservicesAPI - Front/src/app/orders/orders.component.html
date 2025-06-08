@@ -70,7 +70,7 @@
             <h2>Détails de la commande</h2>
             <button class="close-btn" (click)="closeOrderDetails($event)">&times;</button>
         </div>
-        
+
         <div class="modal-body">
             <div class="order-section">
                 <h3>Informations</h3>
@@ -134,9 +134,15 @@
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-cancel" *ngIf="selectedOrder.status !== 'Annulée'" (click)="cancelOrder(selectedOrder)">
+            <button class="btn btn-cancel" *ngIf="selectedOrder.status !== 'Annulée'"
+                (click)="cancelOrder(selectedOrder)">
                 Annuler la commande
             </button>
+
+            <button class="btn btn-invoice" (click)="downloadInvoice(selectedOrder)">
+                Télécharger la facture
+            </button>
+
             <button class="btn btn-close" (click)="closeOrderDetails($event)">Fermer</button>
         </div>
     </div>
