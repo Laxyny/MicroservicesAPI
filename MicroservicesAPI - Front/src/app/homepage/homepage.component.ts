@@ -7,6 +7,9 @@ import { ApiProductsService } from '../services/products.service';
 import { SearchService } from '../services/search.service';
 import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { FooterComponent } from "../shared/footer/footer.component";
+import { ApiCategoriesService } from '../services/categories.service';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
@@ -14,6 +17,7 @@ import { FooterComponent } from "../shared/footer/footer.component";
     NgIf,
     NgFor,
     RouterModule,
+    FormsModule,
 ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
@@ -24,19 +28,33 @@ export class HomepageComponent implements OnInit {
   stores: any[] = [];
   storeNamesById: { [key: string]: string } = {};
   filteredProducts: any[] = [];
+  categories: any[] = [];
+  selectedCategory: string | null = null;
+
+  showCategoryModal = false;
+  categorySearch = '';
+  filteredCategoriesInModal: any[] = [];
 
   private apiUrl = 'http://localhost:3000/user';
 
-  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService, private searchService: SearchService) { }
+  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService, private searchService: SearchService, private categoriesService: ApiCategoriesService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.fetchUserData();
     this.fetchProductsData();
+    this.fetchCategories();
 
     this.searchService.searchQuery$.subscribe(query => {
       this.filteredProducts = this.products.filter(product =>
         product.name.toLowerCase().includes(query.toLowerCase())
       );
+    });
+
+    this.route.queryParams.subscribe(params => {
+    const categoryId = params['category'];
+      if (categoryId) {
+        this.selectedCategory = categoryId;
+      }
     });
   }
 
@@ -56,6 +74,21 @@ export class HomepageComponent implements OnInit {
       error: () => {
         console.log('Erreur Homepage redirection vers /login')
         this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  fetchCategories() {
+    this.categoriesService.getAllCategories().subscribe({
+      next: (categories: any[]) => {
+        this.categories = categories;
+
+        if (this.selectedCategory) {
+          this.filterByCategory(this.selectedCategory);
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération des catégories :', error);
       }
     });
   }
@@ -83,6 +116,44 @@ export class HomepageComponent implements OnInit {
         this.stores = [];
       }
     });
+  }
+
+  filterByCategory(categoryId: string | null) {
+    this.selectedCategory = categoryId;
+    
+    if (!categoryId) {
+      this.filteredProducts = this.products;
+      return;
+    }
+    
+    this.filteredProducts = this.products.filter(product => product.categoryId === categoryId);
+  }
+
+  openCategoryModal() {
+    this.showCategoryModal = true;
+    this.filteredCategoriesInModal = this.categories;
+  }
+
+  closeCategoryModal(event: Event) {
+    event.preventDefault();
+    this.showCategoryModal = false;
+    this.categorySearch = '';
+  }
+
+  filterCategoriesInModal() {
+    if (!this.categorySearch.trim()) {
+      this.filteredCategoriesInModal = this.categories;
+      return;
+    }
+    
+    this.filteredCategoriesInModal = this.categories.filter(category => 
+      category.name.toLowerCase().includes(this.categorySearch.toLowerCase())
+    );
+  }
+
+  selectCategoryFromModal(categoryId: string) {
+    this.filterByCategory(categoryId);
+    this.closeCategoryModal(new Event('click'));
   }
 
   goToProductDetails(productId: string) {

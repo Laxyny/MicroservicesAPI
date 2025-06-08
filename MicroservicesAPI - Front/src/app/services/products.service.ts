@@ -16,6 +16,10 @@ export class ApiProductsService {
         return this.http.get(`http://localhost:3000/product/products/${storeId}`, { withCredentials: true });
     }
 
+    getProductsByCategory(categoryId: string): Observable<any> {
+        return this.http.get(`http://localhost:3000/product/category/${categoryId}`, { withCredentials: true });
+    }
+
     postCreateProduct(name: string, description: string, price: number, categoryId: string, image: string, storeId: string): Observable<any> {
         return this.http.post('http://localhost:3000/product/createProduct',
             {

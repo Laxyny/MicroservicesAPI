@@ -85,6 +85,17 @@
     text-decoration: underline;
 }
 
+.category-link {
+    color: #03dac6;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.category-link:hover {
+    text-decoration: underline;
+    color: #00f5d4;
+}
+
 .buy-button {
     margin-top: 20px;
     background-color: #00ffe1;
