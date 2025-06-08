@@ -46,54 +46,6 @@ exports.getUserProduct = async (req, res) => {
     }
 };
 
-exports.getUserProduct = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-
-        const product = await productModel.collection.findOne({ userId: userId });
-        if (!product) {
-            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
-        }
-
-        res.json(product);
-    } catch (err) {
-        console.error("Erreur lors de la récupération du produit :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
-    }
-};
-
-exports.getUserProduct = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-
-        const product = await productModel.collection.findOne({ userId: userId });
-        if (!product) {
-            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
-        }
-
-        res.json(product);
-    } catch (err) {
-        console.error("Erreur lors de la récupération du produit :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
-    }
-};
-
-exports.getUserProduct = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-
-        const product = await productModel.collection.findOne({ userId: userId });
-        if (!product) {
-            return res.status(404).json({ message: "Aucun produit trouvé pour cet utilisateur." });
-        }
-
-        res.json(product);
-    } catch (err) {
-        console.error("Erreur lors de la récupération du produit :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
-    }
-};
-
 exports.getStoreProducts = async (req, res) => {
     try {
         const storeId = req.params.storeId;
@@ -156,7 +108,11 @@ exports.updateProduct = async (req, res) => {
     try {
         const id = req.params.id;
         const updatedFields = {
-            name: req.body.name
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            categoryId: req.body.categoryId,
+            image: req.body.image,
         };
         const success = await productModel.updateById(id, updatedFields);
         if (!success) {

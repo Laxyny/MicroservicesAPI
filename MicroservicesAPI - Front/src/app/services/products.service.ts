@@ -29,6 +29,10 @@ export class ApiProductsService {
         );
     }
 
+    updateProduct(productId: string, productData: any): Observable<any> {
+        return this.http.put(`http://localhost:3000/product/updateProduct/${productId}`, productData, { withCredentials: true });
+    }
+
     deleteProduct(storeId: string): Observable<any> {
         return this.http.delete(`http://localhost:3000/product/deleteProduct/${storeId}`, { withCredentials: true });
     }

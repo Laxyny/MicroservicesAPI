@@ -31,6 +31,38 @@
             </p>
         </div>
 
+        <!-- Pour la modif d'un produit, uniquement visible par le compte de la boutique -->
+        <div *ngIf="isOwner" class="owner-actions">
+            <button class="edit-btn" (click)="openEditModal()">Modifier</button>
+            <button class="delete-btn" (click)="deleteProduct()">Supprimer</button>
+        </div>
+
         <button class="buy-button" (click)="addToCart()">Ajouter au panier</button>
+    </div>
+</div>
+
+<div class="overlay" *ngIf="showEditModal">
+    <div class="modal">
+        <h2>Modifier le produit</h2>
+        <form (ngSubmit)="submitEdit()" #editForm="ngForm">
+            <label>Nom</label>
+            <input type="text" [(ngModel)]="editProduct.name" name="name" required maxlength="30" />
+
+            <label>Description</label>
+            <input type="text" [(ngModel)]="editProduct.description" name="description" required maxlength="255" />
+
+            <label>Prix (€)</label>
+            <input type="number" [(ngModel)]="editProduct.price" name="price" min="0" max="1000000" required />
+
+            <label>Catégorie</label>
+            <select [(ngModel)]="editProduct.categoryId" name="categoryId" required>
+                <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
+            </select>
+
+            <div class="form-buttons">
+                <button type="submit">Enregistrer</button>
+                <button type="button" (click)="closeEditModal()">Annuler</button>
+            </div>
+        </form>
     </div>
 </div>

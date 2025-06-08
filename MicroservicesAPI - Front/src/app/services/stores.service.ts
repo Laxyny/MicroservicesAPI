@@ -12,6 +12,10 @@ export class ApiStoresService {
         return this.http.get('http://localhost:3000/seller/stores', { withCredentials: true });
     }
 
+    getStoreById(storeId: string) {
+        return this.http.get(`http://localhost:3000/seller/store/${storeId}`, { withCredentials: true });
+    }
+
     checkUserStores(): Observable<any> {
         return this.http.get('http://localhost:3000/seller/checkstores', { withCredentials: true });
     }
