@@ -4,18 +4,18 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgIf } from '@angular/common';
 import { ApiProductsService } from '../services/products.service';
 import { ApiStoresService } from '../services/stores.service';
-import { NavbarComponent } from "../shared/navbar/navbar.component";
 import { ApiCategoriesService } from '../services/categories.service';
-import { FooterComponent } from "../shared/footer/footer.component";
 import { CartService } from '../services/cart.service';
 import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { RatingService } from '../services/rating.service';
+import { StarRatingComponent } from '../shared/star-rating/star-rating.component';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule, NgIf]
+  imports: [CommonModule, RouterModule, FormsModule, NgIf, StarRatingComponent]
 })
 export class ProductDetailsComponent implements OnInit {
   product: any = null;
@@ -27,6 +27,16 @@ export class ProductDetailsComponent implements OnInit {
   editProduct: any = {};
   categories: any[] = [];
 
+  averageRating: number = 0;
+  ratingCount: number = 0;
+  userRating: number = 0;
+  canRate: boolean = false;
+  userComment: string = '';
+  showRatingForm: boolean = false;
+  ratings: any[] = [];
+  isRatingMode: boolean = false;
+  userNames = new Map<string, string>();
+
   private productDetailsUrl = 'http://localhost:3000/product/product';
 
   constructor(
@@ -37,7 +47,8 @@ export class ProductDetailsComponent implements OnInit {
     private storeApi: ApiStoresService,
     private categoryApi: ApiCategoriesService,
     private cartService: CartService,
-    private authService: AuthService
+    private authService: AuthService,
+    private ratingService: RatingService
   ) { }
 
   ngOnInit(): void {
@@ -62,6 +73,9 @@ export class ProductDetailsComponent implements OnInit {
           if (categoryId) {
             this.fetchCategoryName(categoryId);
           }
+
+          this.loadRatings();
+          this.checkIfUserCanRate();
         },
         error: err => {
           console.error('Erreur lors du chargement du produit :', err);
@@ -128,11 +142,11 @@ export class ProductDetailsComponent implements OnInit {
         this.authService.getUser().then(user => {
           console.log('User details:', user);
           console.log('Store details:', this.store);
-          
+
           if (this.store && user) {
             console.log(`Store userId: "${this.store.userId}"`);
             console.log(`User ID: "${user._id || user.userId}"`);
-            
+
             this.isOwner = this.store.userId === user._id || this.store.userId === user.userId;
             console.log('Est propriétaire:', this.isOwner);
           } else {
@@ -151,7 +165,7 @@ export class ProductDetailsComponent implements OnInit {
 
   openEditModal() {
     this.editProduct = { ...this.product };
-    this.showEditModal = true;
+    this.isRatingMode = true;
   }
 
   closeEditModal() {
@@ -170,5 +184,109 @@ export class ProductDetailsComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  loadRatings() {
+    if (this.product?._id) {
+      this.ratingService.getAverageRating(this.product._id).subscribe({
+        next: (data) => {
+          this.averageRating = data.average;
+          this.ratingCount = data.count;
+        },
+        error: (err) => console.error('Erreur lors du chargement des notes', err)
+      });
+
+      this.ratingService.getUserRating(this.product._id).subscribe({
+        next: (data) => {
+          this.userRating = data.rating;
+          this.userComment = data.comment || '';
+        },
+        error: () => {
+          this.userRating = 0;
+          this.userComment = '';
+        }
+      });
+
+      this.ratingService.getProductRatings(this.product._id).subscribe({
+        next: (data) => {
+          this.ratings = data;
+
+          this.ratings.forEach(rating => {
+            if (!this.userNames.has(rating.userId)) {
+              this.fetchUserName(rating.userId);
+            }
+          });
+        },
+        error: (err) => console.error('Erreur lors du chargement des avis', err)
+      });
+    }
+  }
+
+  checkIfUserCanRate() {
+    if (this.product?._id) {
+      this.ratingService.hasUserPurchasedProduct(this.product._id).subscribe({
+        next: (data) => {
+          this.canRate = data.hasPurchased;
+        },
+        error: () => {
+          this.canRate = false;
+        }
+      });
+    }
+  }
+
+  fetchUserName(userId: string): void {
+    this.authService.getUserById(userId).subscribe({
+      next: (user: any) => {
+        this.userNames.set(userId, user.name || 'Utilisateur anonyme');
+      },
+      error: (err) => {
+        console.error(`Erreur lors de la récupération de l'utilisateur ${userId}:`, err);
+        this.userNames.set(userId, 'Utilisateur inconnu');
+      }
+    });
+  }
+
+  toggleRatingForm() {
+    this.showRatingForm = !this.showRatingForm;
+  }
+
+
+  onRateProduct(rating: number) {
+    console.log('Note sélectionnée :', rating);
+    this.userRating = rating;
+    this.isRatingMode = true;
+  }
+
+  cancelRating() {
+    this.isRatingMode = false;
+    this.userRating = 0;
+    this.userComment = '';
+  }
+
+  submitRating() {
+    console.log('submitRating appelé, userRating =', this.userRating);
+    if (!this.userRating || this.userRating < 1 || this.userRating > 5) {
+      alert('Merci de sélectionner une note entre 1 et 5 étoiles.');
+      return;
+    }
+    if (!this.userComment.trim()) {
+      alert('Veuillez entrer un commentaire pour accompagner votre note.');
+      return;
+    }
+
+    this.ratingService
+      .rateProduct(this.product._id, this.userRating, this.userComment)
+      .subscribe({
+        next: () => {
+          this.isRatingMode = false;
+          this.loadRatings();
+          this.showRatingForm = false;
+        },
+        error: (err) => {
+          console.error('Erreur lors de la notation', err);
+          alert(err.error?.message || 'Erreur lors de l’envoi de votre avis.');
+        }
+      });
   }
 }

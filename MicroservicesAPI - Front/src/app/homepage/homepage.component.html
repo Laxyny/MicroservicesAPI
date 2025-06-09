@@ -2,17 +2,15 @@
     <h2>Produits disponibles</h2>
 
     <div class="category-filter">
-        <button class="category-btn" [class.active]="selectedCategory === null" 
-                (click)="filterByCategory(null)">Tous</button>
-        
-        <button class="category-btn" *ngFor="let category of categories.slice(0, 5)" 
-                [class.active]="selectedCategory === category._id"
-                (click)="filterByCategory(category._id)">
+        <button class="category-btn" [class.active]="selectedCategory === null"
+            (click)="filterByCategory(null)">Tous</button>
+
+        <button class="category-btn" *ngFor="let category of categories.slice(0, 5)"
+            [class.active]="selectedCategory === category._id" (click)="filterByCategory(category._id)">
             {{ category.name }}
         </button>
-        
-        <button class="category-btn more-btn" *ngIf="categories.length > 5"
-                (click)="openCategoryModal()">
+
+        <button class="category-btn more-btn" *ngIf="categories.length > 5" (click)="openCategoryModal()">
             <span>Plus</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"></path>
@@ -27,6 +25,11 @@
             </div>
             <div class="product-details">
                 <h3>{{ product.name }}</h3>
+                <div class="product-rating">
+                    <app-star-rating [rating]="getProductRating(product._id)"
+                        [ratingCount]="getProductRatingCount(product._id)" [interactive]="false" [showCount]="true">
+                    </app-star-rating>
+                </div>
                 <p class="description">{{ product.description }}</p>
                 <p class="price">{{ product.price }} €</p>
             </div>
@@ -45,21 +48,15 @@
             <h3>Toutes les catégories</h3>
             <button class="close-btn" (click)="closeCategoryModal($event)">&times;</button>
         </div>
-        
+
         <div class="search-box">
-            <input 
-                type="text" 
-                placeholder="Rechercher une catégorie..." 
-                [(ngModel)]="categorySearch"
+            <input type="text" placeholder="Rechercher une catégorie..." [(ngModel)]="categorySearch"
                 (input)="filterCategoriesInModal()" />
         </div>
-        
+
         <div class="categories-list">
-            <div 
-                class="category-item" 
-                *ngFor="let category of filteredCategoriesInModal"
-                [class.active]="selectedCategory === category._id"
-                (click)="selectCategoryFromModal(category._id)">
+            <div class="category-item" *ngFor="let category of filteredCategoriesInModal"
+                [class.active]="selectedCategory === category._id" (click)="selectCategoryFromModal(category._id)">
                 {{ category.name }}
             </div>
         </div>

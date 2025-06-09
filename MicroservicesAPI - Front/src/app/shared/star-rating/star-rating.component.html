@@ -1,0 +1,12 @@
+<div class="star-rating">
+  <div class="stars" [class.disabled]="!interactive">
+    <ng-container *ngFor="let star of [1,2,3,4,5]">
+      <span class="star" [class.filled]="star <= (hovered || rating)" (mouseenter)="onStarHover(star)"
+        (mouseleave)="onStarHover(0)" (click)="onStarClick(star)"
+        [style.cursor]="interactive ? 'pointer' : 'default'">★</span>
+    </ng-container>
+  </div>
+  <div class="rating-count" *ngIf="showCount && ratingCount !== undefined">
+    ({{ ratingCount }})
+  </div>
+</div>

@@ -162,3 +162,39 @@ exports.deleteOrder = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la suppression de la commande' });
     }
 };
+
+exports.checkProductPurchase = async (req, res) => {
+    try {
+        const productId = req.params.productId;
+        const userId = req.user.userId;
+        
+        console.log("Vérification d'achat - userId:", userId);
+        console.log("Vérification d'achat - productId:", productId);
+        
+        const orders = await orderModel.collection.find({
+            userId: userId,
+            status: 'Complétée'
+        }).toArray();
+        
+        console.log("Toutes commandes complétées:", orders.length);
+        
+        let hasPurchased = false;
+        for (const order of orders) {
+            console.log("Commande:", order._id, "items:", order.items.length);
+            for (const item of order.items) {
+                console.log("Item dans commande:", item.productId);
+                if (item.productId === productId) {
+                    hasPurchased = true;
+                    console.log("Produit trouvé dans commande:", order._id);
+                    break;
+                }
+            }
+            if (hasPurchased) break;
+        }
+        
+        res.json({ hasPurchased });
+    } catch (err) {
+        console.error('Erreur détaillée lors de la vérification d\'achat:', err);
+        res.status(500).json({ message: 'Erreur lors de la vérification d\'achat' });
+    }
+};

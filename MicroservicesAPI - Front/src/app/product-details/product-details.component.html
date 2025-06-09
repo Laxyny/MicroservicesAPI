@@ -9,7 +9,16 @@
     </div>
 
     <div class="product-right product-box">
-        <h1 class="product-title">{{ product?.name }}</h1>
+        <div class="product-header">
+            <h1 class="product-title">{{ product?.name }}</h1>
+
+            <div class="product-rating">
+                <app-star-rating [rating]="averageRating" [ratingCount]="ratingCount" [interactive]="false"
+                    [showCount]="true">
+                </app-star-rating>
+            </div>
+        </div>
+
         <p class="product-ref">Réf. produit : {{ product?._id }}</p>
 
         <div class="product-price">
@@ -42,6 +51,46 @@
         </div>
 
         <button class="buy-button" (click)="addToCart()">Ajouter au panier</button>
+    </div>
+</div>
+
+<div class="rating-section">
+    <ng-container *ngIf="canRate; else noRate">
+        <ng-container *ngIf="isRatingMode || userRating === 0; else alreadyRated">
+            <div class="rating-card">
+                <h3>Laissez votre avis</h3>
+                <app-star-rating [rating]="userRating" [interactive]="true" (rateChange)="onRateProduct($event)">
+                </app-star-rating>
+                <textarea [(ngModel)]="userComment" class="rating-comment" placeholder="Partagez votre expérience…"
+                    rows="4"></textarea>
+                <div class="rating-actions">
+                    <button (click)="submitRating()" class="btn btn-primary">Envoyer</button>
+                    <button (click)="cancelRating()" class="btn btn-secondary">Annuler</button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #alreadyRated>
+            <p>Vous avez déjà noté ce produit.</p>
+        </ng-template>
+    </ng-container>
+    <ng-template #noRate>
+        <p class="cannot-rate-message">
+            Vous pourrez noter ce produit après l'avoir acheté.
+        </p>
+    </ng-template>
+</div>
+
+<div class="reviews-section" *ngIf="ratings && ratings.length > 0">
+    <h3>Avis des clients</h3>
+    <div class="review-list">
+        <div class="review-item" *ngFor="let review of ratings">
+            <div class="review-header">
+                <span class="review-author">{{ userNames.get(review.userId) || 'Chargement...' }}</span>
+                <app-star-rating [rating]="review.rating" [interactive]="false"></app-star-rating>
+                <span class="review-date">{{ review.createdAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <p class="review-comment">{{ review.comment }}</p>
+        </div>
     </div>
 </div>
 

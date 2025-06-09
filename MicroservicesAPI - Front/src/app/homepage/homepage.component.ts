@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { NgFor, NgForOf, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { ApiStoresService } from '../services/stores.service';
 import { ApiProductsService } from '../services/products.service';
 import { SearchService } from '../services/search.service';
-import { NavbarComponent } from "../shared/navbar/navbar.component";
-import { FooterComponent } from "../shared/footer/footer.component";
 import { ApiCategoriesService } from '../services/categories.service';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { RatingService } from '../services/rating.service';
+import { StarRatingComponent } from '../shared/star-rating/star-rating.component';
 
 @Component({
   selector: 'app-homepage',
@@ -18,7 +18,8 @@ import { ActivatedRoute } from '@angular/router';
     NgFor,
     RouterModule,
     FormsModule,
-],
+    StarRatingComponent
+  ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
@@ -34,10 +35,11 @@ export class HomepageComponent implements OnInit {
   showCategoryModal = false;
   categorySearch = '';
   filteredCategoriesInModal: any[] = [];
+  productRatings: Map<string, { average: number, count: number }> = new Map();
 
   private apiUrl = 'http://localhost:3000/user';
 
-  constructor(private http: HttpClient, private router: Router, private getMyStores: ApiStoresService, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService, private searchService: SearchService, private categoriesService: ApiCategoriesService, private route: ActivatedRoute) { }
+  constructor(private http: HttpClient, private router: Router, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService, private searchService: SearchService, private categoriesService: ApiCategoriesService, private route: ActivatedRoute, private ratingService: RatingService) { }
 
   ngOnInit() {
     this.fetchUserData();
@@ -51,7 +53,7 @@ export class HomepageComponent implements OnInit {
     });
 
     this.route.queryParams.subscribe(params => {
-    const categoryId = params['category'];
+      const categoryId = params['category'];
       if (categoryId) {
         this.selectedCategory = categoryId;
       }
@@ -99,6 +101,10 @@ export class HomepageComponent implements OnInit {
         this.products = products;
         this.filteredProducts = products;
 
+        this.products.forEach(product => {
+          this.loadProductRating(product._id);
+        });
+
         const storeIds = [...new Set(products.map(p => p.storeId))]; // ids uniques
         storeIds.forEach(id => {
           this.getStoreName.getStoreName(id).subscribe({
@@ -120,12 +126,12 @@ export class HomepageComponent implements OnInit {
 
   filterByCategory(categoryId: string | null) {
     this.selectedCategory = categoryId;
-    
+
     if (!categoryId) {
       this.filteredProducts = this.products;
       return;
     }
-    
+
     this.filteredProducts = this.products.filter(product => product.categoryId === categoryId);
   }
 
@@ -145,8 +151,8 @@ export class HomepageComponent implements OnInit {
       this.filteredCategoriesInModal = this.categories;
       return;
     }
-    
-    this.filteredCategoriesInModal = this.categories.filter(category => 
+
+    this.filteredCategoriesInModal = this.categories.filter(category =>
       category.name.toLowerCase().includes(this.categorySearch.toLowerCase())
     );
   }
@@ -158,5 +164,27 @@ export class HomepageComponent implements OnInit {
 
   goToProductDetails(productId: string) {
     this.router.navigate([`/product/${productId}`]);
+  }
+
+  loadProductRating(productId: string) {
+    this.ratingService.getAverageRating(productId).subscribe({
+      next: (data) => {
+        this.productRatings.set(productId, {
+          average: data.average || 0,
+          count: data.count || 0
+        });
+      },
+      error: () => {
+        this.productRatings.set(productId, { average: 0, count: 0 });
+      }
+    });
+  }
+
+  getProductRating(productId: string): number {
+    return this.productRatings.get(productId)?.average || 0;
+  }
+
+  getProductRatingCount(productId: string): number {
+    return this.productRatings.get(productId)?.count || 0;
   }
 }

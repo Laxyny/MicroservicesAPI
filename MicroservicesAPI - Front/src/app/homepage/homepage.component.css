@@ -98,6 +98,19 @@
     margin-bottom: 5px;
 }
 
+.product-rating {
+    margin: 5px 0;
+}
+
+.product-rating ::ng-deep .star {
+    font-size: 18px;
+}
+
+.product-rating ::ng-deep .rating-count {
+    color: #888;
+    font-size: 0.8rem;
+}
+
 .product-details .description {
     font-size: 0.85rem;
     color: #bbb;

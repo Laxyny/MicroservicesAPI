@@ -8,7 +8,7 @@ import { FooterComponent } from "../shared/footer/footer.component";
 
 @Component({
   selector: 'app-user-settings',
-  imports: [NavbarComponent, NgIf, CommonModule, FormsModule, FooterComponent],
+  imports: [NgIf, CommonModule, FormsModule],
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.css'
 })

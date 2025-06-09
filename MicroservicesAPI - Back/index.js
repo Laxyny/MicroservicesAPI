@@ -11,6 +11,7 @@ const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const ratingRoutes = require('./routes/ratingRoutes');
 
 const userController = require('./controllers/userController');
 const storeController = require('./controllers/storeController');
@@ -18,6 +19,7 @@ const productController = require('./controllers/productController');
 const categoryController = require('./controllers/categoryController');
 const cartController = require('./controllers/cartController');
 const orderController = require('./controllers/orderController');
+const ratingController = require('./controllers/ratingController');
 
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
@@ -57,6 +59,8 @@ async function run() {
         const categoryCollection = database.collection("Category");
         const cartCollection = database.collection("Carts");
         const orderCollection = database.collection("Orders");
+        const ratingCollection = database.collection("Ratings");
+
 
         userController.init(usercollection, tokenCollection);
         storeController.init(storeCollection);
@@ -64,6 +68,7 @@ async function run() {
         categoryController.init(categoryCollection);
         cartController.init(cartCollection);
         orderController.init(orderCollection);
+        ratingController.init(ratingCollection, orderCollection);
 
         app.use('/', userRoutes);
         app.use('/', sellerRoutes);
@@ -71,6 +76,7 @@ async function run() {
         app.use('/', categoryRoutes);
         app.use('/', cartRoutes);
         app.use('/', orderRoutes);
+        app.use('/', ratingRoutes);
 
         app.get('/', authMiddleware, (req, res) => {
             res.sendFile(__dirname + '/public/homepage.html');
