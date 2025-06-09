@@ -42,6 +42,24 @@
                 <label>Prix (€)</label>
                 <input type="number" [(ngModel)]="productPrice" name="price" min="0" max="1000000" required />
 
+                <div class="custom-fields-section">
+                    <h3>Champs personnalisés</h3>
+
+                    <div *ngFor="let field of customFields; let i = index" class="custom-field-row">
+                        <div class="field-inputs">
+                            <input type="text" [(ngModel)]="field.key" name="fieldKey{{i}}" placeholder="Nom du champ"
+                                required />
+                            <input type="text" [(ngModel)]="field.value" name="fieldValue{{i}}" placeholder="Valeur"
+                                required />
+                        </div>
+                        <button type="button" class="remove-field-btn" (click)="removeCustomField(i)">×</button>
+                    </div>
+
+                    <button type="button" class="add-field-btn" (click)="addCustomField()">
+                        + Ajouter un champ personnalisé
+                    </button>
+                </div>
+
                 <label>Catégorie</label>
                 <div class="category-dropdown-wrapper">
                     <input type="text" placeholder="Rechercher une catégorie..." [(ngModel)]="categorySearch"
@@ -54,8 +72,8 @@
                         </div>
 
                         <div class="create-category">
-                            <input type="text" placeholder="Créer une nouvelle catégorie"
-                                [(ngModel)]="newCategoryName" name="newCategoryName"/>
+                            <input type="text" placeholder="Créer une nouvelle catégorie" [(ngModel)]="newCategoryName"
+                                name="newCategoryName" />
                             <button type="button" (click)="createCategory()">Créer</button>
                         </div>
                     </div>

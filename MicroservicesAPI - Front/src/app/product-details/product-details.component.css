@@ -74,6 +74,29 @@
     color: #cfcfcf;
 }
 
+.custom-fields {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.custom-field-item {
+    margin-bottom: 8px;
+    display: flex;
+}
+
+.field-name {
+    font-weight: bold;
+    color: #03dac6;
+    min-width: 120px;
+    margin-right: 10px;
+}
+
+.field-value {
+    color: #e0e0e0;
+}
+
 .store-link {
     color: #00ffe1;
     text-decoration: none;

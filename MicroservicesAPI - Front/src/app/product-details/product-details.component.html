@@ -30,6 +30,14 @@
             {{ product?.description }}
         </p>
 
+        <div class="custom-fields" *ngIf="product?.customFields && objectKeys(product.customFields).length > 0">
+            <h3>Caractéristiques</h3>
+            <div class="custom-field-item" *ngFor="let key of objectKeys(product.customFields)">
+                <span class="field-name">{{ key }}:</span>
+                <span class="field-value">{{ product.customFields[key] }}</span>
+            </div>
+        </div>
+
         <div class="product-info">
             <p><strong>Catégorie : </strong>
                 <a class="category-link" [routerLink]="['/homepage']" [queryParams]="{category: category?._id}">
@@ -111,6 +119,23 @@
             <select [(ngModel)]="editProduct.categoryId" name="categoryId" required>
                 <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
             </select>
+
+            <label>Champs personnalisés</label>
+            <div class="custom-fields-edit">
+                <div *ngFor="let key of objectKeys(editProduct.customFields || {}); let i = index"
+                    class="custom-field-row">
+                    <div class="field-inputs">
+                        <input type="text" [(ngModel)]="editCustomFieldsKeys[i]" name="editFieldKey{{i}}"
+                            [ngModelOptions]="{standalone: true}" [value]="key" />
+                        <input type="text" [(ngModel)]="editProduct.customFields[key]" name="editFieldValue{{i}}" />
+                    </div>
+                    <button type="button" class="remove-field-btn" (click)="removeEditCustomField(key)">×</button>
+                </div>
+
+                <button type="button" class="add-field-btn" (click)="addEditCustomField()">
+                    + Ajouter un champ personnalisé
+                </button>
+            </div>
 
             <div class="form-buttons">
                 <button type="submit">Enregistrer</button>

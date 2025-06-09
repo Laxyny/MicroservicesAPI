@@ -64,7 +64,7 @@ exports.getStoreProducts = async (req, res) => {
 exports.createProduct = async (req, res) => {
     const token = req.cookies.authToken;
     try {
-        const { name, description, price, categoryId, image, storeId } = req.body;
+        const { name, description, price, categoryId, image, storeId, customFields } = req.body;
 
         const userId = req.user.userId;
 
@@ -93,7 +93,8 @@ exports.createProduct = async (req, res) => {
             price: price,
             categoryId: categoryId,
             image: image,
-            storeId: storeId
+            storeId: storeId,
+            customFields: customFields || {}
         };
 
         const createdProduct = await productModel.create(newProduct);
@@ -113,6 +114,7 @@ exports.updateProduct = async (req, res) => {
             price: req.body.price,
             categoryId: req.body.categoryId,
             image: req.body.image,
+            customFields: req.body.customFields || {}
         };
         const success = await productModel.updateById(id, updatedFields);
         if (!success) {

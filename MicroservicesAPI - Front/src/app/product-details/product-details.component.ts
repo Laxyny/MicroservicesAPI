@@ -36,6 +36,7 @@ export class ProductDetailsComponent implements OnInit {
   ratings: any[] = [];
   isRatingMode: boolean = false;
   userNames = new Map<string, string>();
+  editCustomFieldsKeys: string[] = [];
 
   private productDetailsUrl = 'http://localhost:3000/product/product';
 
@@ -82,6 +83,10 @@ export class ProductDetailsComponent implements OnInit {
           this.router.navigate(['/homepage']);
         }
       });
+  }
+
+  objectKeys(obj: any): string[] {
+    return obj ? Object.keys(obj) : [];
   }
 
   loadCategories(): void {
@@ -165,7 +170,22 @@ export class ProductDetailsComponent implements OnInit {
 
   openEditModal() {
     this.editProduct = { ...this.product };
-    this.isRatingMode = true;
+    if (!this.editProduct.customFields) {
+      this.editProduct.customFields = {};
+    }
+    this.editCustomFieldsKeys = Object.keys(this.editProduct.customFields);
+    this.showEditModal = true;
+  }
+
+  addEditCustomField() {
+    const newKey = `Champ ${this.editCustomFieldsKeys.length + 1}`;
+    this.editProduct.customFields[newKey] = '';
+    this.editCustomFieldsKeys.push(newKey);
+  }
+
+  removeEditCustomField(key: string) {
+    delete this.editProduct.customFields[key];
+    this.editCustomFieldsKeys = this.editCustomFieldsKeys.filter(k => k !== key);
   }
 
   closeEditModal() {

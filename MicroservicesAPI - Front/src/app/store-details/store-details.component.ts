@@ -16,7 +16,7 @@ import { ReportService } from '../services/report.service';
     NgIf,
     FormsModule,
     CommonModule,
-]
+  ]
 })
 export class StoreDetailsComponent implements OnInit {
   store: any = null;
@@ -25,6 +25,7 @@ export class StoreDetailsComponent implements OnInit {
   productName = '';
   productDescription = '';
   productPrice: number = 0;
+  customFields: { key: string, value: string }[] = [];
   productCategoryId = '';
   image: File | null = null;
 
@@ -99,7 +100,7 @@ export class StoreDetailsComponent implements OnInit {
   generateStoreReport(): void {
     const storeId = this.store?._id;
     if (!storeId) return;
-  
+
     this.reportService.generateReport(this.store._id).subscribe({
       next: (res) => {
         if (res.id) {
@@ -114,7 +115,7 @@ export class StoreDetailsComponent implements OnInit {
       },
     });
   }
-  
+
 
   toggleProductForm(): void {
     this.showAddProductForm = !this.showAddProductForm;
@@ -154,7 +155,14 @@ export class StoreDetailsComponent implements OnInit {
       console.log(this.productCategoryId);
       console.log(imageUrl);
 
-      this.apiProductsService.postCreateProduct(this.productName, this.productDescription, this.productPrice, this.productCategoryId, imageUrl, storeId).subscribe({
+      const customFieldsObj: { [key: string]: string } = {};
+      this.customFields.forEach(field => {
+        if (field.key && field.value) {
+          customFieldsObj[field.key] = field.value;
+        }
+      });
+
+      this.apiProductsService.postCreateProduct(this.productName, this.productDescription, this.productPrice, this.productCategoryId, imageUrl, storeId, customFieldsObj).subscribe({
         next: () => {
           alert('Produit créé avec succès.');
           this.toggleProductForm();
@@ -189,6 +197,14 @@ export class StoreDetailsComponent implements OnInit {
     this.productPrice = 0;
     this.productCategoryId = '';
     this.image = null;
+  }
+
+  addCustomField(): void {
+    this.customFields.push({ key: '', value: '' });
+  }
+
+  removeCustomField(index: number): void {
+    this.customFields.splice(index, 1);
   }
 
 
