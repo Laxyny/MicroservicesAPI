@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgIf } from '@angular/common';
@@ -17,6 +17,7 @@ import { StarRatingComponent } from '../shared/star-rating/star-rating.component
   styleUrls: ['./product-details.component.css'],
   imports: [CommonModule, RouterModule, FormsModule, NgIf, StarRatingComponent]
 })
+
 export class ProductDetailsComponent implements OnInit {
   product: any = null;
   store: any = null;
@@ -38,6 +39,9 @@ export class ProductDetailsComponent implements OnInit {
   userNames = new Map<string, string>();
   editCustomFieldsKeys: string[] = [];
 
+  @ViewChild('zoomContainer') zoomContainer!: ElementRef;
+  @ViewChild('zoomImage') zoomImage!: ElementRef;
+
   private productDetailsUrl = 'http://localhost:3000/product/product';
 
   constructor(
@@ -58,6 +62,10 @@ export class ProductDetailsComponent implements OnInit {
       this.fetchProductDetails(id);
     }
     this.loadCategories();
+  }
+
+  ngAfterViewInit() {
+    this.setupImageZoom();
   }
 
   fetchProductDetails(productId: string): void {
@@ -308,5 +316,28 @@ export class ProductDetailsComponent implements OnInit {
           alert(err.error?.message || 'Erreur lors de l’envoi de votre avis.');
         }
       });
+  }
+
+  setupImageZoom() {
+    const container = this.zoomContainer.nativeElement;
+    const image = this.zoomImage.nativeElement;
+
+    const zoomLevel = 2;
+
+    container.addEventListener('mouseenter', () => {
+      image.style.transformOrigin = '0 0';
+    });
+
+    container.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+
+      image.style.transform = `scale(${zoomLevel}) translate(${x * (1 - zoomLevel) * 100}%, ${y * (1 - zoomLevel) * 100}%)`;
+    });
+
+    container.addEventListener('mouseleave', () => {
+      image.style.transform = 'scale(1) translate(0, 0)';
+    });
   }
 }

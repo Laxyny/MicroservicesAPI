@@ -1,9 +1,8 @@
 <div class="product-details-container">
     <div class="product-left">
         <div class="zoom-container">
-            <div class="zoom-image-container">
-                <img [src]="product?.image" alt="{{ product?.name }}" class="main-image" />
-                <div class="zoom-result"></div>
+            <div class="zoom-image-container" #zoomContainer>
+                <img [src]="product?.image" alt="{{ product?.name }}" class="main-image" #zoomImage />
             </div>
         </div>
     </div>
