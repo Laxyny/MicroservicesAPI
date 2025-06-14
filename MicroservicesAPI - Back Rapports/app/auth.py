@@ -29,12 +29,12 @@ async def verify_token(request: Request, authToken: str = Cookie(None)):
         print("Erreur cookie authToken:", e)
         raise fastapi.HTTPException(status_code=401, detail="Token invalide")
 
-    current_time = int(datetime.datetime.utcnow().timestamp())
+    current_time = int(datetime.datetime.now().timestamp())
     doc = await db.Tokens.find_one(
         {"userId": user_id, "expiresIn": {"$gt": current_time}}
     )
 
-    if not doc or doc["expiresIn"] < int(datetime.datetime.utcnow().timestamp()):
+    if not doc or doc["expiresIn"] < int(datetime.datetime.now().timestamp()):
         raise fastapi.HTTPException(401, detail="Token expiré")
 
     return doc["userId"]

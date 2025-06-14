@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { ApiProductsService } from '../services/products.service';
 import { ApiCategoriesService } from '../services/categories.service';
 import { ReportService } from '../services/report.service';
+import { ReportScheduleService } from '../services/report-schedule.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-store-details',
@@ -37,6 +39,20 @@ export class StoreDetailsComponent implements OnInit {
   categorySearch = '';
   showCategoryDropdown = false;
 
+  reportTab: string = 'schedule';
+  reportSchedule: any = {
+    frequency: 'never',
+    dayOfWeek: 1,
+    dayOfMonth: 1,
+    includeProducts: true,
+    includeCharts: true,
+    emailEnabled: false,
+    emailAddress: ''
+  };
+  reportHistory: any[] = [];
+  daysOfMonth: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
+  isOwner = false;
+
   private apiUploadUrl = 'http://localhost:3000/product/upload-image';
 
   constructor(
@@ -46,15 +62,18 @@ export class StoreDetailsComponent implements OnInit {
     private deleteStoreService: ApiStoresService,
     private apiProductsService: ApiProductsService,
     private apiCategories: ApiCategoriesService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private reportScheduleService: ReportScheduleService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     const storeId = this.route.snapshot.paramMap.get('id');
     if (storeId) {
       this.fetchStoreDetails(storeId);
-      this.fetchStoreProducts(storeId);
+      //this.fetchStoreProducts(storeId);
       this.loadCategories();
+      //this.loadReportSchedule();
 
       document.addEventListener('click', (event) => {
         const target = event.target as HTMLElement;
@@ -65,6 +84,89 @@ export class StoreDetailsComponent implements OnInit {
     }
   }
 
+  loadReportSchedule(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportScheduleService.getReportSchedule(storeId).subscribe({
+      next: (schedule) => {
+        this.reportSchedule = {
+          ...this.reportSchedule,
+          ...schedule,
+          storeId
+        };
+      },
+      error: (err) => console.error('Erreur lors du chargement des préférences de rapport', err)
+    });
+
+    this.loadReportHistory();
+  }
+
+  loadReportHistory(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportScheduleService.getReportHistory(storeId).subscribe({
+      next: (history) => {
+        this.reportHistory = history;
+      },
+      error: (err) => console.error('Erreur lors du chargement de l\'historique des rapports', err)
+    });
+  }
+
+  saveReportSchedule(): void {
+    this.reportSchedule.storeId = this.store._id;
+
+    if (this.reportSchedule.dayOfWeek) {
+      this.reportSchedule.dayOfWeek = Number(this.reportSchedule.dayOfWeek);
+    }
+
+    if (this.reportSchedule.dayOfMonth) {
+      this.reportSchedule.dayOfMonth = Number(this.reportSchedule.dayOfMonth);
+    }
+
+    if (!this.reportSchedule.emailEnabled) {
+      this.reportSchedule.emailAddress = null;
+    }
+
+    console.log('Données envoyées:', this.reportSchedule);
+
+    this.reportScheduleService.saveReportSchedule(this.reportSchedule).subscribe({
+      next: (response) => {
+        alert('Configuration des rapports enregistrée avec succès!');
+      },
+      error: (err) => {
+        console.error('Erreur détaillée:', err);
+        alert('Une erreur est survenue lors de l\'enregistrement des préférences.');
+      }
+    });
+  }
+
+  generateReportNow(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportService.generateReport(storeId).subscribe({
+      next: (res) => {
+        if (res.id) {
+          alert('Rapport généré avec succès!');
+          this.loadReportHistory();
+          this.reportService.downloadReportFile(res.id);
+        } else {
+          alert('Erreur : ID du rapport non reçu.');
+        }
+      },
+      error: (err) => {
+        console.error('Erreur génération du rapport :', err);
+        alert('Une erreur est survenue lors de la génération du rapport.');
+      },
+    });
+  }
+
+  downloadReport(reportId: string): void {
+    this.reportScheduleService.downloadReport(reportId);
+  }
+
   fetchStoreDetails(storeId: string): void {
     this.http
       .get(`http://localhost:3000/seller/store/${storeId}`, {
@@ -73,6 +175,20 @@ export class StoreDetailsComponent implements OnInit {
       .subscribe({
         next: (store: any) => {
           this.store = store;
+          this.fetchStoreProducts(store._id);
+          this.loadReportSchedule();
+
+          this.authService.getUser().then(user => {
+            const userIdStr = String(user._id);
+            const storeUserIdStr = String(store.userId);
+
+            this.isOwner = userIdStr.trim() === storeUserIdStr.trim();
+
+            console.log('Est propriétaire:', this.isOwner);
+          }).catch(err => {
+            console.error('Erreur:', err);
+            this.isOwner = false;
+          });
         },
         error: (error) => {
           console.error('Erreur lors de la récupération des détails :', error);

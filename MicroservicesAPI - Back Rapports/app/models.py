@@ -28,3 +28,23 @@ class InvoiceOut(BaseModel):
     orderId: str
     size: int
     createdAt: str
+    
+# Gestion rapports auto
+class ReportSchedule(BaseModel):
+    storeId: str
+    frequency: str = Field(..., pattern="^(daily|weekly|monthly|never)$")
+    dayOfWeek: Optional[int] = Field(None, ge=0, lt=7)
+    dayOfMonth: Optional[int] = Field(None, ge=1, le=31)
+    includeProducts: bool = True
+    includeCharts: bool = True
+    emailEnabled: bool = True
+    emailAddress: Optional[str] = None
+    createdAt: datetime = Field(default_factory=datetime.now)
+    lastSent: Optional[datetime] = None
+    
+class ReportHistoryItem(BaseModel):
+    id: str  
+    storeId: str
+    reportId: str
+    generatedAt: datetime
+    type: str = "scheduled"

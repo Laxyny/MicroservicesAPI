@@ -17,10 +17,96 @@
                     {{ store.site }}
                 </a>
             </p>
-            <div>
+            <div *ngIf="isOwner">
                 <button (click)="deleteStore()" class="delete-btn">Supprimer cette boutique</button>
                 <button (click)="toggleProductForm()" class="createProduct-btn">Ajouter un produit</button>
-                <button (click)="generateStoreReport()" class="createProduct-btn">Télécharger un rapport</button>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <div class="reports-section" *ngIf="isOwner">
+        <h2>Rapports de la boutique</h2>
+
+        <div class="report-tabs">
+            <button [class.active]="reportTab === 'schedule'" (click)="reportTab = 'schedule'">Configuration</button>
+            <button [class.active]="reportTab === 'history'" (click)="reportTab = 'history'">Historique</button>
+        </div>
+
+        <div class="report-content" *ngIf="reportTab === 'schedule'">
+            <h3>Rapports automatisés</h3>
+            <form (ngSubmit)="saveReportSchedule()" #scheduleForm="ngForm">
+                <div class="form-group">
+                    <label>Fréquence des rapports</label>
+                    <select [(ngModel)]="reportSchedule.frequency" name="frequency" required>
+                        <option value="never">Désactivé</option>
+                        <option value="daily">Quotidien</option>
+                        <option value="weekly">Hebdomadaire</option>
+                        <option value="monthly">Mensuel</option>
+                    </select>
+                </div>
+
+                <div class="form-group" *ngIf="reportSchedule.frequency === 'weekly'">
+                    <label>Jour de la semaine</label>
+                    <select [(ngModel)]="reportSchedule.dayOfWeek" name="dayOfWeek" required>
+                        <option [value]="0">Lundi</option>
+                        <option [value]="1">Mardi</option>
+                        <option [value]="2">Mercredi</option>
+                        <option [value]="3">Jeudi</option>
+                        <option [value]="4">Vendredi</option>
+                        <option [value]="5">Samedi</option>
+                        <option [value]="6">Dimanche</option>
+                    </select>
+                </div>
+
+                <div class="form-group" *ngIf="reportSchedule.frequency === 'monthly'">
+                    <label>Jour du mois</label>
+                    <select [(ngModel)]="reportSchedule.dayOfMonth" name="dayOfMonth" required>
+                        <option *ngFor="let day of daysOfMonth" [value]="day">{{ day }}</option>
+                    </select>
+                </div>
+
+                <!-- <div class="form-group">
+                    <label>Options du rapport</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeProducts" [(ngModel)]="reportSchedule.includeProducts"
+                            name="includeProducts">
+                        <label for="includeProducts">Inclure les produits</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeCharts" [(ngModel)]="reportSchedule.includeCharts"
+                            name="includeCharts">
+                        <label for="includeCharts">Inclure les graphiques</label>
+                    </div>
+                </div> -->
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                    <button type="button" class="btn-secondary" (click)="generateReportNow()">Générer un rapport
+                        maintenant</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="report-content" *ngIf="reportTab === 'history'">
+            <h3>Historique des rapports</h3>
+
+            <div class="report-list">
+                <div class="report-item" *ngFor="let report of reportHistory">
+                    <div class="report-info">
+                        <span class="report-date">{{ report.generatedAt | date: 'dd/MM/yyyy HH:mm':'UTC+4' }}</span>
+                        <span class="report-type" [ngClass]="report.type">{{
+                            report.type === 'scheduled' ? 'Automatique' : 'Manuel' }}</span>
+                    </div>
+                    <button class="download-btn" (click)="downloadReport(report.reportId)">
+                        <i class="fas fa-download"></i> Télécharger
+                    </button>
+                </div>
+
+                <p *ngIf="reportHistory.length === 0" class="no-reports">
+                    Aucun rapport n'a encore été généré.
+                </p>
             </div>
         </div>
     </div>
