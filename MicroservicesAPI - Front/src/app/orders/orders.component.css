@@ -221,6 +221,12 @@
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(3, 218, 198, 0.2);
     animation: modal-in 0.3s ease;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.order-details-modal::-webkit-scrollbar {
+    display: none;
 }
 
 @keyframes modal-in {

@@ -29,6 +29,17 @@ services:
             - "${PORT_REPORTS}:7000"
         networks: [ msnet ]
 
+    monitoring:
+        build: "./MicroservicesAPI - Monitoring"
+        container_name: ms_monitoring
+        ports:
+            - "${PORT_MONITORING}:8080"
+        depends_on:
+            - back
+            - oauth
+            - reports
+        networks: [ msnet ]
+
     front:
         build:
             context: "./MicroservicesAPI - Front"

@@ -1,0 +1,17 @@
+{
+    "services": [
+        {
+            "name": "MicroserviceAPI - Back",
+            "url": "http://ms_back:3000/health"
+        },
+        {
+            "name": "MicroserviceAPI - Back OAuth",
+            "url": "http://ms_oauth:5000/health"
+        },
+        {
+            "name": "MicroserviceAPI - Rapports",
+            "url": "http://ms_reports:7000/health"
+        }
+    ],
+    "intervalSeconds": 10
+}

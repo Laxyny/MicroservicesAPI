@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 from app.auth import verify_token
 from app.models import ReportIn, ReportOut, ReportSchedule
@@ -43,6 +43,9 @@ app.add_middleware(
 #     res = await db.Reports.insert_one({**meta, "fileId": file_id})
 #     return {"id": str(res.inserted_id), **meta}
 
+@app.get("/health")
+def health_check():
+    return JSONResponse(content={"status": "UP"}, status_code=200)
 
 @app.get("/reports/{id}")
 async def download(id: str, user_id=Depends(verify_token)):

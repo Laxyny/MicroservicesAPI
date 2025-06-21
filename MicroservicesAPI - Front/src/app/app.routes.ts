@@ -16,6 +16,7 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
+import { StatusPageComponent } from './status-page/status-page.component';
 
 export const routes: Routes = [
     //AUTH
@@ -50,6 +51,9 @@ export const routes: Routes = [
 
     //LEGAL
     { path: 'legal/:type', component: LegalComponent },
+
+    //STATUTS
+    { path: 'status', component: StatusPageComponent }
 ];
 
 @NgModule({
