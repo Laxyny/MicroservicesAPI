@@ -1,9 +1,10 @@
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { SearchService } from '../../services/search.service';
 import { CartService } from '../../services/cart.service';
+import { NotificationService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,17 +12,30 @@ import { CartService } from '../../services/cart.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
+
+export class NavbarComponent implements OnInit {
   menuOpen: boolean = false;
   cartOpen: boolean = false;
   cartItems: any[] = [];
   user: any = null;
   searchFocused = false;
-
-  constructor(private http: HttpClient, private router: Router, private searchService: SearchService, private cartService: CartService) {
+  unreadNotificationsCount: number = 0;
+  notificationsOpen: boolean = false;
+  
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private searchService: SearchService,
+    private cartService: CartService,
+    private notificationService: NotificationService
+  ) {
     this.cartService.cartItems$.subscribe(items => {
       this.cartItems = items;
-    })
+    });
+
+    this.notificationService.unreadCount$.subscribe(count => {
+      this.unreadNotificationsCount = count;
+    });
   }
 
   private logoutUrl = 'http://localhost:3000/logout';
@@ -96,6 +110,14 @@ export class NavbarComponent {
 
   myOrders() {
     this.router.navigate(['/user/my-orders']);
+  }
+
+  toggleNotifications(): void {
+    this.notificationsOpen = !this.notificationsOpen;
+    if (this.notificationsOpen) {
+      this.router.navigate(['/notifications']);
+      this.notificationsOpen = false;
+    }
   }
 
   logout() {

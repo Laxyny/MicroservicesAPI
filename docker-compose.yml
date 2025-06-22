@@ -40,6 +40,15 @@ services:
             - reports
         networks: [ msnet ]
 
+    notification-service:
+        build: "./MicroservicesAPI - Back Notifications"
+        container_name: ms_notifications
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_NOTIFICATIONS}:8000"
+        networks: [ msnet ]
+
     front:
         build:
             context: "./MicroservicesAPI - Front"

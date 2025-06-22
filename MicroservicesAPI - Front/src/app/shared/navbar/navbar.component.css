@@ -73,12 +73,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1em;
+    font-size: 0.85rem;
     font-weight: bold;
-    z-index: 2;
-    pointer-events: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .cart-dropdown {
@@ -190,6 +187,53 @@
     margin: 10px 0 0 0;
     color: #fff;
     font-size: 1.1em;
+}
+
+.cart-icon:hover {
+    transform: scale(1.1);
+}
+
+.notification-icon {
+    margin: 0 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.notification-icon:hover {
+    transform: scale(1.1);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff4b4b;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.notification-icon svg:hover,
+.cart-icon svg:hover,
+.user-icon svg:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.notification-icon:hover,
+.cart-icon:hover,
+.user-icon:hover {
+    transform: none;
 }
 
 .account {

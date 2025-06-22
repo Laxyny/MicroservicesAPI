@@ -17,6 +17,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { StatusPageComponent } from './status-page/status-page.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 export const routes: Routes = [
     //AUTH
@@ -30,6 +31,8 @@ export const routes: Routes = [
     { path: 'user/settings', component: UserSettingsComponent, canActivate: [AuthGuard] },
     { path: 'user/my-orders', component: OrdersComponent, canActivate: [AuthGuard] },
 
+    //NOTIFICATIONS
+    { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
 
     //HOMEPAGE
     { path: 'homepage', component: HomepageComponent, canActivate: [AuthGuard] },

@@ -4,10 +4,16 @@ const axios = require('axios');
 
 let ratingModel;
 let orderModel;
+let productModel;
+let storeModel;
+let userModel;
 
-exports.init = (ratingCollection, orderCollection) => {
+exports.init = (ratingCollection, orderCollection, productColl, storeColl, userColl) => {
     ratingModel = new RatingModel(ratingCollection);
     orderModel = orderCollection;
+    productModel = productColl;
+    storeModel = storeColl;
+    userModel = userColl;
 };
 
 const hasUserPurchasedProduct = async (userId, productId) => {
@@ -69,6 +75,32 @@ exports.createRating = async (req, res) => {
         };
 
         const createdRating = await ratingModel.create(newRating);
+
+        try {
+            const product = await productModel.getById(productId);
+            if (product && product.storeId) {
+                const store = await storeModel.getById(product.storeId);
+                if (store && store.userId) {
+                    const user = await userModel.collection.findOne({ _id: userId });
+                    const userName = user.name;
+                    
+                    await axios.post('http://ms_notifications:8000/notify', {
+                        userId: store.userId,
+                        type: 'new_review',
+                        data: {
+                            productId,
+                            productName: product.name,
+                            rating,
+                            comment,
+                            userName
+                        }
+                    });
+                }
+            }
+        } catch (notifErr) {
+            console.error("Erreur lors de l'envoi de la notification:", notifErr);
+        }
+
         res.status(201).json(createdRating);
     } catch (err) {
         console.error("Erreur lors de la création de la note:", err);

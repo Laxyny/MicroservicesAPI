@@ -11,6 +11,10 @@
         {
             "name": "MicroserviceAPI - Rapports",
             "url": "http://ms_reports:7000/health"
+        },
+        {
+            "name": "MicroserviceAPI - Notifications",
+            "url": "http://ms_notifications:8000/health"
         }
     ],
     "intervalSeconds": 10

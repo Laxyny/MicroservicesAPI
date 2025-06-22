@@ -82,6 +82,6 @@ export class AuthService {
     }
 
     getCurrentUser(): Observable<any> {
-        return this.http.get(`${this.apiUrl}/user`, { withCredentials: true });
+        return this.http.get(`${this.apiUrl}`, { withCredentials: true });
     }
 }

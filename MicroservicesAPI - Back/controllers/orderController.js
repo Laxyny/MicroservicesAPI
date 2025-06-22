@@ -79,6 +79,36 @@ exports.createOrder = async (req, res) => {
         } catch (cartErr) {
             console.error('Erreur lors du vidage du panier:', cartErr);
         }
+
+        try {
+            await axios.post('http://ms_notifications:8000/notify', {
+                userId,
+                type: 'order_status',
+                data: {
+                    orderId: createdOrder._id,
+                    status: 'Complétée'
+                }
+            });
+            
+            const storeIds = [...new Set(items.map(item => item.storeId))];
+            for (const storeId of storeIds) {
+                if (!storeId) continue;
+                
+                const store = await storeModel.getById(storeId);
+                if (store && store.userId) {
+                    await axios.post('http://ms_notifications:8000/notify', {
+                        userId: store.userId,
+                        type: 'new_order',
+                        data: {
+                            orderId: createdOrder._id,
+                            total: createdOrder.total,
+                        }
+                    });
+                }
+            }
+        } catch (notifErr) {
+            console.error('Erreur lors de l\'envoi des notifications:', notifErr);
+        }
         
         res.status(201).json(createdOrder);
     } catch (err) {
@@ -103,9 +133,22 @@ exports.updateOrder = async (req, res) => {
         const success = await orderModel.updateById(id, updatedFields);
         
         if (success) {
-            res.json({ message: 'Commande mise à jour' });
+            try {
+                await axios.post('http://ms_notifications:8000/notify', {
+                    userId: order.userId,
+                    type: 'order_status',
+                    data: {
+                        orderId: id,
+                        status: updatedFields.status
+                    }
+                });
+            } catch (notifErr) {
+                console.error('Erreur lors de l\'envoi de la notification:', notifErr);
+            }
+            
+            res.json({ message: 'Statut de la commande mis à jour' });
         } else {
-            res.status(500).json({ message: 'Erreur lors de la mise à jour de la commande' });
+            res.status(404).json({ message: 'Commande non trouvée' });
         }
     } catch (err) {
         console.error('Erreur lors de la mise à jour de la commande:', err);
