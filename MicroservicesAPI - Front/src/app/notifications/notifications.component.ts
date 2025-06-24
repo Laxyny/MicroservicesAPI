@@ -78,6 +78,8 @@ export class NotificationsComponent implements OnInit {
         return 'package';
       case 'new_order':
         return 'shopping-cart';
+      case 'order_canceled':
+        return 'shopping-cart';
       case 'new_review':
         return 'star';
       case 'report_ready':
