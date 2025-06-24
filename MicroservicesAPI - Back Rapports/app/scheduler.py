@@ -6,6 +6,7 @@ from app.pdf import build_pdf
 from app.models import ReportIn
 import time
 import io
+import httpx
 
 class ReportScheduler:
     def __init__(self, db, fs, mailer=None):
@@ -52,6 +53,26 @@ class ReportScheduler:
                 "generatedAt": datetime.now(),
                 "type": "scheduled"
             })
+            
+            store = await self.db.Stores.find_one({"_id": ObjectId(store_id)})
+            store_name = store.get("name") if store else None
+            
+            try:
+                async with httpx.AsyncClient() as client:
+                    await client.post(
+                        "http://ms_notifications:8000/notifications/notify",
+                        json={
+                            "userId": str(store.get("userId")),
+                            "type": "report_ready",
+                            "data": {
+                                "reportId": report_id,
+                                "storeId": store_id,
+                                "storeName": store_name,
+                            },
+                        },
+                    )
+            except Exception as notif_err:
+                print(f"Erreur notification pour les rapports automatisés: {notif_err}")
             
             await self.db.ReportSchedules.update_one(
                 {"storeId": store_id},
