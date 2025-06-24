@@ -9,7 +9,7 @@ const authMiddleware = (req, res, next) => {
         const tokenData = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
         const now = Date.now();
 
-        console.log("Token data:", tokenData); // Ajout d'un log pour déboguer
+        // console.log("Token data:", tokenData); // Ajout d'un log pour déboguer (Beaucoup de logs)
 
         // Vérif token expiré
         if (tokenData.expiresIn < now) {

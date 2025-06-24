@@ -67,7 +67,7 @@ async function run() {
         productController.init(productCollection);
         categoryController.init(categoryCollection);
         cartController.init(cartCollection);
-        orderController.init(orderCollection);
+        orderController.init(orderCollection, storeCollection, productCollection);
         ratingController.init(ratingCollection, orderCollection, productCollection, storeCollection, usercollection);
 
         app.use('/', userRoutes);

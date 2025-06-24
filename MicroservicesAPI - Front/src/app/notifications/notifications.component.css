@@ -64,12 +64,14 @@ h1 {
 }
 
 .delete-btn {
-    background: none;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    padding: 5px;
     border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
     transition: opacity 0.2s ease, color 0.2s ease;
 }

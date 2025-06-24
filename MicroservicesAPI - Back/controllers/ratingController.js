@@ -23,7 +23,7 @@ const hasUserPurchasedProduct = async (userId, productId) => {
             status: 'Complétée',
             'items.productId': productId
         }).toArray();
-        
+
         return orders.length > 0;
     } catch (err) {
         console.error("Erreur lors de la vérification d'achat:", err);
@@ -39,26 +39,26 @@ exports.createRating = async (req, res) => {
         if (!productId || !rating || rating < 1 || rating > 5) {
             return res.status(400).json({ message: 'Données de notation invalides' });
         }
-        
+
         if (!comment || comment.trim() === '') {
             return res.status(400).json({ message: 'Un commentaire est obligatoire' });
         }
 
         const hasPurchased = await hasUserPurchasedProduct(userId, productId);
         if (!hasPurchased) {
-            return res.status(403).json({ 
-                message: 'Vous devez avoir acheté ce produit pour pouvoir le noter' 
+            return res.status(403).json({
+                message: 'Vous devez avoir acheté ce produit pour pouvoir le noter'
             });
         }
 
         const existingRating = await ratingModel.getByUserAndProduct(userId, productId);
         if (existingRating) {
-            const updated = await ratingModel.updateById(existingRating._id, { 
+            const updated = await ratingModel.updateById(existingRating._id, {
                 rating: rating,
                 comment: comment,
                 updatedAt: new Date()
             });
-            
+
             if (updated) {
                 return res.json({ message: 'Note et commentaire mis à jour avec succès' });
             } else {
@@ -76,29 +76,37 @@ exports.createRating = async (req, res) => {
 
         const createdRating = await ratingModel.create(newRating);
 
+        const product = await productModel.findOne({ _id: new ObjectId(productId) });
+        if (!product) {
+            return res.status(404).json({ message: 'Produit non trouvé' });
+        }
+
+        const store = await storeModel.findOne({ _id: new ObjectId(product.storeId) });
+        if (!store) {
+            return res.status(404).json({ message: 'Boutique non trouvée' });
+        }
+
+        const user = await userModel.findOne({ _id: new ObjectId(userId) });
+        if (!user) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+        const userName = user.name;
+
         try {
-            const product = await productModel.getById(productId);
-            if (product && product.storeId) {
-                const store = await storeModel.getById(product.storeId);
-                if (store && store.userId) {
-                    const user = await userModel.collection.findOne({ _id: userId });
-                    const userName = user.name;
-                    
-                    await axios.post('http://ms_notifications:8000/notifications/notify', {
-                        userId: store.userId,
-                        type: 'new_review',
-                        data: {
-                            productId,
-                            productName: product.name,
-                            rating,
-                            comment,
-                            userName
-                        }
-                    });
+
+            await axios.post('http://ms_notifications:8000/notifications/notify', {
+                userId: store.userId,
+                type: 'new_review',
+                data: {
+                    productId,
+                    productName: product.name,
+                    rating,
+                    comment,
+                    userName
                 }
-            }
-        } catch (notifErr) {
-            console.error("Erreur lors de l'envoi de la notification:", notifErr);
+            });
+        } catch (err) {
+            console.error("Erreur lors de l'envoi de la notification:", err);
         }
 
         res.status(201).json(createdRating);
@@ -133,7 +141,7 @@ exports.getUserRating = async (req, res) => {
         const productId = req.params.productId;
         const userId = req.user.userId;
         const rating = await ratingModel.getByUserAndProduct(userId, productId);
-        
+
         if (rating) {
             res.json(rating);
         } else {
@@ -148,17 +156,17 @@ exports.deleteRating = async (req, res) => {
     try {
         const id = req.params.id;
         const rating = await ratingModel.getById(id);
-        
+
         if (!rating) {
             return res.status(404).json({ message: 'Note non trouvée' });
         }
-        
+
         if (rating.userId !== req.user.userId) {
             return res.status(403).json({ message: 'Vous ne pouvez pas supprimer cette note' });
         }
-        
+
         const success = await ratingModel.deleteById(id);
-        
+
         if (success) {
             res.json({ message: 'Note supprimée avec succès' });
         } else {
