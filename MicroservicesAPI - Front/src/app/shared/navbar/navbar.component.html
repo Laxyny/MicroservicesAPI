@@ -64,9 +64,10 @@
 
         <div class="dropdown" [class.show]="menuOpen">
             <p>{{ user?.name }}</p>
-            <small>{{ user?.role === 'seller' ? 'Vendeur' : 'Client' }}</small>
+            <small>{{ user?.role === 'admin' ? 'Administrateur' : (user?.role === 'seller' ? 'Vendeur' : 'Client') }}</small>
             <button class="settings-btn" (click)="settings()">Paramètres</button>
-            <button class="settings-btn" *ngIf="user?.role === 'seller'" (click)="goToMyStore()">Mes boutiques</button>
+            <button class="settings-btn" *ngIf="user?.role === 'seller' || user?.role === 'admin'" (click)="goToDashboard()">Dashboard Admin</button>
+            <button class="settings-btn" *ngIf="user?.role === 'admin'" (click)="goToMyStore()">Mes boutiques</button>
             <button class="settings-btn" (click)="myOrders()">Mes commandes</button>
             <button class="logout-btn" (click)="logout()">Deconnexion</button>
         </div>

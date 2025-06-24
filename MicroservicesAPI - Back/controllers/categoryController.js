@@ -56,7 +56,7 @@ exports.createCategory = async (req, res) => {
 
         const user = response.data;
 
-        if (user.role !== 'seller') {
+        if (user.role !== 'seller' && user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent créer un catégorie" });
         }
 

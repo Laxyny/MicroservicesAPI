@@ -104,6 +104,10 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/seller/my-store']);
   }
 
+  goToDashboard() {
+    this.router.navigate(['/admin/dashboard']);
+  }
+
   settings() {
     this.router.navigate(['/user/settings']);
   }

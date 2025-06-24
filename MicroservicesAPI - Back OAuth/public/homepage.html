@@ -35,7 +35,7 @@
                     const user = await response.json();
                     document.getElementById('welcome-message').innerText = `Bienvenue, ${user.name}, vous êtes ${user.role}.`;
 
-                    if (user.role === 'seller') {
+                    if (user.role === 'seller' && user.role !== 'admin') {
                         const sellerLink = document.createElement('button');
                         sellerLink.innerText = 'Créer une boutique';
                         sellerLink.addEventListener('click', () => {

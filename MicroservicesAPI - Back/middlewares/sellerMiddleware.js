@@ -14,7 +14,7 @@ const sellerMiddleware = async (req, res, next) => {
 
         const user = response.data;
 
-        if (user.role !== 'seller') {
+        if (user.role !== 'seller' && user.role !== 'admin') {
             return res.status(403).json({ message: 'Accès réservé aux vendeurs.' });
         }
 

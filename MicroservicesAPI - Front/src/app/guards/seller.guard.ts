@@ -20,7 +20,7 @@ export class SellerGuard implements CanActivate {
         state: RouterStateSnapshot
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         return this.authService.getUser().then((user: any) => {
-            if (user && user.role === 'seller') {
+            if (user && (user.role === 'seller' || user.role === 'admin')) {
                 return true;
             } else {
                 this.router.navigate(['/homepage']);
