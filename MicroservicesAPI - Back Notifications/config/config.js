@@ -7,6 +7,7 @@ module.exports = {
     notificationTypes: {
         ORDER_STATUS: 'order_status',
         NEW_ORDER: 'new_order',
+        ORDER_CANCELED:'order_canceled',
         NEW_REVIEW: 'new_review',
         REPORT_READY: 'report_ready',
         SERVICE_STATUS: 'service_status',

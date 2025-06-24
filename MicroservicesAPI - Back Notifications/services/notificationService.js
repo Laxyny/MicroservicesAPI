@@ -22,6 +22,8 @@ class NotificationService {
                 return `Commande #${data.orderId.substring(0, 8)} - Statut: ${data.status}`;
             case config.notificationTypes.NEW_ORDER:
                 return `Nouvelle commande #${data.orderId.substring(0, 8)} de ${data.total}€`;
+            case config.notificationTypes.ORDER_CANCELED:
+                return `Commande #${data.orderId.substring(0, 8)} annulée par le client`;
             case config.notificationTypes.NEW_REVIEW:
                 return `Nouvel avis sur ${data.productName} (${data.rating}⭐)`;
             case config.notificationTypes.REPORT_READY:

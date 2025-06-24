@@ -160,6 +160,26 @@ exports.updateOrder = async (req, res) => {
                         status: updatedFields.status
                     }
                 });
+
+                if (updatedFields.status === 'Annulée') {
+                    const productIds = order.items.map(i => new ObjectId(i.productId));
+                    const products = await productModel.collection
+                        .find({ _id: { $in: productIds } })
+                        .toArray();
+                    const storeIds = [...new Set(products.map(p => p.storeId))];
+
+                    for (const storeId of storeIds) {
+                        if (!storeId) continue;
+                        const store = await storeModel.findOne({ _id: new ObjectId(storeId) });
+                        if (store?.userId) {
+                            await axios.post('http://ms_notifications:8000/notifications/notify', {
+                                userId: store.userId,
+                                type: 'order_canceled',
+                                data: { orderId: id, storeName: store.name }
+                            });
+                        }
+                    }
+                }
             } catch (notifErr) {
                 console.error('Erreur lors de l\'envoi de la notification:', notifErr);
             }
