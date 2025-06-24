@@ -60,6 +60,18 @@ services:
             - ./MicroservicesAPI - Front:/app
             - /app/node_modules
         networks: [ msnet ]
+    
+    dashboard:
+        build: "./MicroservicesAPI - DashboardAdmin"
+        container_name: ms_dashboard
+        ports:
+            - "${PORT_DASHBOARD}:3001"
+        depends_on:
+            - back
+            - oauth
+            - reports
+            - notification-service
+        networks: [ msnet ]
 
 networks:
     msnet:

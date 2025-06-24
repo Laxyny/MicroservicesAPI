@@ -51,7 +51,7 @@ exports.getStoreProducts = async (req, res) => {
         const storeId = req.params.storeId;
         const products = await productModel.getByStoreId(storeId);
         if (!products || products.length === 0) {
-            return res.status(404).json({ message: "Aucun produit trouvée pour cet utilisateur." });
+            return res.status(404).json({ message: "Aucun produit trouvée pour cette boutique." });
         }
 
         res.json(products);
