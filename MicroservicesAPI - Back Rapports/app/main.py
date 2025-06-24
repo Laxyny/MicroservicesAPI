@@ -5,6 +5,7 @@ from app.auth import verify_token
 from app.models import ReportIn, ReportOut, ReportSchedule
 from app.pdf import build_invoice_pdf, build_pdf
 import os, io, datetime, bson
+import httpx
 from bson import ObjectId
 from fastapi.middleware.cors import CORSMiddleware
 from app.models import InvoiceIn, InvoiceOut
@@ -87,6 +88,26 @@ async def generate(report: ReportIn, user_id=Depends(verify_token)):
             "type": "manual",
         }
     )
+    
+    store = await db.Stores.find_one({"_id": ObjectId(report.storeId)})
+    store_name = store.get("name") if store else None
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                "http://ms_notifications:8000/notifications/notify",
+                json={
+                    "userId": user_id,
+                    "type": "report_ready",
+                    "data": {
+                        "reportId": report_id, 
+                        "storeId": report.storeId,
+                        "storeName": store_name,
+                        },
+                },
+            )
+    except Exception as notif_err:
+        print("Erreur notification rapport:", notif_err)
 
     return {"id": report_id, **meta}
 
