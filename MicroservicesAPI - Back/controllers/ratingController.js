@@ -84,7 +84,7 @@ exports.createRating = async (req, res) => {
                     const user = await userModel.collection.findOne({ _id: userId });
                     const userName = user.name;
                     
-                    await axios.post('http://ms_notifications:8000/notify', {
+                    await axios.post('http://ms_notifications:8000/notifications/notify', {
                         userId: store.userId,
                         type: 'new_review',
                         data: {

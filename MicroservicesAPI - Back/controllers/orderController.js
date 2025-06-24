@@ -81,7 +81,7 @@ exports.createOrder = async (req, res) => {
         }
 
         try {
-            await axios.post('http://ms_notifications:8000/notify', {
+            await axios.post('http://ms_notifications:8000/notifications/notify', {
                 userId,
                 type: 'order_status',
                 data: {
@@ -96,7 +96,7 @@ exports.createOrder = async (req, res) => {
                 
                 const store = await storeModel.getById(storeId);
                 if (store && store.userId) {
-                    await axios.post('http://ms_notifications:8000/notify', {
+                    await axios.post('http://ms_notifications:8000/notifications/notify', {
                         userId: store.userId,
                         type: 'new_order',
                         data: {
@@ -134,7 +134,7 @@ exports.updateOrder = async (req, res) => {
         
         if (success) {
             try {
-                await axios.post('http://ms_notifications:8000/notify', {
+                await axios.post('http://ms_notifications:8000/notifications/notify', {
                     userId: order.userId,
                     type: 'order_status',
                     data: {

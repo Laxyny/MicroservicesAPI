@@ -62,8 +62,7 @@ async function run() {
         });
 
         // Routes
-        app.use('/notifications', notificationRoutes);
-        app.post('/notify', notificationController.sendNotification);
+        app.use('/', notificationRoutes);
 
         // Gérer les erreurs 500 (erreurs serveur)
         app.use((err, req, res, next) => {

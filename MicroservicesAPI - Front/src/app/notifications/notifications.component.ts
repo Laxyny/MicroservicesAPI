@@ -21,6 +21,10 @@ export class NotificationsComponent implements OnInit {
   constructor(private notificationService: NotificationService, private authService: AuthService, private http: HttpClient) { }
 
   ngOnInit() {
+    this.notificationService.notifications$.subscribe(notifs => {
+      this.notifications = notifs;
+    });
+
     this.authService.getUser().then(user => {
       this.userId = user?._id || user?.userId;
       if (this.userId) {
@@ -55,9 +59,9 @@ export class NotificationsComponent implements OnInit {
 
   deleteNotification(notification: Notification, event: Event): void {
     event.stopPropagation();
-    
+
     this.notifications = this.notifications.filter(n => n._id !== notification._id);
-    
+
     this.notificationService.deleteNotification(notification._id).subscribe({
       error: (err) => {
         console.error('Erreur lors de la suppression de la notification:', err);
