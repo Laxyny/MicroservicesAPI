@@ -20,7 +20,7 @@ export class CreateStoreComponent {
   site: string = '';
   message: string = '';
 
-  private apiLogoUrl = 'http://localhost:3000/seller/upload-logo';
+  private apiLogoUrl = 'http://localhost:3002/seller/upload-logo';
 
   constructor(private http: HttpClient, private createStoreService: ApiStoresService) { }
 

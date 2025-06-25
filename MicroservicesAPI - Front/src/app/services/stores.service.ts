@@ -9,20 +9,20 @@ export class ApiStoresService {
     constructor(private http: HttpClient) { }
 
     getMyStores(): Observable<any> {
-        return this.http.get('http://localhost:3000/seller/stores', { withCredentials: true });
+        return this.http.get('http://localhost:3002/seller/stores', { withCredentials: true });
     }
 
     getStoreById(storeId: string) {
-        return this.http.get(`http://localhost:3000/seller/store/${storeId}`, { withCredentials: true });
+        return this.http.get(`http://localhost:3002/seller/store/${storeId}`, { withCredentials: true });
     }
 
     checkUserStores(): Observable<any> {
-        return this.http.get('http://localhost:3000/seller/checkstores', { withCredentials: true });
+        return this.http.get('http://localhost:3002/seller/checkstores', { withCredentials: true });
     }
 
     postCreateStore(name: string, description: string, logo: string, site: string): Observable<any> {
         return this.http.post(
-            'http://localhost:3000/seller/createStore',
+            'http://localhost:3002/seller/createStore',
             {
                 name: name,
                 description: description,
@@ -32,10 +32,10 @@ export class ApiStoresService {
         );
     }
     deleteStore(storeId: string): Observable<any> {
-        return this.http.delete(`http://localhost:3000/seller/deleteStore/${storeId}`, { withCredentials: true });
+        return this.http.delete(`http://localhost:3002/seller/deleteStore/${storeId}`, { withCredentials: true });
     }
 
     getStoreName(storeId: string): Observable<any> {
-        return this.http.get(`http://localhost:3000/seller/store/${storeId}`, { withCredentials: true });
+        return this.http.get(`http://localhost:3002/seller/store/${storeId}`, { withCredentials: true });
     }
 }

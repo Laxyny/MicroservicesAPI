@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class RatingService {
-    private apiUrl = 'http://localhost:3000';
+    private apiUrl = 'http://localhost:3003';
 
     constructor(private http: HttpClient) { }
 
@@ -36,7 +36,7 @@ export class RatingService {
     }
 
     hasUserPurchasedProduct(productId: string): Observable<any> {
-        return this.http.get(`${this.apiUrl}/order/check-purchase/${productId}`, {
+        return this.http.get(`localhost:3005/order/check-purchase/${productId}`, {
         withCredentials: true
         });
     }

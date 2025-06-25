@@ -53,7 +53,7 @@ export class StoreDetailsComponent implements OnInit {
   daysOfMonth: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
   isOwner = false;
 
-  private apiUploadUrl = 'http://localhost:3000/product/upload-image';
+  private apiUploadUrl = 'http://localhost:3004/product/upload-image';
 
   constructor(
     private route: ActivatedRoute,
@@ -169,7 +169,7 @@ export class StoreDetailsComponent implements OnInit {
 
   fetchStoreDetails(storeId: string): void {
     this.http
-      .get(`http://localhost:3000/seller/store/${storeId}`, {
+      .get(`http://localhost:3002/seller/store/${storeId}`, {
         withCredentials: true,
       })
       .subscribe({

@@ -42,7 +42,7 @@ export class ProductDetailsComponent implements OnInit {
   @ViewChild('zoomContainer') zoomContainer!: ElementRef;
   @ViewChild('zoomImage') zoomImage!: ElementRef;
 
-  private productDetailsUrl = 'http://localhost:3000/product/product';
+  private productDetailsUrl = 'http://localhost:3004/product/product';
 
   constructor(
     private route: ActivatedRoute,

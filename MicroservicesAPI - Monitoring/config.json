@@ -2,7 +2,31 @@
     "services": [
         {
             "name": "MicroserviceAPI - Back",
-            "url": "http://ms_back:3000/health"
+            "url": "http://ms_users:3000/health"
+        },
+        {
+            "name": "MicroserviceAPI - Magasins",
+            "url": "http://ms_stores:3002/health"
+        },
+        {
+            "name": "MicroserviceAPI - Evaluations",
+            "url": "http://ms_ratings:3003/health"
+        },
+        {
+            "name": "MicroserviceAPI - Produits",
+            "url": "http://ms_products:3004/health"
+        },
+        {
+            "name": "MicroserviceAPI - Commandes",
+            "url": "http://ms_orders:3005/health"
+        },
+        {
+            "name": "MicroserviceAPI - Categories",
+            "url": "http://ms_categories:3006/health"
+        },
+        {
+            "name": "MicroserviceAPI - Paniers",
+            "url": "http://ms_carts:3007/health"
         },
         {
             "name": "MicroserviceAPI - Back OAuth",

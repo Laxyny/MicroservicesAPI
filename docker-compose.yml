@@ -1,13 +1,85 @@
 services:
     back:
-        build: "./MicroservicesAPI - Back"
-        container_name: ms_back
+        build: "./MicroservicesAPI - Back Users"
+        container_name: ms_users
         environment:
             - MONGODB_URI=${MONGODB_URI}
         ports:
             - "${PORT_BACK}:3000"
         volumes:
-            - ./MicroservicesAPI - Back:/app
+            - ./MicroservicesAPI - Back Users:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
+    back_stores:
+        build: "./MicroservicesAPI - Back Stores"
+        container_name: ms_stores
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_STORES}:3002"
+        volumes:
+            - ./MicroservicesAPI - Back Stores:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
+    back_ratings:
+        build: "./MicroservicesAPI - Back Ratings"
+        container_name: ms_ratings
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_RATINGS}:3003"
+        volumes:
+            - ./MicroservicesAPI - Back Ratings:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
+    back_products:
+        build: "./MicroservicesAPI - Back Products"
+        container_name: ms_products
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_PRODUCTS}:3004"
+        volumes:
+            - ./MicroservicesAPI - Back Products:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
+    back_orders:
+        build: "./MicroservicesAPI - Back Orders"
+        container_name: ms_orders
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_ORDERS}:3005"
+        volumes:
+            - ./MicroservicesAPI - Back Orders:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
+    back_categories:
+        build: "./MicroservicesAPI - Back Categories"
+        container_name: ms_categories
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_CATEGORIES}:3006"
+        volumes:
+            - ./MicroservicesAPI - Back Categories:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
+    back_carts:
+        build: "./MicroservicesAPI - Back Carts"
+        container_name: ms_carts
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_CARTS}:3007"
+        volumes:
+            - ./MicroservicesAPI - Back Carts:/app
             - /app/node_modules
         networks: [ msnet ]
 

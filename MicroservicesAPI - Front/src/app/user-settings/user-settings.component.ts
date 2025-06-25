@@ -36,7 +36,7 @@ export class UserSettingsComponent implements OnInit {
 
   onRoleChange() {
     if (this.user.role === 'client') {
-      this.http.get<any[]>(`http://localhost:3000/stores/user`, { withCredentials: true }).subscribe({
+      this.http.get<any[]>(`http://localhost:3002/stores/user`, { withCredentials: true }).subscribe({
         next: (stores) => {
           if (stores.length > 0) {
             this.roleChangeError = true;
@@ -81,7 +81,7 @@ export class UserSettingsComponent implements OnInit {
     if (!confirm('Cette action est irréversible.')) return;
 
     if (this.user.role === 'seller') {
-      this.http.get<any[]>(`http://localhost:3000/seller/stores`, { withCredentials: true }).subscribe({
+      this.http.get<any[]>(`http://localhost:3002/seller/stores`, { withCredentials: true }).subscribe({
         next: (stores) => {
           if (stores.length > 0) {
             alert('Vous devez d\'abord supprimer vos boutiques et produits avant de supprimer votre compte.');

@@ -5,8 +5,8 @@ import { catchError, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
-  private cartUrl = 'http://localhost:3000/cart';
-  private productUrl = 'http://localhost:3000/product/product/';
+  private cartUrl = 'http://localhost:3007/cart';
+  private productUrl = 'http://localhost:3004/product/product/';
   private cartItemsSubject = new BehaviorSubject<any[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
