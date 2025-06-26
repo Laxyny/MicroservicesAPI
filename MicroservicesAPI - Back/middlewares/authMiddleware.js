@@ -1,9 +1,15 @@
 const authMiddleware = (req, res, next) => {
     const token = req.cookies.authToken;
 
+    const isApiRequest = req.xhr || req.headers.accept?.includes('application/json');
+
     if (!token) {
-        return res.redirect('/login'); // Si pas de token alors -> Login
+        if (isApiRequest) {
+            return res.status(401).json({ message: 'Non authentifié' });
+        }
+        return res.redirect('/login');
     }
+
 
     try {
         const tokenData = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
@@ -13,7 +19,10 @@ const authMiddleware = (req, res, next) => {
 
         // Vérif token expiré
         if (tokenData.expiresIn < now) {
-            res.clearCookie('authToken'); // Supprime les cookies
+            res.clearCookie('authToken');
+            if (isApiRequest) {
+                return res.status(401).json({ message: 'Session expirée' });
+            }
             return res.redirect('/login');
         }
 
@@ -21,7 +30,9 @@ const authMiddleware = (req, res, next) => {
         next();
     } catch (err) {
         res.clearCookie('authToken');
-        console.error("Erreur de parsing du token :", err);
+        if (isApiRequest) {
+            return res.status(401).json({ message: 'Token invalide' });
+        }
         return res.redirect('/login');
     }
 };

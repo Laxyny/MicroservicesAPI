@@ -59,6 +59,8 @@ exports.updateCategory = async (req, res) => {
         const updatedCategory = await axios.put(`http://ms_back:3000/category/updateCategory/${id}`, {
             name,
             description
+        }, {
+            headers: { Cookie: `authToken=${token}` },
         });
 
         res.json(updatedCategory.data);
@@ -83,7 +85,9 @@ exports.deleteCategory = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer une catégorie" });
         }
 
-        await axios.delete(`http://ms_back:3000/category/deleteCategory/${id}`);
+        await axios.delete(`http://ms_back:3000/category/deleteCategory/${id}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
         res.json({ message: 'Catégorie supprimée' });
     } catch (err) {
         console.error("Erreur lors de la suppression de la catégorie :", err);
@@ -94,8 +98,11 @@ exports.deleteCategory = async (req, res) => {
 //Poduit Controller
 
 exports.getAllProducts = async (req, res) => {
+    const token = req.cookies.authToken;
     try {
-        const products = await axios.get('http://ms_back:3000/product/listProducts');
+        const products = await axios.get('http://ms_back:3000/product/listProducts', {
+            headers: { Cookie: `authToken=${token}` }
+        });
         res.json(products.data);
     } catch (err) {
         console.error("Erreur lors de la récupération des produits :", err);
@@ -104,9 +111,12 @@ exports.getAllProducts = async (req, res) => {
 }
 
 exports.getProduct = async (req, res) => {
+    const token = req.cookies.authToken;
     try {
         const id = req.params.id;
-        const product = await axios.get(`http://ms_back:3000/product/product/${id}`);
+        const product = await axios.get(`http://ms_back:3000/product/product/${id}`, {
+            headers: { Cookie: `authToken=${token}` }
+        });
         if (product.data) {
             res.json(product.data);
         } else {
@@ -119,9 +129,12 @@ exports.getProduct = async (req, res) => {
 }
 
 exports.getStoreProducts = async (req, res) => {
+    const token = req.cookies.authToken;
     try {
         const storeId = req.params.storeId;
-        const products = await axios.get(`http://ms_back:3000/product/products/${storeId}`);
+        const products = await axios.get(`http://ms_back:3000/product/products/${storeId}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
         if (!products.data || products.data.length === 0) {
             return res.status(404).json({ message: "Aucun produit trouvé pour cette boutique." });
         }
@@ -147,7 +160,9 @@ exports.deleteProduct = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer un produit" });
         }
 
-        await axios.delete(`http://ms_back:3000/product/deleteProduct/${id}`);
+        await axios.delete(`http://ms_back:3000/product/deleteProduct/${id}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
         res.json({ message: 'Produit supprimé' });
     } catch (err) {
         console.error("Erreur lors de la suppression du produit :", err);
@@ -179,6 +194,8 @@ exports.updateProduct = async (req, res) => {
             image,
             storeId,
             customFields
+        }, {
+            headers: { Cookie: `authToken=${token}` },
         });
 
         res.json(updatedProduct.data);
@@ -191,8 +208,11 @@ exports.updateProduct = async (req, res) => {
 //Store Controller
 
 exports.getAllStores = async (req, res) => {
+    const token = req.cookies.authToken;
     try {
-        const stores = await axios.get('http://ms_back:3000/seller/listStores');
+        const stores = await axios.get('http://ms_back:3000/seller/listStores', {
+            headers: { Cookie: `authToken=${token}` },
+        });
         res.json(stores.data);
     } catch (err) {
         console.error("Erreur lors de la récupération des magasins :", err);
@@ -201,9 +221,12 @@ exports.getAllStores = async (req, res) => {
 }
 
 exports.getStore = async (req, res) => {
+    const token = req.cookies.authToken;
     try {
         const id = req.params.id;
-        const store = await axios.get(`http://ms_back:3000/seller/store/${id}`);
+        const store = await axios.get(`http://ms_back:3000/seller/store/${id}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
         if (store.data) {
             res.json(store.data);
         } else {
@@ -236,6 +259,8 @@ exports.updateStore = async (req, res) => {
             description,
             site,
             logo
+        }, {
+            headers: { Cookie: `authToken=${token}` },
         });
 
         res.json(updatedStore.data);
@@ -260,7 +285,9 @@ exports.deleteStore = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent supprimer un magasin" });
         }
 
-        await axios.delete(`http://ms_back:3000/seller/deleteStore/${id}`);
+        await axios.delete(`http://ms_back:3000/seller/deleteStore/${id}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
         res.json({ message: 'Magasin supprimé' });
     } catch (err) {
         console.error("Erreur lors de la suppression du magasin :", err);
