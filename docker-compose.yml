@@ -121,6 +121,15 @@ services:
             - "${PORT_NOTIFICATIONS}:8000"
         networks: [ msnet ]
 
+    2fa:
+        build: "./MicroservicesAPI - Back 2FA"
+        container_name: ms_2fa
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_2FA}:3008"
+        networks: [ msnet ]
+
     front:
         build:
             context: "./MicroservicesAPI - Front"

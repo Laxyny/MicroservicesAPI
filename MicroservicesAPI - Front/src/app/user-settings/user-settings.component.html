@@ -32,6 +32,8 @@
         </div>
     </div>
 
+    <app-security-settings *ngIf="!isGoogleAccount"></app-security-settings>
+
     <div *ngIf="roleChangeError" class="warning">
         Vous devez d'abord supprimer vos boutiques et produits pour changer de rôle.
     </div>

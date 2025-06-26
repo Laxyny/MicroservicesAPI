@@ -5,10 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FooterComponent } from "../shared/footer/footer.component";
+import { SecuritySettingsComponent } from '../security-settings/security-settings.component';
 
 @Component({
   selector: 'app-user-settings',
-  imports: [NgIf, CommonModule, FormsModule],
+  imports: [NgIf, CommonModule, FormsModule, SecuritySettingsComponent],
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.css'
 })

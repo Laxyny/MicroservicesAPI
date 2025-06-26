@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators'
 
 @Injectable({
     providedIn: 'root',
@@ -43,15 +44,12 @@ export class AuthService {
         return this.isLoggedIn;
     }
 
-    postLogin(email: string, password: string): Observable<any> {
-        return this.http.post(
-            'http://localhost:3000/login',
-            {
-                email: email,
-                password: password
-            },
-            { withCredentials: true }
-        );
+    postLogin(email: string, password: string, twoFactorCode?: string): Observable<any> {
+        const body: any = { email, password };
+        if (twoFactorCode) {
+            body.twoFactorCode = twoFactorCode;
+        }
+        return this.http.post(`http://localhost:3000/login`, body, { withCredentials: true });
     }
 
     postRegister(
@@ -83,5 +81,17 @@ export class AuthService {
 
     getCurrentUser(): Observable<any> {
         return this.http.get(`${this.apiUrl}`, { withCredentials: true });
+    }
+
+    checkTwoFactorRequired(email: string): Observable<boolean> {
+        return this.http.post<any>(`${this.apiUrl}/check-2fa`, { email })
+            .pipe(
+                map(response => response.twoFactorRequired),
+                catchError(() => of(false))
+            );
+    }
+
+    verifyTwoFactorCode(userId: string, code: string): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/2fa/verify`, { userId, code });
     }
 }

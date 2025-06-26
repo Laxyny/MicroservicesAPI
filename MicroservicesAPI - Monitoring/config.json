@@ -39,6 +39,10 @@
         {
             "name": "MicroserviceAPI - Notifications",
             "url": "http://ms_notifications:8000/health"
+        },
+        {
+            "name": "MicroserviceAPI - 2FA",
+            "url": "http://ms_2fa:3008/health"
         }
     ],
     "intervalSeconds": 10

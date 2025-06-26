@@ -2,6 +2,7 @@ const { UserModel, verifyPassword } = require('../models/userModel');
 const TokenModel = require('../models/tokenModel');
 const { generateToken } = require('../services/tokenService');
 const crypto = require('crypto');
+const axios = require('axios');
 
 let userModel;
 let tokenModel
@@ -96,7 +97,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, twoFactorCode } = req.body;
 
     const user = await userModel.collection.findOne({
       email: email
@@ -112,6 +113,34 @@ exports.loginUser = async (req, res) => {
     const isPasswordValid = verifyPassword(password, storedHash, salt);
 
     if (isPasswordValid) {
+      try {
+        const twoFactorResponse = await axios.get(
+          'http://ms_2fa:3008/2fa/status',
+          { headers: { 'x-user-id': user._id.toString() } }
+        );
+
+        if (twoFactorResponse.data.enabled && twoFactorResponse.data.verified) {
+          if (!twoFactorCode) {
+            return res.json({
+              requiresTwoFactor: true,
+              userId: user._id.toString()
+            });
+          }
+
+          const verificationResponse = await axios.post('http://ms_2fa:3008/2fa/verify', {
+            userId: user._id.toString(),
+            code: twoFactorCode
+          });
+
+          if (!verificationResponse.data.success) {
+            return res.status(401).json({ message: 'Code de vérification invalide' });
+          }
+        }
+      } catch (twoFactorError) {
+        console.error('Erreur lors de la vérification du statut 2FA:', twoFactorError);
+        return res.status(500).json({ message: 'Erreur du service d\'authentification.' });
+      }
+
       const tokenData = generateToken(req, user);
 
       if (!tokenData) {
