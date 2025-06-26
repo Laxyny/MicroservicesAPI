@@ -11,7 +11,10 @@
             <label><input type="radio" name="role" [(ngModel)]="role" value="seller"> Vendeur</label>
         </div>
 
-        <button type="submit" [disabled]="!registerForm.form.valid">Créer un compte</button>
+        <button type="submit" [disabled]="!registerForm.form.valid || isLoading">
+            <span *ngIf="!isLoading">Créer un compte</span>
+            <span *ngIf="isLoading">Création en cours...</span>
+        </button>
         <div class="message" *ngIf="message">{{ message }}</div>
     </form>
 
@@ -19,7 +22,7 @@
         <span>OU</span>
     </div>
 
-    <button class="google-btn" (click)="registerWithGoogle()">
+    <button class="google-btn" (click)="registerWithGoogle()" [disabled]="isLoading">
         <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google Logo" />
         <span>S'inscrire avec Google</span>
     </button>

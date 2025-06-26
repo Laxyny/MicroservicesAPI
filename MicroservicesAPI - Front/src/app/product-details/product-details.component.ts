@@ -312,7 +312,6 @@ export class ProductDetailsComponent implements OnInit {
     this.showRatingForm = !this.showRatingForm;
   }
 
-
   onRateProduct(rating: number) {
     console.log('Note sélectionnée :', rating);
     this.userRating = rating;
