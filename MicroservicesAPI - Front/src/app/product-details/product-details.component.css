@@ -235,6 +235,88 @@
     z-index: 1000;
 }
 
+.custom-fields-section,
+.custom-fields-edit {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.custom-fields-section::-webkit-scrollbar,
+.custom-fields-edit::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-fields-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(3, 218, 198, 0.2);
+}
+
+.custom-fields-section h3 {
+    color: #03DAC6;
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+}
+
+.custom-field-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.field-inputs {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    width: 100%;
+}
+
+.field-inputs input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    margin: 0;
+}
+
+.remove-field-btn {
+    background: #ff4b5c;
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.add-field-btn {
+    background: transparent;
+    border: 1px dashed #03DAC6;
+    color: #03DAC6;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.add-field-btn:hover {
+    background: rgba(3, 218, 198, 0.1);
+}
+
 .modal {
     background-color: #2b2b2b;
     border-radius: 12px;
@@ -243,6 +325,14 @@
     max-width: 500px;
     animation: modalAppear 0.3s ease;
     box-shadow: 0 0 30px rgba(3, 218, 198, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modal::-webkit-scrollbar {
+    display: none;
 }
 
 @keyframes modalAppear {

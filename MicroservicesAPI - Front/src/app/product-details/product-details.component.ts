@@ -38,6 +38,7 @@ export class ProductDetailsComponent implements OnInit {
   isRatingMode: boolean = false;
   userNames = new Map<string, string>();
   editCustomFieldsKeys: string[] = [];
+  editCustomFieldsList: { key: string, value: string }[] = [];
 
   @ViewChild('zoomContainer') zoomContainer!: ElementRef;
   @ViewChild('zoomImage') zoomImage!: ElementRef;
@@ -178,22 +179,46 @@ export class ProductDetailsComponent implements OnInit {
 
   openEditModal() {
     this.editProduct = { ...this.product };
-    if (!this.editProduct.customFields) {
-      this.editProduct.customFields = {};
-    }
-    this.editCustomFieldsKeys = Object.keys(this.editProduct.customFields);
+    const cf = this.editProduct.customFields || {};
+    this.editCustomFieldsList = Object.entries(cf)
+      .map(([k, v]) => ({ key: k, value: v as string }));
     this.showEditModal = true;
   }
 
-  addEditCustomField() {
-    const newKey = `Champ ${this.editCustomFieldsKeys.length + 1}`;
-    this.editProduct.customFields[newKey] = '';
-    this.editCustomFieldsKeys.push(newKey);
+  updateEditCustomFieldKey(index: number, event: any) {
+    const newKey = event.target.value;
+    const oldKey = this.editCustomFieldsKeys[index];
+
+    this.editCustomFieldsKeys[index] = newKey;
+
+    if (oldKey !== newKey && oldKey !== undefined) {
+      const value = this.editProduct.customFields[oldKey] || '';
+
+      delete this.editProduct.customFields[oldKey];
+
+      if (newKey.trim() !== '') {
+        this.editProduct.customFields[newKey] = value;
+      }
+    }
   }
 
-  removeEditCustomField(key: string) {
-    delete this.editProduct.customFields[key];
-    this.editCustomFieldsKeys = this.editCustomFieldsKeys.filter(k => k !== key);
+  updateEditCustomFieldValue(key: string, event: any) {
+    const newValue = event.target.value;
+    if (key && key.trim() !== '') {
+      this.editProduct.customFields[key] = newValue;
+    }
+  }
+
+  addCustomField() {
+    this.editCustomFieldsList.push({ key: '', value: '' });
+  }
+
+  removeCustomField(i: number) {
+    this.editCustomFieldsList.splice(i, 1);
+  }
+
+  trackByIndex(i: number): number {
+    return i;
   }
 
   closeEditModal() {
@@ -201,6 +226,14 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   submitEdit() {
+    const customFields: { [key: string]: string } = {};
+    this.editCustomFieldsList.forEach(field => {
+      if (field.key && field.key.trim() !== '') {
+        customFields[field.key.trim()] = field.value;
+      }
+    });
+    this.editProduct.customFields = customFields;
+
     this.productsApi.updateProduct(this.product._id, this.editProduct).subscribe({
       next: () => {
         alert('Produit modifié avec succès.');

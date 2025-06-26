@@ -119,19 +119,21 @@
                 <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
             </select>
 
-            <label>Champs personnalisés</label>
-            <div class="custom-fields-edit">
-                <div *ngFor="let key of objectKeys(editProduct.customFields || {}); let i = index"
+            <div class="custom-fields-section">
+                <h3>Champs personnalisés</h3>
+
+                <div *ngFor="let field of editCustomFieldsList; let i = index; trackBy: trackByIndex"
                     class="custom-field-row">
                     <div class="field-inputs">
-                        <input type="text" [(ngModel)]="editCustomFieldsKeys[i]" name="editFieldKey{{i}}"
-                            [ngModelOptions]="{standalone: true}" [value]="key" />
-                        <input type="text" [(ngModel)]="editProduct.customFields[key]" name="editFieldValue{{i}}" />
+                        <input type="text" [(ngModel)]="field.key" name="editFieldKey{{i}}"
+                            placeholder="Nom du champ" />
+
+                        <input type="text" [(ngModel)]="field.value" name="editFieldValue{{i}}" placeholder="Valeur" />
                     </div>
-                    <button type="button" class="remove-field-btn" (click)="removeEditCustomField(key)">×</button>
+                    <button type="button" class="remove-field-btn" (click)="removeCustomField(i)">×</button>
                 </div>
 
-                <button type="button" class="add-field-btn" (click)="addEditCustomField()">
+                <button type="button" class="add-field-btn" (click)="addCustomField()">
                     + Ajouter un champ personnalisé
                 </button>
             </div>

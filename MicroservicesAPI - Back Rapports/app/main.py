@@ -44,9 +44,11 @@ app.add_middleware(
 #     res = await db.Reports.insert_one({**meta, "fileId": file_id})
 #     return {"id": str(res.inserted_id), **meta}
 
+
 @app.get("/health")
 def health_check():
     return JSONResponse(content={"status": "UP"}, status_code=200)
+
 
 @app.get("/reports/{id}")
 async def download(id: str, user_id=Depends(verify_token)):
@@ -88,10 +90,10 @@ async def generate(report: ReportIn, user_id=Depends(verify_token)):
             "type": "manual",
         }
     )
-    
+
     store = await db.Stores.find_one({"_id": ObjectId(report.storeId)})
     store_name = store.get("name") if store else None
-    
+
     try:
         async with httpx.AsyncClient() as client:
             await client.post(
@@ -100,16 +102,46 @@ async def generate(report: ReportIn, user_id=Depends(verify_token)):
                     "userId": user_id,
                     "type": "report_ready",
                     "data": {
-                        "reportId": report_id, 
+                        "reportId": report_id,
                         "storeId": report.storeId,
                         "storeName": store_name,
-                        },
+                    },
                 },
             )
     except Exception as notif_err:
         print("Erreur notification rapport:", notif_err)
 
     return {"id": report_id, **meta}
+
+
+@app.post("/invoices/generate", response_model=InvoiceOut)
+async def generate_invoice(invoice: InvoiceIn, user_id=Depends(verify_token)):
+    pdf_bytes = await build_invoice_pdf(db, invoice)
+    if not pdf_bytes:
+        raise HTTPException(404, "Commande non trouvée")
+
+    file_id = await fs.upload_from_stream(
+        f"facture_{invoice.orderId}_{datetime.datetime.now().isoformat()}.pdf",
+        io.BytesIO(pdf_bytes),
+    )
+
+    created_at = datetime.datetime.now().isoformat()
+    
+    meta = {
+        "orderId": invoice.orderId,
+        "fileId": file_id,
+        "createdAt": created_at,
+        "userId": user_id,
+        "size": len(pdf_bytes)
+    }
+
+    result = await db.Invoices.insert_one(meta)
+    return {
+        "id": str(result.inserted_id),
+        "orderId": invoice.orderId,
+        "size": len(pdf_bytes),
+        "createdAt": created_at
+    }
 
 
 @app.get("/invoices/{id}")
@@ -173,10 +205,7 @@ async def get_report_history(store_id: str, user_id=Depends(verify_token)):
         raise HTTPException(403, "Vous n'avez pas accès à cette boutique")
 
     raw = await (
-        db.ReportHistory
-        .find({"storeId": store_id})
-        .sort("generatedAt", -1)
-        .to_list(50)
+        db.ReportHistory.find({"storeId": store_id}).sort("generatedAt", -1).to_list(50)
     )
 
     return [

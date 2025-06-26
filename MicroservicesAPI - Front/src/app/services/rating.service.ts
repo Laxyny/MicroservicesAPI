@@ -36,7 +36,7 @@ export class RatingService {
     }
 
     hasUserPurchasedProduct(productId: string): Observable<any> {
-        return this.http.get(`localhost:3005/order/check-purchase/${productId}`, {
+        return this.http.get(`http://localhost:3005/order/check-purchase/${productId}`, {
         withCredentials: true
         });
     }

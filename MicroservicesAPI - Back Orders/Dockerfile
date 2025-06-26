@@ -8,6 +8,6 @@ RUN npm install --only=production
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 3005
 
 CMD ["npx", "nodemon", "index.js"]
