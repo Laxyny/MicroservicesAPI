@@ -4,9 +4,10 @@ const axios = require('axios');
 
 exports.getAllCategories = async (req, res) => {
     try {
-        const categories = await axios.get('http://localhost:3000/category/listCategories');
-        res.json(categories);
+        const categories = await axios.get('http://ms_back:3000/category/listCategories');
+        res.json(categories.data);
     } catch (err) {
+        console.error('Erreur recupération categ:', err);
         res.status(500).json({ message: 'Erreur lors de la récupération des catégories' });
     }
 };
@@ -14,7 +15,7 @@ exports.getAllCategories = async (req, res) => {
 exports.getCategory = async (req, res) => {
     try {
         const id = req.params.id;
-        const category = await axios.get(`http://localhost:3000/category/category/${id}`);
+        const category = await axios.get(`http://ms_back:3000/category/category/${id}`);
         if (category.data) {
             res.json(category.data);
         } else {
@@ -28,7 +29,7 @@ exports.getCategory = async (req, res) => {
 exports.getProductCategories = async (req, res) => {
     try {
         const productId = req.params.productId;
-        const categories = await axios.get(`http://localhost:3000/category/categories/${productId}`);
+        const categories = await axios.get(`http://ms_back:3000/category/categories/${productId}`);
         if (!categories.data || categories.data.length === 0) {
             return res.status(404).json({ message: "Aucune catégorie trouvée pour ce produit." });
         }
@@ -45,17 +46,17 @@ exports.updateCategory = async (req, res) => {
         const id = req.params.id;
         const { name, description } = req.body;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
         const user = response.data;
 
-        if (user.role !== 'seller' && user.role !== 'admin') {
+        if (user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour une catégorie" });
         }
 
-        const updatedCategory = await axios.put(`http://localhost:3000/category/updateCategory/${id}`, {
+        const updatedCategory = await axios.put(`http://ms_back:3000/category/updateCategory/${id}`, {
             name,
             description
         });
@@ -72,17 +73,17 @@ exports.deleteCategory = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
         const user = response.data;
 
-        if (user.role !== 'seller' && user.role !== 'admin') {
+        if (user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer une catégorie" });
         }
 
-        await axios.delete(`http://localhost:3000/category/deleteCategory/${id}`);
+        await axios.delete(`http://ms_back:3000/category/deleteCategory/${id}`);
         res.json({ message: 'Catégorie supprimée' });
     } catch (err) {
         console.error("Erreur lors de la suppression de la catégorie :", err);
@@ -94,7 +95,7 @@ exports.deleteCategory = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await axios.get('http://localhost:3000/product/listProducts');
+        const products = await axios.get('http://ms_back:3000/product/listProducts');
         res.json(products.data);
     } catch (err) {
         console.error("Erreur lors de la récupération des produits :", err);
@@ -105,7 +106,7 @@ exports.getAllProducts = async (req, res) => {
 exports.getProduct = async (req, res) => {
     try {
         const id = req.params.id;
-        const product = await axios.get(`http://localhost:3000/product/product/${id}`);
+        const product = await axios.get(`http://ms_back:3000/product/product/${id}`);
         if (product.data) {
             res.json(product.data);
         } else {
@@ -120,7 +121,7 @@ exports.getProduct = async (req, res) => {
 exports.getStoreProducts = async (req, res) => {
     try {
         const storeId = req.params.storeId;
-        const products = await axios.get(`http://localhost:3000/product/products/${storeId}`);
+        const products = await axios.get(`http://ms_back:3000/product/products/${storeId}`);
         if (!products.data || products.data.length === 0) {
             return res.status(404).json({ message: "Aucun produit trouvé pour cette boutique." });
         }
@@ -136,17 +137,17 @@ exports.deleteProduct = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
         const user = response.data;
 
-        if (user.role !== 'seller' && user.role !== 'admin') {
+        if (user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer un produit" });
         }
 
-        await axios.delete(`http://localhost:3000/product/deleteProduct/${id}`);
+        await axios.delete(`http://ms_back:3000/product/deleteProduct/${id}`);
         res.json({ message: 'Produit supprimé' });
     } catch (err) {
         console.error("Erreur lors de la suppression du produit :", err);
@@ -160,17 +161,17 @@ exports.updateProduct = async (req, res) => {
         const id = req.params.id;
         const { name, description, price, categoryId, image, storeId, customFields } = req.body;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
         const user = response.data;
 
-        if (user.role !== 'seller' && user.role !== 'admin') {
+        if (user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour un produit" });
         }
 
-        const updatedProduct = await axios.put(`http://localhost:3000/product/updateProduct/${id}`, {
+        const updatedProduct = await axios.put(`http://ms_back:3000/product/updateProduct/${id}`, {
             name,
             description,
             price,
@@ -191,7 +192,7 @@ exports.updateProduct = async (req, res) => {
 
 exports.getAllStores = async (req, res) => {
     try {
-        const stores = await axios.get('http://localhost:3000/seller/listStores');
+        const stores = await axios.get('http://ms_back:3000/seller/listStores');
         res.json(stores.data);
     } catch (err) {
         console.error("Erreur lors de la récupération des magasins :", err);
@@ -202,7 +203,7 @@ exports.getAllStores = async (req, res) => {
 exports.getStore = async (req, res) => {
     try {
         const id = req.params.id;
-        const store = await axios.get(`http://localhost:3000/seller/store/${id}`);
+        const store = await axios.get(`http://ms_back:3000/seller/store/${id}`);
         if (store.data) {
             res.json(store.data);
         } else {
@@ -220,17 +221,17 @@ exports.updateStore = async (req, res) => {
         const id = req.params.id;
         const { name, description, site, logo } = req.body;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
         const user = response.data;
 
-        if (user.role !== 'seller' && user.role !== 'admin') {
-            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour un magasin" });
+        if (user.role !== 'admin') {
+            return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent mettre à jour un magasin" });
         }
 
-        const updatedStore = await axios.put(`http://localhost:3000/seller/updateStore/${id}`, {
+        const updatedStore = await axios.put(`http://ms_back:3000/seller/updateStore/${id}`, {
             name,
             description,
             site,
@@ -249,17 +250,17 @@ exports.deleteStore = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
         const user = response.data;
 
-        if (user.role !== 'seller' && user.role !== 'admin') {
-            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer un magasin" });
+        if (user.role !== 'admin') {
+            return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent supprimer un magasin" });
         }
 
-        await axios.delete(`http://localhost:3000/seller/deleteStore/${id}`);
+        await axios.delete(`http://ms_back:3000/seller/deleteStore/${id}`);
         res.json({ message: 'Magasin supprimé' });
     } catch (err) {
         console.error("Erreur lors de la suppression du magasin :", err);
