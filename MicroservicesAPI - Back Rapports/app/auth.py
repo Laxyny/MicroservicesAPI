@@ -3,7 +3,7 @@ from fastapi import Cookie, Request
 from motor.motor_asyncio import AsyncIOMotorClient
 
 client = AsyncIOMotorClient(os.environ["MONGODB_URI"])
-db = client.get_default_database()
+db = client["Auth"]
 
 
 def fix_base64(token: str) -> str:

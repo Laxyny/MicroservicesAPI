@@ -35,13 +35,17 @@ async function run() {
     try {
         // Connexion à la base de données
         await client.connect();
-        const database = client.db("Stockage");
+        const database = client.db("Marchandises");
+        const auth_database = client.db("Auth");
+        const stores_database = client.db("Magasins");
+        const orders_database = client.db("Commandes");
+        const ratings_database = client.db("Evaluations");
 
-        const usercollection = database.collection("Users");
-        const storeCollection = database.collection("Stores");
+        const usercollection = auth_database.collection("Users");
+        const storeCollection = stores_database.collection("Stores");
         const productCollection = database.collection("Product");
-        const orderCollection = database.collection("Orders");
-        const ratingCollection = database.collection("Ratings");
+        const orderCollection = orders_database.collection("Orders");
+        const ratingCollection = ratings_database.collection("Ratings");
 
         ratingController.init(ratingCollection, orderCollection, productCollection, storeCollection, usercollection);
 

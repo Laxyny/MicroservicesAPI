@@ -35,11 +35,13 @@ async function run() {
     try {
         // Connexion à la base de données
         await client.connect();
-        const database = client.db("Stockage");
+        const database = client.db("Commandes");
+        const stores_database = client.db("Magasins");
+        const products_database = client.db("Marchandises");
 
-        const storeCollection = database.collection("Stores");
-        const productCollection = database.collection("Product");
         const orderCollection = database.collection("Orders");
+        const storeCollection = stores_database.collection("Stores");
+        const productCollection = products_database.collection("Product");
 
         orderController.init(orderCollection, storeCollection, productCollection);
 

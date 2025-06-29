@@ -15,7 +15,11 @@ from app.models import ReportHistoryItem
 
 app = FastAPI()
 client = AsyncIOMotorClient(os.environ["MONGODB_URI"])
-db = client.get_default_database()
+db = client["Rapports"]
+magasins_db = client["Magasins"]
+products_db = client["Marchandises"]
+orders_db = client["Commandes"]
+categories_db = client["Catégories"]
 fs = AsyncIOMotorGridFSBucket(db, bucket_name="reports_pdf")
 
 app.add_middleware(
@@ -66,7 +70,7 @@ async def download(id: str, user_id=Depends(verify_token)):
 # Gestion des factures lors des commandes
 @app.post("/reports/generate", response_model=ReportOut)
 async def generate(report: ReportIn, user_id=Depends(verify_token)):
-    pdf_bytes = await build_pdf(db, report)
+    pdf_bytes = await build_pdf(db, magasins_db, products_db, orders_db, categories_db, report)
     file_id = await fs.upload_from_stream(
         f"{report.storeId}_{datetime.datetime.now().isoformat()}.pdf",
         io.BytesIO(pdf_bytes),
@@ -91,7 +95,7 @@ async def generate(report: ReportIn, user_id=Depends(verify_token)):
         }
     )
 
-    store = await db.Stores.find_one({"_id": ObjectId(report.storeId)})
+    store = await magasins_db.Stores.find_one({"_id": ObjectId(report.storeId)})
     store_name = store.get("name") if store else None
 
     try:
@@ -116,7 +120,7 @@ async def generate(report: ReportIn, user_id=Depends(verify_token)):
 
 @app.post("/invoices/generate", response_model=InvoiceOut)
 async def generate_invoice(invoice: InvoiceIn, user_id=Depends(verify_token)):
-    pdf_bytes = await build_invoice_pdf(db, invoice)
+    pdf_bytes = await build_invoice_pdf(orders_db, invoice)
     if not pdf_bytes:
         raise HTTPException(404, "Commande non trouvée")
 
@@ -169,7 +173,7 @@ async def create_schedule(schedule: ReportSchedule, user_id=Depends(verify_token
         if hasattr(schedule, "dayOfMonth") and schedule.dayOfMonth is not None:
             schedule.dayOfMonth = int(schedule.dayOfMonth)
 
-        store = await db.Stores.find_one({"_id": ObjectId(schedule.storeId)})
+        store = await magasins_db.Stores.find_one({"_id": ObjectId(schedule.storeId)})
         if not store or str(store.get("userId")) != user_id:
             raise HTTPException(403, "Vous n'avez pas accès à cette boutique")
 
@@ -200,7 +204,7 @@ async def get_schedule(store_id: str, user_id=Depends(verify_token)):
     response_model=List[ReportHistoryItem],
 )
 async def get_report_history(store_id: str, user_id=Depends(verify_token)):
-    store = await db.Stores.find_one({"_id": ObjectId(store_id)})
+    store = await magasins_db.Stores.find_one({"_id": ObjectId(store_id)})
     if not store or str(store.get("userId")) != user_id:
         raise HTTPException(403, "Vous n'avez pas accès à cette boutique")
 
@@ -220,7 +224,7 @@ async def get_report_history(store_id: str, user_id=Depends(verify_token)):
     ]
 
 
-scheduler = ReportScheduler(db, fs)
+scheduler = ReportScheduler(db, fs, magasins_db)
 
 
 @app.on_event("startup")

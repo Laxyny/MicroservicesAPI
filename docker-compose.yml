@@ -129,6 +129,26 @@ services:
         ports:
             - "${PORT_2FA}:3008"
         networks: [ msnet ]
+    
+    api-gateway:
+        build: "./MicroservicesAPI - API Gateway"
+        container_name: ms_apigateway
+        ports:
+            - "${PORT_GATEWAY}:8081"
+        depends_on:
+            - back
+            - back_stores
+            - back_ratings
+            - back_products
+            - back_orders
+            - back_categories
+            - back_carts
+            - oauth
+            - reports
+            - notification-service
+            - 2fa
+            - monitoring
+        networks: [ msnet ]
 
     front:
         build:

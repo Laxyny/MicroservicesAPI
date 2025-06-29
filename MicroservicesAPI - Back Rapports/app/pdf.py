@@ -10,8 +10,8 @@ env = jinja2.Environment(
 )
 
 
-async def build_pdf(db, report):
-    store_stats = await get_store_stats(db, report)
+async def build_pdf(db, magasins_db, products_db, orders_db, categories_db, report):
+    store_stats = await get_store_stats(db, magasins_db, report)
 
     if store_stats.get("createdAt"):
         try:
@@ -23,7 +23,7 @@ async def build_pdf(db, report):
             store_stats["createdAtFormatted"] = store_stats["createdAt"]
 
     product_stats = (
-        await get_product_stats(db, report) if report.includeProducts else []
+        await get_product_stats(products_db, orders_db, categories_db, report) if report.includeProducts else []
     )
     charts = {}
 
@@ -75,8 +75,8 @@ async def build_pdf(db, report):
     pdf = HTML(string=html).write_pdf()
     return pdf
 
-async def build_invoice_pdf(db, invoice):
-    order_data = await get_order_details(db, invoice.orderId)
+async def build_invoice_pdf(orders_db, invoice):
+    order_data = await get_order_details(orders_db, invoice.orderId)
     if not order_data:
         return None
 

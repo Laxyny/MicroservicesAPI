@@ -48,7 +48,7 @@ async function run() {
     try {
         // Connexion à la base de données
         await client.connect();
-        const database = client.db("Stockage");
+        const database = client.db("Auth");
 
         const usercollection = database.collection("Users");
         const tokenCollection = database.collection("Tokens");

@@ -9,16 +9,17 @@ import io
 import httpx
 
 class ReportScheduler:
-    def __init__(self, db, fs, mailer=None):
+    def __init__(self, db, fs, magasins_db, mailer=None):
         self.db = db
         self.fs = fs
+        self.magasins_db = magasins_db
         self.mailer = mailer
         self.running = False
 
     async def generate_scheduled_report(self, schedule_item):
         try:
             store_id = schedule_item["storeId"]
-            store = await self.db.Stores.find_one({"_id": ObjectId(store_id)})
+            store = await self.magasins_db.Stores.find_one({"_id": ObjectId(store_id)})
             
             if not store:
                 print(f"Boutique non trouvée: {store_id}")
@@ -54,7 +55,7 @@ class ReportScheduler:
                 "type": "scheduled"
             })
             
-            store = await self.db.Stores.find_one({"_id": ObjectId(store_id)})
+            store = await self.magasins_db.Stores.find_one({"_id": ObjectId(store_id)})
             store_name = store.get("name") if store else None
             
             try:

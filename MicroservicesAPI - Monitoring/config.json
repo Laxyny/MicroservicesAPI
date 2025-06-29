@@ -43,6 +43,10 @@
         {
             "name": "MicroserviceAPI - 2FA",
             "url": "http://ms_2fa:3008/health"
+        },
+        {
+            "name": "MicroserviceAPI - API Gateway",
+            "url": "http://ms_apigateway:8081/health"
         }
     ],
     "intervalSeconds": 10

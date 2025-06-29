@@ -35,7 +35,7 @@ async function run() {
     try {
         // Connexion à la base de données
         await client.connect();
-        const database = client.db("Stockage");
+        const database = client.db("Marchandises");
 
         const productCollection = database.collection("Product");
 

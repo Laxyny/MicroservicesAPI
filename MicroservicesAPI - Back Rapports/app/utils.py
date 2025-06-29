@@ -2,13 +2,13 @@ from bson import ObjectId
 import datetime
 
 
-async def get_store_stats(db, report):
+async def get_store_stats(db, magasins_db, report):
     try:
         store_id = ObjectId(report.storeId)
     except Exception:
         return None
 
-    store = await db.Stores.find_one({"_id": store_id})
+    store = await magasins_db.Stores.find_one({"_id": store_id})
     if not store:
         return None
 
@@ -30,14 +30,14 @@ async def get_store_stats(db, report):
     }
 
 
-async def get_product_stats(db, report):
+async def get_product_stats(products_db, orders_db, categories_db, report):
     try:
         store_id = str(report.storeId)
     except Exception:
         print("StoreId non convertible en str")
         return []
 
-    cursor = db.Product.find({"storeId": store_id})
+    cursor = products_db.Product.find({"storeId": store_id})
     products = await cursor.to_list(None)
     print(f"Produits récupérés pour {store_id} : {len(products)}")
 
@@ -49,7 +49,7 @@ async def get_product_stats(db, report):
         for p in products
         if "categoryId" in p and ObjectId.is_valid(p["categoryId"])
     ]
-    categories = await db["Category"].find({"_id": {"$in": category_ids}}).to_list(None)
+    categories = await categories_db["Category"].find({"_id": {"$in": category_ids}}).to_list(None)
     category_map = {str(c["_id"]): c["name"] for c in categories}
 
     sales_stats = {}
@@ -63,7 +63,7 @@ async def get_product_stats(db, report):
             "total_sales": 0,
         }
 
-    orders = await db.Orders.find({}).to_list(None)
+    orders = await orders_db.Orders.find({}).to_list(None)
 
     for order in orders:
         if "items" not in order:
