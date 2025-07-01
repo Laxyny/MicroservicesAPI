@@ -36,6 +36,9 @@ export const routes: Routes = [
 
     //HOMEPAGE
     { path: 'homepage', component: HomepageComponent, canActivate: [AuthGuard] },
+    
+    //DASHBOARD ADMIN
+    { path: 'dashboard-admin', loadComponent: () => import('./dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent), canActivate: [AuthGuard] },
 
     //STORES && PRODUCTS
     { path: 'seller/store/:id', component: StoreDetailsComponent, canActivate: [AuthGuard] },

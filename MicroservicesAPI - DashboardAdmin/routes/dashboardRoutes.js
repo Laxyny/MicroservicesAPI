@@ -25,4 +25,10 @@ router.get('/dashboard/store/:id', dashboardController.getStore);
 router.put('/dashboard/store/:id', dashboardController.updateStore);
 router.delete('/dashboard/store/:id', dashboardController.deleteStore);
 
+//Route admin users
+router.get('/dashboard/users', dashboardController.getAllUsers);
+router.get('/dashboard/user/:id', dashboardController.getUser);
+router.put('/dashboard/user/:id', dashboardController.updateUser);
+router.delete('/dashboard/user/:id', dashboardController.deleteUser);
+
 module.exports = router;

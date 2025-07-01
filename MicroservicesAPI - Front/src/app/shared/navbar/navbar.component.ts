@@ -105,7 +105,7 @@ export class NavbarComponent implements OnInit {
   }
 
   goToDashboard() {
-    this.router.navigate(['/admin/dashboard']);
+    this.router.navigate(['/dashboard-admin']);;
   }
 
   settings() {

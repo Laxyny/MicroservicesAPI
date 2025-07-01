@@ -1,0 +1,144 @@
+.admin-panel {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f0f, #1e1e1e);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1f1f1f;
+  padding: 40px 0 0 0;
+  border-right: 1px solid #222;
+  min-height: 100vh;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 18px 30px;
+  cursor: pointer;
+  color: #ccc;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar li.active,
+.sidebar li:hover {
+  background: #03dac6;
+  color: #000;
+}
+
+.content {
+  flex: 1;
+  padding: 40px 60px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #222;
+  text-align: left;
+}
+
+.admin-table th {
+  background: rgba(3, 218, 198, 0.08);
+  color: #03dac6;
+  font-weight: 700;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+button {
+  background: #03dac6;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background 0.2s;
+}
+
+button.delete-btn {
+  background: #ff4b4b;
+  color: #fff;
+}
+
+button.delete-btn:hover {
+  background: #ff2740;
+}
+
+button:hover {
+  background: #00e6c3;
+}
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #232323;
+  border-radius: 12px;
+  padding: 40px 30px;
+  min-width: 320px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 0 30px rgba(3, 218, 198, 0.2);
+}
+
+.modal h2 {
+  color: #03dac6;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  background-color: #1f1f1f;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.form-buttons button {
+  flex: 1;
+  margin: 0 8px;
+}
