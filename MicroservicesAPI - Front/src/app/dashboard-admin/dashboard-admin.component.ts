@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { ApiDashboardService } from "../services/dashboard.service";
 // import { nextTick } from "process";
 import { NgForm, FormsModule } from "@angular/forms";
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from "@angular/common";
 
 @Component({
   selector: "app-dashboard-admin",
@@ -73,7 +73,7 @@ export class DashboardAdminComponent implements OnInit {
     this.serviceDash.getAllUsers().subscribe({
       next: (users: any[]) => {
         this.users = users;
-      }
+      },
     });
   }
 
@@ -163,41 +163,44 @@ export class DashboardAdminComponent implements OnInit {
 
   deleteUser(userId: string) {
     this.serviceDash.deleteUser(userId).subscribe({
-        next: () => {
-            console.log("Utilisateur supprimé avec succès");
-            this.fetchUsersData();
-        },
-        error: (error) => {
-            console.error("Erreur lors de la suppression de l'utilisateur :", error);
-        },
+      next: () => {
+        console.log("Utilisateur supprimé avec succès");
+        this.fetchUsersData();
+      },
+      error: (error) => {
+        console.error(
+          "Erreur lors de la suppression de l'utilisateur :",
+          error
+        );
+      },
     });
   }
 
-  openEditModal(type: 'user' | 'store' | 'product' | 'category', item: any) {
+  openEditModal(type: "user" | "store" | "product" | "category", item: any) {
     this.editType = type;
     this.editItem = { ...item };
     this.showEditModal = true;
-    if (type === 'user') {
+    if (type === "user") {
       this.editFields = [
-        { key: 'name', label: 'Nom' },
-        { key: 'email', label: 'Email' },
-        { key: 'role', label: 'Rôle' }
+        { key: "name", label: "Nom" },
+        { key: "email", label: "Email" },
+        { key: "role", label: "Rôle" },
       ];
-    } else if (type === 'store') {
+    } else if (type === "store") {
       this.editFields = [
-        { key: 'name', label: 'Nom' },
-        { key: 'description', label: 'Description' }
+        { key: "name", label: "Nom" },
+        { key: "description", label: "Description" },
       ];
-    } else if (type === 'product') {
+    } else if (type === "product") {
       this.editFields = [
-        { key: 'name', label: 'Nom' },
-        { key: 'description', label: 'Description' },
-        { key: 'price', label: 'Prix' }
+        { key: "name", label: "Nom" },
+        { key: "description", label: "Description" },
+        { key: "price", label: "Prix" },
       ];
-    } else if (type === 'category') {
+    } else if (type === "category") {
       this.editFields = [
-        { key: 'name', label: 'Nom' },
-        { key: 'description', label: 'Description' }
+        { key: "name", label: "Nom" },
+        { key: "description", label: "Description" },
       ];
     }
   }
@@ -209,26 +212,42 @@ export class DashboardAdminComponent implements OnInit {
   }
 
   submitEdit() {
-    if (this.editType === 'user') {
-      this.serviceDash.updateUser(this.editItem._id, this.editItem).subscribe(() => {
-        this.fetchUsersData();
-        this.closeEditModal();
-      });
-    } else if (this.editType === 'store') {
+    if (this.editType === "user") {
+      this.serviceDash
+        .updateUser(this.editItem._id, this.editItem)
+        .subscribe(() => {
+          this.fetchUsersData();
+          this.closeEditModal();
+        });
+    } else if (this.editType === "store") {
       this.serviceDash.updateStore(this.editItem._id).subscribe(() => {
         this.fetchStoresData();
         this.closeEditModal();
       });
-    } else if (this.editType === 'product') {
+    } else if (this.editType === "product") {
       this.serviceDash.updateProduct(this.editItem._id).subscribe(() => {
         this.fetchProductData();
         this.closeEditModal();
       });
-    } else if (this.editType === 'category') {
+    } else if (this.editType === "category") {
       this.serviceDash.updateCategory(this.editItem._id).subscribe(() => {
         this.fetchCategorysData();
         this.closeEditModal();
       });
     }
+  }
+
+  objectKeys(obj: any): string[] {
+    return obj ? Object.keys(obj) : [];
+  }
+
+  getStoreName(storeId: string): string {
+    const store = this.stores.find(s => s._id === storeId);
+    return store ? store.name : storeId;
+  }
+
+  getCategoryName(categoryId: string): string {
+    const cat = this.categorys.find(c => c._id === categoryId);
+    return cat ? cat.name : categoryId;
   }
 }

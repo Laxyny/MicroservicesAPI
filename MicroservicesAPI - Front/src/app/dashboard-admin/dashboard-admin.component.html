@@ -9,88 +9,120 @@
   </nav>
 
   <div class="content">
+    <!-- Utilisateurs -->
     <div *ngIf="selectedTab === 'users'">
       <h2>Utilisateurs</h2>
-      <table class="admin-table">
+      <table class="admin-table" *ngIf="users.length > 0">
         <tr>
-          <th>Nom</th>
-          <th>Email</th>
-          <th>Rôle</th>
           <th>Actions</th>
+          <ng-container *ngFor="let key of objectKeys(users[0])">
+            <th *ngIf="key !== '_id'">{{ key }}</th>
+          </ng-container>
         </tr>
         <tr *ngFor="let user of users">
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.role }}</td>
           <td>
-            <button (click)="openEditModal('user', user)">Modifier</button>
-            <button class="delete-btn" (click)="deleteUser(user._id)">Supprimer</button>
+            <div class="action-buttons">
+              <button (click)="openEditModal('user', user)">Modifier</button>
+              <button class="delete-btn" (click)="deleteUser(user._id)">Supprimer</button>
+            </div>
           </td>
+          <ng-container *ngFor="let key of objectKeys(user)">
+            <td *ngIf="key !== '_id'">
+              {{ user[key] }}
+            </td>
+          </ng-container>
         </tr>
       </table>
     </div>
 
+    <!-- Boutiques -->
     <div *ngIf="selectedTab === 'stores'">
       <h2>Boutiques</h2>
-      <table class="admin-table">
+      <table class="admin-table" *ngIf="stores.length > 0">
         <tr>
-          <th>Nom</th>
-          <th>Description</th>
           <th>Actions</th>
+          <ng-container *ngFor="let key of objectKeys(stores[0])">
+            <th *ngIf="key !== '_id'">{{ key }}</th>
+          </ng-container>
         </tr>
         <tr *ngFor="let store of stores">
-          <td>{{ store.name }}</td>
-          <td>{{ store.description }}</td>
           <td>
-            <button (click)="openEditModal('store', store)">Modifier</button>
-            <button class="delete-btn" (click)="deleteStore(store._id)">Supprimer</button>
+            <div class="action-buttons">
+              <button (click)="openEditModal('store', store)">Modifier</button>
+              <button class="delete-btn" (click)="deleteStore(store._id)">Supprimer</button>
+            </div>
           </td>
+          <ng-container *ngFor="let key of objectKeys(store)">
+            <td *ngIf="key !== '_id'">
+              <ng-container *ngIf="key === 'logo'; else defaultStoreCell">
+                <img [src]="store.logo" alt="logo" style="max-width:60px;max-height:60px;border-radius:8px;" />
+              </ng-container>
+              <ng-template #defaultStoreCell>
+                {{ store[key] }}
+              </ng-template>
+            </td>
+          </ng-container>
         </tr>
       </table>
     </div>
 
+    <!-- Produits -->
     <div *ngIf="selectedTab === 'products'">
       <h2>Produits</h2>
-      <table class="admin-table">
+      <table class="admin-table" *ngIf="products.length > 0">
         <tr>
-          <th>Nom</th>
-          <th>Description</th>
-          <th>Prix</th>
           <th>Actions</th>
+          <ng-container *ngFor="let key of objectKeys(products[0])">
+            <th *ngIf="key !== '_id'">{{ key }}</th>
+          </ng-container>
         </tr>
         <tr *ngFor="let product of products">
-          <td>{{ product.name }}</td>
-          <td>{{ product.description }}</td>
-          <td>{{ product.price }} €</td>
           <td>
-            <button (click)="openEditModal('product', product)">Modifier</button>
-            <button class="delete-btn" (click)="deleteProduct(product._id)">Supprimer</button>
+            <div class="action-buttons">
+              <button (click)="openEditModal('product', product)">Modifier</button>
+              <button class="delete-btn" (click)="deleteProduct(product._id)">Supprimer</button>
+            </div>
           </td>
+          <ng-container *ngFor="let key of objectKeys(product)">
+            <td *ngIf="key !== '_id'">
+              <ng-container *ngIf="key === 'image'; else defaultProductCell">
+                <img [src]="product.image" alt="image" style="max-width:60px;max-height:60px;border-radius:8px;" />
+              </ng-container>
+              <ng-template #defaultProductCell>
+                {{ product[key] }}
+              </ng-template>
+            </td>
+          </ng-container>
         </tr>
       </table>
     </div>
 
+    <!-- Catégories -->
     <div *ngIf="selectedTab === 'categories'">
       <h2>Catégories</h2>
-      <table class="admin-table">
+      <table class="admin-table" *ngIf="categorys.length > 0">
         <tr>
-          <th>Nom</th>
-          <th>Description</th>
           <th>Actions</th>
+          <ng-container *ngFor="let key of objectKeys(categorys[0])">
+            <th *ngIf="key !== '_id'">{{ key }}</th>
+          </ng-container>
         </tr>
         <tr *ngFor="let category of categorys">
-          <td>{{ category.name }}</td>
-          <td>{{ category.description }}</td>
           <td>
-            <button (click)="openEditModal('category', category)">Modifier</button>
-            <button class="delete-btn" (click)="deleteCategory(category._id)">Supprimer</button>
+            <div class="action-buttons">
+              <button (click)="openEditModal('category', category)">Modifier</button>
+              <button class="delete-btn" (click)="deleteCategory(category._id)">Supprimer</button>
+            </div>
           </td>
+          <ng-container *ngFor="let key of objectKeys(category)">
+            <td *ngIf="key !== '_id'">
+              {{ category[key] }}
+            </td>
+          </ng-container>
         </tr>
       </table>
     </div>
-  </div>
 
-  <!-- Modal édition -->
   <div class="overlay" *ngIf="showEditModal">
     <div class="modal">
       <h2>Modifier {{ editType | titlecase }}</h2>
