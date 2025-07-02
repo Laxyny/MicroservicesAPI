@@ -4,7 +4,7 @@ const axios = require('axios');
 
 exports.getAllCategories = async (req, res) => {
     try {
-        const categories = await axios.get('http://localhost:3000/category/listCategories');
+        const categories = await axios.get('http://ms_back:3000/category/listCategories');
         res.json(categories.data);
     } catch (err) {
         console.error('Erreur recupération categ:', err);
@@ -15,7 +15,7 @@ exports.getAllCategories = async (req, res) => {
 exports.getCategory = async (req, res) => {
     try {
         const id = req.params.id;
-        const category = await axios.get(`http://localhost:3000/category/category/${id}`);
+        const category = await axios.get(`http://ms_back:3000/category/category/${id}`);
         if (category.data) {
             res.json(category.data);
         } else {
@@ -29,7 +29,7 @@ exports.getCategory = async (req, res) => {
 exports.getProductCategories = async (req, res) => {
     try {
         const productId = req.params.productId;
-        const categories = await axios.get(`http://localhost:3000/category/categories/${productId}`);
+        const categories = await axios.get(`http://ms_back:3000/category/categories/${productId}`);
         if (!categories.data || categories.data.length === 0) {
             return res.status(404).json({ message: "Aucune catégorie trouvée pour ce produit." });
         }
@@ -46,7 +46,7 @@ exports.updateCategory = async (req, res) => {
         const id = req.params.id;
         const { name, description } = req.body;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
@@ -56,7 +56,7 @@ exports.updateCategory = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour une catégorie" });
         }
 
-        const updatedCategory = await axios.put(`http://localhost:3000/category/updateCategory/${id}`, {
+        const updatedCategory = await axios.put(`http://ms_back:3000/category/updateCategory/${id}`, {
             name,
             description
         }, {
@@ -75,7 +75,7 @@ exports.deleteCategory = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
@@ -85,7 +85,7 @@ exports.deleteCategory = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer une catégorie" });
         }
 
-        await axios.delete(`http://localhost:3000/category/deleteCategory/${id}`, {
+        await axios.delete(`http://ms_back:3000/category/deleteCategory/${id}`, {
             headers: { Cookie: `authToken=${token}` },
         });
         res.json({ message: 'Catégorie supprimée' });
@@ -100,7 +100,7 @@ exports.deleteCategory = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
     const token = req.cookies.authToken;
     try {
-        const products = await axios.get('http://localhost:3000/product/listProducts', {
+        const products = await axios.get('http://ms_back:3000/product/listProducts', {
             headers: { Cookie: `authToken=${token}` }
         });
         res.json(products.data);
@@ -114,7 +114,7 @@ exports.getProduct = async (req, res) => {
     const token = req.cookies.authToken;
     try {
         const id = req.params.id;
-        const product = await axios.get(`http://localhost:3000/product/product/${id}`, {
+        const product = await axios.get(`http://ms_back:3000/product/product/${id}`, {
             headers: { Cookie: `authToken=${token}` }
         });
         if (product.data) {
@@ -132,7 +132,7 @@ exports.getStoreProducts = async (req, res) => {
     const token = req.cookies.authToken;
     try {
         const storeId = req.params.storeId;
-        const products = await axios.get(`http://localhost:3000/product/products/${storeId}`, {
+        const products = await axios.get(`http://ms_back:3000/product/products/${storeId}`, {
             headers: { Cookie: `authToken=${token}` },
         });
         if (!products.data || products.data.length === 0) {
@@ -150,7 +150,7 @@ exports.deleteProduct = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
@@ -160,7 +160,7 @@ exports.deleteProduct = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer un produit" });
         }
 
-        await axios.delete(`http://localhost:3000/product/deleteProduct/${id}`, {
+        await axios.delete(`http://ms_back:3000/product/deleteProduct/${id}`, {
             headers: { Cookie: `authToken=${token}` },
         });
         res.json({ message: 'Produit supprimé' });
@@ -176,7 +176,7 @@ exports.updateProduct = async (req, res) => {
         const id = req.params.id;
         const { name, description, price, categoryId, image, storeId, customFields } = req.body;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
@@ -186,7 +186,7 @@ exports.updateProduct = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour un produit" });
         }
 
-        const updatedProduct = await axios.put(`http://localhost:3000/product/updateProduct/${id}`, {
+        const updatedProduct = await axios.put(`http://ms_back:3000/product/updateProduct/${id}`, {
             name,
             description,
             price,
@@ -210,7 +210,7 @@ exports.updateProduct = async (req, res) => {
 exports.getAllStores = async (req, res) => {
     const token = req.cookies.authToken;
     try {
-        const stores = await axios.get('http://localhost:3000/seller/listStores', {
+        const stores = await axios.get('http://ms_back:3000/seller/listStores', {
             headers: { Cookie: `authToken=${token}` },
         });
         res.json(stores.data);
@@ -224,7 +224,7 @@ exports.getStore = async (req, res) => {
     const token = req.cookies.authToken;
     try {
         const id = req.params.id;
-        const store = await axios.get(`http://localhost:3000/seller/store/${id}`, {
+        const store = await axios.get(`http://ms_back:3000/seller/store/${id}`, {
             headers: { Cookie: `authToken=${token}` },
         });
         if (store.data) {
@@ -244,7 +244,7 @@ exports.updateStore = async (req, res) => {
         const id = req.params.id;
         const { name, description, site, logo } = req.body;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
@@ -254,7 +254,7 @@ exports.updateStore = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent mettre à jour un magasin" });
         }
 
-        const updatedStore = await axios.put(`http://localhost:3000/seller/updateStore/${id}`, {
+        const updatedStore = await axios.put(`http://ms_back:3000/seller/updateStore/${id}`, {
             name,
             description,
             site,
@@ -275,7 +275,7 @@ exports.deleteStore = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const response = await axios.get('http://localhost:3000/user', {
+        const response = await axios.get('http://ms_back:3000/user', {
             headers: { Cookie: `authToken=${token}` },
         });
 
@@ -285,7 +285,7 @@ exports.deleteStore = async (req, res) => {
             return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent supprimer un magasin" });
         }
 
-        await axios.delete(`http://localhost:3000/seller/deleteStore/${id}`, {
+        await axios.delete(`http://ms_back:3000/seller/deleteStore/${id}`, {
             headers: { Cookie: `authToken=${token}` },
         });
         res.json({ message: 'Magasin supprimé' });
@@ -293,70 +293,70 @@ exports.deleteStore = async (req, res) => {
         console.error("Erreur lors de la suppression du magasin :", err);
         res.status(500).json({ message: "Erreur interne du serveur" });
     }
-
-    // Users controller
-
-    exports.getAllUsers = async (req, res) => {
-        const token = req.cookies.authToken;
-        try {
-            const users = await axios.get('http://localhost:3000/users', {
-                headers: { Cookie: `authToken=${token}` },
-            });
-            res.json(users.data);
-        } catch (err) {
-            console.error("Erreur lors de la récupération des utilisateurs :", err);
-            res.status(500).json({ message: "Erreur interne du serveur" });
-        }
-    };
-
-    exports.getUser = async (req, res) => {
-        const token = req.cookies.authToken;
-        try {
-            const id = req.params.id;
-            const user = await axios.get(`http://localhost:3000/user/${id}`, {
-                headers: { Cookie: `authToken=${token}` },
-            });
-            if (user.data) {
-                res.json(user.data);
-            } else {
-                res.status(404).json({ message: 'Utilisateur non trouvé' });
-            }
-        } catch (err) {
-            console.error("Erreur lors de la récupération de l'utilisateur :", err);
-            res.status(500).json({ message: "Erreur interne du serveur" });
-        }
-    };
-
-    exports.updateUser = async (req, res) => {
-        const token = req.cookies.authToken;
-        try {
-            const id = req.params.id;
-            const { name, email, role } = req.body;
-            const updatedUser = await axios.put(`http://localhost:3000/user/updateUser/${id}`, {
-                name,
-                email,
-                role
-            }, {
-                headers: { Cookie: `authToken=${token}` },
-            });
-            res.json(updatedUser.data);
-        } catch (err) {
-            console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
-            res.status(500).json({ message: "Erreur interne du serveur" });
-        }
-    };
-
-    exports.deleteUser = async (req, res) => {
-        const token = req.cookies.authToken;
-        try {
-            const id = req.params.id;
-            await axios.delete(`http://localhost:3000/user/deleteUser/${id}`, {
-                headers: { Cookie: `authToken=${token}` },
-            });
-            res.json({ message: 'Utilisateur supprimé' });
-        } catch (err) {
-            console.error("Erreur lors de la suppression de l'utilisateur :", err);
-            res.status(500).json({ message: "Erreur interne du serveur" });
-        }
-    };
 }
+
+// Users controller
+
+exports.getAllUsers = async (req, res) => {
+    const token = req.cookies.authToken;
+    try {
+        const users = await axios.get('http://ms_back:3000/users', {
+            headers: { Cookie: `authToken=${token}` },
+        });
+        res.json(users.data);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des utilisateurs :", err);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+exports.getUser = async (req, res) => {
+    const token = req.cookies.authToken;
+    try {
+        const id = req.params.id;
+        const user = await axios.get(`http://ms_back:3000/user/${id}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
+        if (user.data) {
+            res.json(user.data);
+        } else {
+            res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+    } catch (err) {
+        console.error("Erreur lors de la récupération de l'utilisateur :", err);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    const token = req.cookies.authToken;
+    try {
+        const id = req.params.id;
+        const { name, email, role } = req.body;
+        const updatedUser = await axios.put(`http://ms_back:3000/user/updateUser/${id}`, {
+            name,
+            email,
+            role
+        }, {
+            headers: { Cookie: `authToken=${token}` },
+        });
+        res.json(updatedUser.data);
+    } catch (err) {
+        console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    const token = req.cookies.authToken;
+    try {
+        const id = req.params.id;
+        await axios.delete(`http://ms_back:3000/user/deleteUser/${id}`, {
+            headers: { Cookie: `authToken=${token}` },
+        });
+        res.json({ message: 'Utilisateur supprimé' });
+    } catch (err) {
+        console.error("Erreur lors de la suppression de l'utilisateur :", err);
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
