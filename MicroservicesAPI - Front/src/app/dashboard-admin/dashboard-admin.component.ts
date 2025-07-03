@@ -1,8 +1,7 @@
-import { Component, OnInit, NgModule } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { ApiDashboardService } from "../services/dashboard.service";
-// import { nextTick } from "process";
 import { NgForm, FormsModule } from "@angular/forms";
 import { CommonModule, NgFor, NgIf } from "@angular/common";
 
@@ -14,19 +13,21 @@ import { CommonModule, NgFor, NgIf } from "@angular/common";
 })
 export class DashboardAdminComponent implements OnInit {
   stores: any[] = [];
-
   products: any[] = [];
-
   categorys: any[] = [];
-
-  isAdmin: boolean = false;
   users: any[] = [];
-  selectedTab: string = "users";
+  isAdmin = false;
+  selectedTab = "users";
 
   showEditModal = false;
   editType: "user" | "store" | "product" | "category" = "user";
   editItem: any = {};
   editFields: { key: string; label: string }[] = [];
+
+  selectedImageUrl: string | null = null;
+  showImageModal = false;
+
+  private apiUrl = "http://localhost:3000/user";
 
   constructor(
     private serviceDash: ApiDashboardService,
@@ -34,175 +35,50 @@ export class DashboardAdminComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-  private apiUrl = "http://localhost:3000/user";
-
   ngOnInit(): void {
-    this.fetchUserData();
-    this.fetchStoresData();
-    this.fetchProductData();
-    this.fetchCategorysData();
-    this.fetchUsersData();
+    this.fetchAllData();
   }
 
-  selectTab(tab: string) {
-    this.selectedTab = tab;
-  }
-
-  fetchUserData() {
+  fetchAllData() {
     this.http.get(this.apiUrl, { withCredentials: true }).subscribe({
       next: (user: any) => {
-        console.log("Utilisateur récupéré :", user);
         this.isAdmin = user?.role === "admin";
-        if (!this.isAdmin) {
-          console.log(
-            "Redirection vers /login car l'utilisateur n'est pas admin"
-          );
-          this.router.navigate(["/login"]);
-        }
+        if (!this.isAdmin) this.router.navigate(["/login"]);
       },
-      error: () => {
-        console.log(
-          "Erreur lors de la récupération de l'utilisateur, redirection vers /login"
-        );
-        this.router.navigate(["/login"]);
-      },
+      error: () => this.router.navigate(["/login"]),
     });
+    this.serviceDash.getAllUsers().subscribe({ next: users => (this.users = users) });
+    this.serviceDash.getAllStores().subscribe({ next: stores => (this.stores = stores) });
+    this.serviceDash.getAllProducts().subscribe({ next: products => (this.products = products) });
+    this.serviceDash.getAllCategories().subscribe({ next: cats => (this.categorys = cats) });
   }
 
-  fetchUsersData() {
-    this.serviceDash.getAllUsers().subscribe({
-      next: (users: any[]) => {
-        this.users = users;
-      },
-    });
+  deleteStore(id: string) {
+    this.serviceDash.deleteStore(id).subscribe(() => this.fetchAllData());
   }
-
-  fetchStoresData() {
-    this.serviceDash.getAllStores().subscribe({
-      next: (stores: any[]) => {
-        console.log("Boutiques reçues :", stores);
-        this.stores = stores;
-      },
-      error: (error) => {
-        console.error("Erreur lors de la récupération des boutiques :", error);
-      },
-    });
+  deleteProduct(id: string) {
+    this.serviceDash.deleteProduct(id).subscribe(() => this.fetchAllData());
   }
-
-  fetchProductData() {
-    this.serviceDash.getAllProducts().subscribe({
-      next: (products: any[]) => {
-        console.log("Produits reçus :", products);
-        this.products = products;
-      },
-      error: (error) => {
-        console.error("Erreur lors de la récupération des produits :", error);
-      },
-    });
+  deleteCategory(id: string) {
+    this.serviceDash.deleteCategory(id).subscribe(() => this.fetchAllData());
   }
-
-  fetchCategorysData() {
-    this.serviceDash.getAllCategories().subscribe({
-      next: (categorys: any[]) => {
-        console.log("Catégories reçus :", categorys);
-        this.categorys = categorys;
-      },
-      error: (error) => {
-        console.error("Erreur lors de la récupération des catégories :", error);
-      },
-    });
-  }
-
-  getStoreDetails(storeId: string) {
-    this.serviceDash.getStore(storeId);
-  }
-
-  getProductDetails(productId: string) {
-    this.serviceDash.getProduct(productId);
-  }
-
-  getCategoryDetails(categoryId: string) {
-    this.serviceDash.getCategory(categoryId);
-  }
-
-  deleteStore(storeId: string) {
-    this.serviceDash.deleteStore(storeId).subscribe({
-      next: () => {
-        console.log("Boutique supprimée avec succès");
-        this.fetchStoresData();
-      },
-      error: (error) => {
-        console.error("Erreur lors de la suppression de la boutique :", error);
-      },
-    });
-  }
-
-  deleteProduct(productId: string) {
-    this.serviceDash.deleteProduct(productId).subscribe({
-      next: () => {
-        console.log("Produit supprimé avec succès");
-        this.fetchProductData();
-      },
-      error: (error) => {
-        console.error("Erreur lors de la suppression du produit :", error);
-      },
-    });
-  }
-
-  deleteCategory(categoryId: string) {
-    this.serviceDash.deleteCategory(categoryId).subscribe({
-      next: () => {
-        console.log("Catégorie supprimée avec succès");
-        this.fetchCategorysData();
-      },
-      error: (error) => {
-        console.error("Erreur lors de la suppression de la catégorie :", error);
-      },
-    });
-  }
-
-  deleteUser(userId: string) {
-    this.serviceDash.deleteUser(userId).subscribe({
-      next: () => {
-        console.log("Utilisateur supprimé avec succès");
-        this.fetchUsersData();
-      },
-      error: (error) => {
-        console.error(
-          "Erreur lors de la suppression de l'utilisateur :",
-          error
-        );
-      },
-    });
+  deleteUser(id: string) {
+    this.serviceDash.deleteUser(id).subscribe(() => this.fetchAllData());
   }
 
   openEditModal(type: "user" | "store" | "product" | "category", item: any) {
     this.editType = type;
     this.editItem = { ...item };
     this.showEditModal = true;
-    if (type === "user") {
-      this.editFields = [
-        { key: "name", label: "Nom" },
-        { key: "email", label: "Email" },
-        { key: "role", label: "Rôle" },
-      ];
-    } else if (type === "store") {
-      this.editFields = [
-        { key: "name", label: "Nom" },
-        { key: "description", label: "Description" },
-      ];
-    } else if (type === "product") {
-      this.editFields = [
-        { key: "name", label: "Nom" },
-        { key: "description", label: "Description" },
-        { key: "price", label: "Prix" },
-      ];
-    } else if (type === "category") {
-      this.editFields = [
-        { key: "name", label: "Nom" },
-        { key: "description", label: "Description" },
-      ];
-    }
+    const exclude = {
+      user: ['_id', 'googleId', 'passwordHash', '__v'],
+      store: ['_id', '__v', 'createdAt', 'userId', 'logo', 'updatedAt'],
+      product: ['_id', '__v', 'createdAt', 'storeId', 'userId', 'image', 'logo', 'customFields', 'updatedAt'],
+      category: ['_id', '__v']
+    }[type];
+    this.editFields = Object.keys(item)
+      .filter(key => !exclude.includes(key))
+      .map(key => ({ key, label: this.headerLabel(key) }));
   }
 
   closeEditModal() {
@@ -212,29 +88,16 @@ export class DashboardAdminComponent implements OnInit {
   }
 
   submitEdit() {
-    if (this.editType === "user") {
-      this.serviceDash
-        .updateUser(this.editItem._id, this.editItem)
-        .subscribe(() => {
-          this.fetchUsersData();
-          this.closeEditModal();
-        });
-    } else if (this.editType === "store") {
-      this.serviceDash.updateStore(this.editItem._id).subscribe(() => {
-        this.fetchStoresData();
-        this.closeEditModal();
-      });
-    } else if (this.editType === "product") {
-      this.serviceDash.updateProduct(this.editItem._id).subscribe(() => {
-        this.fetchProductData();
-        this.closeEditModal();
-      });
-    } else if (this.editType === "category") {
-      this.serviceDash.updateCategory(this.editItem._id).subscribe(() => {
-        this.fetchCategorysData();
-        this.closeEditModal();
-      });
-    }
+    const updateMap = {
+      user: () => this.serviceDash.updateUser(this.editItem._id, this.editItem),
+      store: () => this.serviceDash.updateStore(this.editItem._id, this.editItem),
+      product: () => this.serviceDash.updateProduct(this.editItem._id, this.editItem),
+      category: () => this.serviceDash.updateCategory(this.editItem._id, this.editItem)
+    };
+    updateMap[this.editType]().subscribe(() => {
+      this.fetchAllData();
+      this.closeEditModal();
+    });
   }
 
   objectKeys(obj: any): string[] {
@@ -242,12 +105,45 @@ export class DashboardAdminComponent implements OnInit {
   }
 
   getStoreName(storeId: string): string {
-    const store = this.stores.find(s => s._id === storeId);
-    return store ? store.name : storeId;
+    return this.stores.find(s => s._id === storeId)?.name || storeId;
+  }
+  getCategoryName(categoryId: string): string {
+    return this.categorys.find(c => c._id === categoryId)?.name || categoryId;
+  }
+  getUserName(userId: string): string {
+    return this.users.find(u => u._id === userId)?.name || userId;
   }
 
-  getCategoryName(categoryId: string): string {
-    const cat = this.categorys.find(c => c._id === categoryId);
-    return cat ? cat.name : categoryId;
+  openImageModal(url: string) {
+    this.selectedImageUrl = url;
+    this.showImageModal = true;
+  }
+  closeImageModal() {
+    this.selectedImageUrl = null;
+    this.showImageModal = false;
+  }
+
+  getRoleLabel(role: string): string {
+    return { user: "Client", seller: "Vendeur", admin: "Administrateur" }[role] || role;
+  }
+
+  headerLabel(key: string): string {
+    const map: { [key: string]: string } = {
+      name: 'Nom',
+      email: 'Email',
+      role: 'Rôle',
+      description: 'Description',
+      price: 'Prix',
+      category: 'Catégorie',
+      categoryId: 'Catégorie',
+      image: 'Image',
+      storeId: 'Boutique',
+      logo: 'Logo',
+      site: 'Site',
+      userId: 'Utilisateur',
+      createdAt: 'Créé le',
+      updatedAt: 'Modifié le'
+    };
+    return map[key] || key.charAt(0).toUpperCase() + key.slice(1);
   }
 }

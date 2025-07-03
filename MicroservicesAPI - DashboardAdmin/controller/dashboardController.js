@@ -53,12 +53,11 @@ exports.updateCategory = async (req, res) => {
         const user = response.data;
 
         if (user.role !== 'admin') {
-            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour une catégorie" });
+            return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent mettre à jour une catégorie" });
         }
 
         const updatedCategory = await axios.put(`http://ms_back:3000/category/updateCategory/${id}`, {
-            name,
-            description
+            name
         }, {
             headers: { Cookie: `authToken=${token}` },
         });
@@ -82,7 +81,7 @@ exports.deleteCategory = async (req, res) => {
         const user = response.data;
 
         if (user.role !== 'admin') {
-            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer une catégorie" });
+            return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent supprimer une catégorie" });
         }
 
         await axios.delete(`http://ms_back:3000/category/deleteCategory/${id}`, {
@@ -157,7 +156,7 @@ exports.deleteProduct = async (req, res) => {
         const user = response.data;
 
         if (user.role !== 'admin') {
-            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent supprimer un produit" });
+            return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent supprimer un produit" });
         }
 
         await axios.delete(`http://ms_back:3000/product/deleteProduct/${id}`, {
@@ -183,7 +182,7 @@ exports.updateProduct = async (req, res) => {
         const user = response.data;
 
         if (user.role !== 'admin') {
-            return res.status(403).json({ message: "Accès refusé : Seuls les vendeurs peuvent mettre à jour un produit" });
+            return res.status(403).json({ message: "Accès refusé : Seuls les administrateurs peuvent mettre à jour un produit" });
         }
 
         const updatedProduct = await axios.put(`http://ms_back:3000/product/updateProduct/${id}`, {

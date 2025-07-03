@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class ApiDashboardService {
     constructor(private http: HttpClient) { }
 
-    //Catégories
+    // Catégories
     getAllCategories(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/categories', { withCredentials: true });
     }
@@ -25,45 +25,45 @@ export class ApiDashboardService {
         return this.http.delete(`http://localhost:3001/dashboard/category/${categoryId}`, { withCredentials: true });
     }
 
-    updateCategory(categoryId: string): Observable<any> {
-        return this.http.put(`http://localhost:3001/dashboard/category/${categoryId}`, { withCredentials: true });
+    updateCategory(categoryId: string, data: any): Observable<any> {
+        return this.http.put(`http://localhost:3001/dashboard/category/${categoryId}`, data, { withCredentials: true });
     }
 
-    //Produits
+    // Produits
     getAllProducts(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/products', { withCredentials: true });
     }
 
-    getProduct(productId :string): Observable<any>{
-        return this.http.get('http://localhost:3001/dashboard/product/${productId}', { withCredentials: true });
+    getProduct(productId: string): Observable<any> {
+        return this.http.get(`http://localhost:3001/dashboard/product/${productId}`, { withCredentials: true });
     }
 
-    getStoreProducts(storeId :string): Observable<any>{
+    getStoreProducts(storeId: string): Observable<any> {
         return this.http.get(`http://localhost:3001/dashboard/store/${storeId}/products`, { withCredentials: true });
     }
 
-    deleteProduct(productId :string): Observable<any>{
-        return this.http.delete(`http://localhost:3001/dashboard/product/${productId}`, { withCredentials: true }); 
+    deleteProduct(productId: string): Observable<any> {
+        return this.http.delete(`http://localhost:3001/dashboard/product/${productId}`, { withCredentials: true });
     }
 
-    updateProduct(productId :string): Observable<any>{
-        return this.http.put(`http://localhost:3001/dashboard/product/${productId}`, { withCredentials: true });
+    updateProduct(productId: string, data: any): Observable<any> {
+        return this.http.put(`http://localhost:3001/dashboard/product/${productId}`, data, { withCredentials: true });
     }
 
-    //Boutiques
-    getAllStores(): Observable<any>{
+    // Boutiques
+    getAllStores(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/stores', { withCredentials: true });
     }
 
-    getStore(storeId :string): Observable<any>{
+    getStore(storeId: string): Observable<any> {
         return this.http.get(`http://localhost:3001/dashboard/store/${storeId}`, { withCredentials: true });
     }
 
-    updateStore(storeId :string): Observable<any>{
-        return this.http.put(`http://localhost:3001/dashboard/store/${storeId}`, { withCredentials: true });
+    updateStore(storeId: string, data: any): Observable<any> {
+        return this.http.put(`http://localhost:3001/dashboard/store/${storeId}`, data, { withCredentials: true });
     }
 
-    deleteStore(storeId :string): Observable<any>{
+    deleteStore(storeId: string): Observable<any> {
         return this.http.delete(`http://localhost:3001/dashboard/store/${storeId}`, { withCredentials: true });
     }
 

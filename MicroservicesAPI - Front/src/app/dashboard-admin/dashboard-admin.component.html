@@ -1,25 +1,26 @@
 <div class="admin-panel">
   <nav class="sidebar">
     <ul>
-      <li [class.active]="selectedTab === 'users'" (click)="selectTab('users')">Utilisateurs</li>
-      <li [class.active]="selectedTab === 'stores'" (click)="selectTab('stores')">Boutiques</li>
-      <li [class.active]="selectedTab === 'products'" (click)="selectTab('products')">Produits</li>
-      <li [class.active]="selectedTab === 'categories'" (click)="selectTab('categories')">Catégories</li>
+      <li (click)="selectedTab = 'users'">Utilisateurs</li>
+      <li (click)="selectedTab = 'stores'">Boutiques</li>
+      <li (click)="selectedTab = 'products'">Produits</li>
+      <li (click)="selectedTab = 'categories'">Catégories</li>
     </ul>
   </nav>
 
-  <div class="content">
+  <div class="content" [ngSwitch]="selectedTab">
+
     <!-- Utilisateurs -->
-    <div *ngIf="selectedTab === 'users'">
+    <div *ngSwitchCase="'users'">
       <h2>Utilisateurs</h2>
       <table class="admin-table" *ngIf="users.length > 0">
         <tr>
           <th>Actions</th>
           <ng-container *ngFor="let key of objectKeys(users[0])">
-            <th *ngIf="key !== '_id'">{{ key }}</th>
+            <th *ngIf="key !== '_id' && key !== 'googleId' && key !== 'passwordHash'">{{ headerLabel(key) }}</th>
           </ng-container>
         </tr>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of users.slice().reverse()">
           <td>
             <div class="action-buttons">
               <button (click)="openEditModal('user', user)">Modifier</button>
@@ -27,8 +28,13 @@
             </div>
           </td>
           <ng-container *ngFor="let key of objectKeys(user)">
-            <td *ngIf="key !== '_id'">
-              {{ user[key] }}
+            <td *ngIf="key !== '_id' && key !== 'googleId' && key !== 'passwordHash'">
+              <ng-container *ngIf="key === 'role'; else defaultUserCell">
+                {{ getRoleLabel(user.role) }}
+              </ng-container>
+              <ng-template #defaultUserCell>
+                {{ user[key] }}
+              </ng-template>
             </td>
           </ng-container>
         </tr>
@@ -36,16 +42,17 @@
     </div>
 
     <!-- Boutiques -->
-    <div *ngIf="selectedTab === 'stores'">
+    <div *ngSwitchCase="'stores'">
       <h2>Boutiques</h2>
       <table class="admin-table" *ngIf="stores.length > 0">
         <tr>
           <th>Actions</th>
           <ng-container *ngFor="let key of objectKeys(stores[0])">
-            <th *ngIf="key !== '_id'">{{ key }}</th>
+            <th *ngIf="key !== '_id'">{{ headerLabel(key) }}</th>
           </ng-container>
+          <th>Modifié le</th>
         </tr>
-        <tr *ngFor="let store of stores">
+        <tr *ngFor="let store of stores.slice().reverse()">
           <td>
             <div class="action-buttons">
               <button (click)="openEditModal('store', store)">Modifier</button>
@@ -53,30 +60,49 @@
             </div>
           </td>
           <ng-container *ngFor="let key of objectKeys(store)">
-            <td *ngIf="key !== '_id'">
-              <ng-container *ngIf="key === 'logo'; else defaultStoreCell">
-                <img [src]="store.logo" alt="logo" style="max-width:60px;max-height:60px;border-radius:8px;" />
+            <td *ngIf="key !== '_id'" class="image">
+              <ng-container *ngIf="key === 'logo'; else storeSpecialCells">
+                <img [src]="store.logo" alt="logo" style="cursor:pointer" (click)="openImageModal(store.logo)" />
               </ng-container>
-              <ng-template #defaultStoreCell>
-                {{ store[key] }}
+              <ng-template #storeSpecialCells>
+                <ng-container *ngIf="key === 'userId'; else storeDateCell">
+                  {{ getUserName(store.userId) }}
+                </ng-container>
+                <ng-template #storeDateCell>
+                  <ng-container *ngIf="key === 'createdAt'; else storeUpdatedCell">
+                    {{ store.createdAt | date:'dd/MM/yyyy HH:mm' : 'fr-FR' }}
+                  </ng-container>
+                  <ng-template #storeUpdatedCell>
+                    <ng-container *ngIf="key === 'updatedAt'; else defaultStoreCell">
+                      {{ store.updatedAt | date:'dd/MM/yyyy HH:mm' : 'fr-FR' }}
+                    </ng-container>
+                    <ng-template #defaultStoreCell>
+                      {{ store[key] }}
+                    </ng-template>
+                  </ng-template>
+                </ng-template>
               </ng-template>
             </td>
           </ng-container>
+          <td>
+            {{ store.updatedAt ? (store.updatedAt | date:'dd/MM/yyyy HH:mm' : 'fr-FR') : '' }}
+          </td>
         </tr>
       </table>
     </div>
 
     <!-- Produits -->
-    <div *ngIf="selectedTab === 'products'">
+    <div *ngSwitchCase="'products'">
       <h2>Produits</h2>
       <table class="admin-table" *ngIf="products.length > 0">
         <tr>
           <th>Actions</th>
           <ng-container *ngFor="let key of objectKeys(products[0])">
-            <th *ngIf="key !== '_id'">{{ key }}</th>
+            <th *ngIf="key !== '_id' && key !== 'customFields' && key !== 'updatedAt'">{{ headerLabel(key) }}</th>
           </ng-container>
+          <th>Modifié le</th>
         </tr>
-        <tr *ngFor="let product of products">
+        <tr *ngFor="let product of products.slice().reverse()">
           <td>
             <div class="action-buttons">
               <button (click)="openEditModal('product', product)">Modifier</button>
@@ -84,30 +110,43 @@
             </div>
           </td>
           <ng-container *ngFor="let key of objectKeys(product)">
-            <td *ngIf="key !== '_id'">
-              <ng-container *ngIf="key === 'image'; else defaultProductCell">
-                <img [src]="product.image" alt="image" style="max-width:60px;max-height:60px;border-radius:8px;" />
+            <td *ngIf="key !== '_id' && key !== 'customFields' && key !== 'updatedAt'" class="image">
+              <ng-container *ngIf="key === 'image'; else productSpecialCells">
+                <img [src]="product.image" alt="image" style="cursor:pointer" (click)="openImageModal(product.image)" />
               </ng-container>
-              <ng-template #defaultProductCell>
-                {{ product[key] }}
+              <ng-template #productSpecialCells>
+                <ng-container *ngIf="key === 'storeId'; else productCategoryCell">
+                  {{ getStoreName(product.storeId) }}
+                </ng-container>
+                <ng-template #productCategoryCell>
+                  <ng-container *ngIf="key === 'categoryId'; else defaultProductCell">
+                    {{ getCategoryName(product.categoryId) }}
+                  </ng-container>
+                  <ng-template #defaultProductCell>
+                    {{ product[key] }}
+                  </ng-template>
+                </ng-template>
               </ng-template>
             </td>
           </ng-container>
+          <td>
+            {{ product.updatedAt ? (product.updatedAt | date:'dd/MM/yyyy HH:mm' : 'fr-FR') : '' }}
+          </td>
         </tr>
       </table>
     </div>
 
     <!-- Catégories -->
-    <div *ngIf="selectedTab === 'categories'">
+    <div *ngSwitchCase="'categories'">
       <h2>Catégories</h2>
       <table class="admin-table" *ngIf="categorys.length > 0">
         <tr>
           <th>Actions</th>
           <ng-container *ngFor="let key of objectKeys(categorys[0])">
-            <th *ngIf="key !== '_id'">{{ key }}</th>
+            <th *ngIf="key !== '_id'">{{ headerLabel(key) }}</th>
           </ng-container>
         </tr>
-        <tr *ngFor="let category of categorys">
+        <tr *ngFor="let category of categorys.slice().reverse()">
           <td>
             <div class="action-buttons">
               <button (click)="openEditModal('category', category)">Modifier</button>
@@ -122,20 +161,50 @@
         </tr>
       </table>
     </div>
+  </div>
 
+  <!-- Modification -->
   <div class="overlay" *ngIf="showEditModal">
     <div class="modal">
       <h2>Modifier {{ editType | titlecase }}</h2>
       <form (ngSubmit)="submitEdit()">
         <div *ngFor="let field of editFields">
           <label>{{ field.label }}</label>
-          <input [(ngModel)]="editItem[field.key]" [name]="field.key" required />
+          <ng-container *ngIf="field.key === 'description'; else otherInputs">
+            <textarea [(ngModel)]="editItem[field.key]" [name]="field.key" required></textarea>
+          </ng-container>
+          <ng-template #otherInputs>
+            <ng-container *ngIf="editType === 'product' && field.key === 'categoryId'; else userRoleOrDefault">
+              <select [(ngModel)]="editItem.categoryId" [name]="field.key" required>
+                <option *ngFor="let cat of categorys" [value]="cat._id">{{ cat.name }}</option>
+              </select>
+            </ng-container>
+            <ng-template #userRoleOrDefault>
+              <ng-container *ngIf="editType === 'user' && field.key === 'role'; else defaultInput">
+                <select [(ngModel)]="editItem.role" [name]="field.key" required>
+                  <option value="user">Client</option>
+                  <option value="seller">Vendeur</option>
+                </select>
+              </ng-container>
+              <ng-template #defaultInput>
+                <input [(ngModel)]="editItem[field.key]" [name]="field.key" required />
+              </ng-template>
+            </ng-template>
+          </ng-template>
         </div>
         <div class="form-buttons">
-          <button type="submit">Enregistrer</button>
+          <button type="submit" (click)="submitEdit()">Enregistrer</button>
           <button type="button" (click)="closeEditModal()">Annuler</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Images grossit -->
+  <div class="overlay" *ngIf="showImageModal" (click)="closeImageModal()">
+    <div class="modal image-modal" (click)="$event.stopPropagation()">
+      <img [src]="selectedImageUrl" alt="Aperçu" />
+      <button class="close-btn" (click)="closeImageModal()">Fermer</button>
     </div>
   </div>
 </div>
