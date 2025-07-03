@@ -1,10 +1,10 @@
 <div class="admin-panel">
   <nav class="sidebar">
     <ul>
-      <li (click)="selectedTab = 'users'">Utilisateurs</li>
-      <li (click)="selectedTab = 'stores'">Boutiques</li>
-      <li (click)="selectedTab = 'products'">Produits</li>
-      <li (click)="selectedTab = 'categories'">Catégories</li>
+      <li [class.active]="selectedTab === 'users'" (click)="selectedTab = 'users'">Utilisateurs</li>
+      <li [class.active]="selectedTab === 'stores'" (click)="selectedTab = 'stores'">Boutiques</li>
+      <li [class.active]="selectedTab === 'products'" (click)="selectedTab = 'products'">Produits</li>
+      <li [class.active]="selectedTab === 'categories'" (click)="selectedTab = 'categories'">Catégories</li>
     </ul>
   </nav>
 
@@ -48,7 +48,7 @@
         <tr>
           <th>Actions</th>
           <ng-container *ngFor="let key of objectKeys(stores[0])">
-            <th *ngIf="key !== '_id'">{{ headerLabel(key) }}</th>
+            <th *ngIf="key !== '_id' && key !== 'updatedAt'">{{ headerLabel(key) }}</th>
           </ng-container>
           <th>Modifié le</th>
         </tr>
@@ -60,7 +60,7 @@
             </div>
           </td>
           <ng-container *ngFor="let key of objectKeys(store)">
-            <td *ngIf="key !== '_id'" class="image">
+            <td *ngIf="key !== '_id' && key !== 'updatedAt'" class="image">
               <ng-container *ngIf="key === 'logo'; else storeSpecialCells">
                 <img [src]="store.logo" alt="logo" style="cursor:pointer" (click)="openImageModal(store.logo)" />
               </ng-container>
@@ -69,16 +69,11 @@
                   {{ getUserName(store.userId) }}
                 </ng-container>
                 <ng-template #storeDateCell>
-                  <ng-container *ngIf="key === 'createdAt'; else storeUpdatedCell">
+                  <ng-container *ngIf="key === 'createdAt'; else defaultStoreCell">
                     {{ store.createdAt | date:'dd/MM/yyyy HH:mm' : 'fr-FR' }}
                   </ng-container>
-                  <ng-template #storeUpdatedCell>
-                    <ng-container *ngIf="key === 'updatedAt'; else defaultStoreCell">
-                      {{ store.updatedAt | date:'dd/MM/yyyy HH:mm' : 'fr-FR' }}
-                    </ng-container>
-                    <ng-template #defaultStoreCell>
-                      {{ store[key] }}
-                    </ng-template>
+                  <ng-template #defaultStoreCell>
+                    {{ store[key] }}
                   </ng-template>
                 </ng-template>
               </ng-template>
@@ -200,7 +195,7 @@
     </div>
   </div>
 
-  <!-- Images grossit -->
+  <!-- Image grossit -->
   <div class="overlay" *ngIf="showImageModal" (click)="closeImageModal()">
     <div class="modal image-modal" (click)="$event.stopPropagation()">
       <img [src]="selectedImageUrl" alt="Aperçu" />
