@@ -10,7 +10,7 @@ exports.getAllCategories = async (req, res) => {
         console.error('Erreur recupération categ:', err);
         res.status(500).json({ message: 'Erreur lors de la récupération des catégories' });
     }
-};
+}
 
 exports.getCategory = async (req, res) => {
     try {
@@ -23,20 +23,6 @@ exports.getCategory = async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ message: 'Erreur lors de la récupération de la catégorie' });
-    }
-}
-
-exports.getProductCategories = async (req, res) => {
-    try {
-        const productId = req.params.productId;
-        const categories = await axios.get(`http://ms_back:3000/category/categories/${productId}`);
-        if (!categories.data || categories.data.length === 0) {
-            return res.status(404).json({ message: "Aucune catégorie trouvée pour ce produit." });
-        }
-        res.json(categories.data);
-    } catch (err) {
-        console.error("Erreur lors de la récupération des catégories :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
     }
 }
 
@@ -67,7 +53,7 @@ exports.updateCategory = async (req, res) => {
         console.error("Erreur lors de la mise à jour de la catégorie :", err);
         res.status(500).json({ message: "Erreur interne du serveur" });
     }
-};
+}
 
 exports.deleteCategory = async (req, res) => {
     const token = req.cookies.authToken;
@@ -123,23 +109,6 @@ exports.getProduct = async (req, res) => {
         }
     } catch (err) {
         console.error("Erreur lors de la récupération du produit :", err);
-        res.status(500).json({ message: "Erreur interne du serveur" });
-    }
-}
-
-exports.getStoreProducts = async (req, res) => {
-    const token = req.cookies.authToken;
-    try {
-        const storeId = req.params.storeId;
-        const products = await axios.get(`http://ms_back:3000/product/products/${storeId}`, {
-            headers: { Cookie: `authToken=${token}` },
-        });
-        if (!products.data || products.data.length === 0) {
-            return res.status(404).json({ message: "Aucun produit trouvé pour cette boutique." });
-        }
-        res.json(products.data);
-    } catch (err) {
-        console.error("Erreur lors de la récupération des produits :", err);
         res.status(500).json({ message: "Erreur interne du serveur" });
     }
 }

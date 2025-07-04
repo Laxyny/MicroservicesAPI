@@ -8,14 +8,12 @@ router.use(adminMiddleware);
 //Route admin catégories
 router.get('/dashboard/categories', dashboardController.getAllCategories);
 router.get('/dashboard/category/:id', dashboardController.getCategory);
-router.get('/dashboard/product/categories/:productId', dashboardController.getProductCategories);
 router.put('/dashboard/category/:id', dashboardController.updateCategory);
 router.delete('/dashboard/category/:id', dashboardController.deleteCategory);
 
 //Route admin produits
 router.get('/dashboard/products', dashboardController.getAllProducts);
 router.get('/dashboard/product/:id', dashboardController.getProduct);
-router.get('/dashboard/store/:storeId/products', dashboardController.getStoreProducts);
 router.delete('/dashboard/product/:id', dashboardController.deleteProduct);
 router.put('/dashboard/product/:id', dashboardController.updateProduct);
 

@@ -12,19 +12,12 @@ export class ApiDashboardService {
     getAllCategories(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/categories', { withCredentials: true });
     }
-
     getCategory(categoryId: string): Observable<any> {
         return this.http.get(`http://localhost:3001/dashboard/category/${categoryId}`, { withCredentials: true });
     }
-
-    getProductCategories(productId: string): Observable<any> {
-        return this.http.get(`http://localhost:3001/dashboard/product/categories/${productId}`, { withCredentials: true });
-    }
-
     deleteCategory(categoryId: string): Observable<any> {
         return this.http.delete(`http://localhost:3001/dashboard/category/${categoryId}`, { withCredentials: true });
     }
-
     updateCategory(categoryId: string, data: any): Observable<any> {
         return this.http.put(`http://localhost:3001/dashboard/category/${categoryId}`, data, { withCredentials: true });
     }
@@ -33,19 +26,12 @@ export class ApiDashboardService {
     getAllProducts(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/products', { withCredentials: true });
     }
-
     getProduct(productId: string): Observable<any> {
         return this.http.get(`http://localhost:3001/dashboard/product/${productId}`, { withCredentials: true });
     }
-
-    getStoreProducts(storeId: string): Observable<any> {
-        return this.http.get(`http://localhost:3001/dashboard/store/${storeId}/products`, { withCredentials: true });
-    }
-
     deleteProduct(productId: string): Observable<any> {
         return this.http.delete(`http://localhost:3001/dashboard/product/${productId}`, { withCredentials: true });
     }
-
     updateProduct(productId: string, data: any): Observable<any> {
         return this.http.put(`http://localhost:3001/dashboard/product/${productId}`, data, { withCredentials: true });
     }
@@ -54,15 +40,12 @@ export class ApiDashboardService {
     getAllStores(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/stores', { withCredentials: true });
     }
-
     getStore(storeId: string): Observable<any> {
         return this.http.get(`http://localhost:3001/dashboard/store/${storeId}`, { withCredentials: true });
     }
-
     updateStore(storeId: string, data: any): Observable<any> {
         return this.http.put(`http://localhost:3001/dashboard/store/${storeId}`, data, { withCredentials: true });
     }
-
     deleteStore(storeId: string): Observable<any> {
         return this.http.delete(`http://localhost:3001/dashboard/store/${storeId}`, { withCredentials: true });
     }
@@ -71,15 +54,12 @@ export class ApiDashboardService {
     getAllUsers(): Observable<any> {
         return this.http.get('http://localhost:3001/dashboard/users', { withCredentials: true });
     }
-
     getUser(userId: string): Observable<any> {
         return this.http.get(`http://localhost:3001/dashboard/user/${userId}`, { withCredentials: true });
     }
-
     updateUser(userId: string, data: any): Observable<any> {
         return this.http.put(`http://localhost:3001/dashboard/user/${userId}`, data, { withCredentials: true });
     }
-
     deleteUser(userId: string): Observable<any> {
         return this.http.delete(`http://localhost:3001/dashboard/user/${userId}`, { withCredentials: true });
     }
