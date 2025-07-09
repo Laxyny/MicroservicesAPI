@@ -9,6 +9,8 @@ import { ApiCategoriesService } from '../services/categories.service';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RatingService } from '../services/rating.service';
+import { WishlistService } from '../services/wishlist.service';
+import { AuthService } from '../services/auth.service';
 import { StarRatingComponent } from '../shared/star-rating/star-rating.component';
 
 @Component({
@@ -31,6 +33,7 @@ export class HomepageComponent implements OnInit {
   filteredProducts: any[] = [];
   categories: any[] = [];
   selectedCategory: string | null = null;
+  wishlistProductIds: string[] = [];
 
   showCategoryModal = false;
   categorySearch = '';
@@ -39,12 +42,24 @@ export class HomepageComponent implements OnInit {
 
   private apiUrl = 'http://localhost:3000/user';
 
-  constructor(private http: HttpClient, private router: Router, private getStoreName: ApiStoresService, private getAllProducts: ApiProductsService, private searchService: SearchService, private categoriesService: ApiCategoriesService, private route: ActivatedRoute, private ratingService: RatingService) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private getStoreName: ApiStoresService,
+    private getAllProducts: ApiProductsService,
+    private searchService: SearchService,
+    private categoriesService: ApiCategoriesService,
+    private wishlistService: WishlistService,
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private ratingService: RatingService
+  ) { }
 
   ngOnInit() {
     this.fetchUserData();
     this.fetchProductsData();
     this.fetchCategories();
+    this.loadWishlist();
 
     this.searchService.searchQuery$.subscribe(query => {
       this.filteredProducts = this.products.filter(product =>
@@ -64,7 +79,6 @@ export class HomepageComponent implements OnInit {
     if (image && image.startsWith('http')) {
       return image;
     }
-
     return 'assets/images/placeholder.jpg';
   }
 
@@ -74,7 +88,6 @@ export class HomepageComponent implements OnInit {
         this.user = user;
       },
       error: () => {
-        console.log('Erreur Homepage redirection vers /login')
         this.router.navigate(['/login']);
       }
     });
@@ -105,7 +118,7 @@ export class HomepageComponent implements OnInit {
           this.loadProductRating(product._id);
         });
 
-        const storeIds = [...new Set(products.map(p => p.storeId))]; // ids uniques
+        const storeIds = [...new Set(products.map(p => p.storeId))];
         storeIds.forEach(id => {
           this.getStoreName.getStoreName(id).subscribe({
             next: (store: any) => {
@@ -118,7 +131,6 @@ export class HomepageComponent implements OnInit {
         });
       },
       error: (error) => {
-        console.error('Erreur lors de la récupération des boutiques :', error);
         this.stores = [];
       }
     });
@@ -186,5 +198,39 @@ export class HomepageComponent implements OnInit {
 
   getProductRatingCount(productId: string): number {
     return this.productRatings.get(productId)?.count || 0;
+  }
+
+  loadWishlist() {
+    this.authService.getUserId().then(userId => {
+      if (userId) {
+        this.wishlistService.getWishlist(userId).subscribe({
+          next: ids => {
+            this.wishlistProductIds = ids;
+          },
+          error: err => console.error('Erreur chargement wishlist', err)
+        });
+      }
+    });
+  }
+
+  toggleWishlist(productId: string, event: Event) {
+    event.stopPropagation();
+    this.authService.getUserId().then(userId => {
+      if (!userId) return;
+
+      if (this.isInWishlist(productId)) {
+        this.wishlistService.removeFromWishlist(userId, productId).subscribe(() => {
+          this.wishlistProductIds = this.wishlistProductIds.filter(id => id !== productId);
+        });
+      } else {
+        this.wishlistService.addToWishlist(userId, productId).subscribe(() => {
+          this.wishlistProductIds.push(productId);
+        });
+      }
+    });
+  }
+
+  isInWishlist(productId: string): boolean {
+    return this.wishlistProductIds.includes(productId);
   }
 }

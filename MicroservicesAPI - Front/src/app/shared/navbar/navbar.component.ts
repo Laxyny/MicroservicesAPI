@@ -104,6 +104,11 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/seller/my-store']);
   }
 
+  goToWishlist() {
+  this.router.navigate(['/wishlist']);
+  }
+
+
   settings() {
     this.router.navigate(['/user/settings']);
   }

@@ -1,3 +1,5 @@
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+
 html,
 body {
     margin: 0;
@@ -15,4 +17,25 @@ body {
 body::-webkit-scrollbar {
     width: 0px;
     background: transparent;
+}
+
+.wishlist-and-cart {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* espace entre les boutons */
+  margin-top: 10px;
+}
+
+
+
+
+.wishlist-btn {
+  color: #ff4d4f;
+  font-size: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.wishlist-btn:hover {
+  color: #e60023;
 }
