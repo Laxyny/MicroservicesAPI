@@ -9,7 +9,7 @@ const client = new MongoClient(uri);
 
 async function getUserModel() {
     await client.connect();
-    const database = client.db("Stockage");
+    const database = client.db("Auth");
     const userCollection = database.collection("Users");
     return new UserModel(userCollection);
 }
