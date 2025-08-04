@@ -117,13 +117,16 @@ Le projet est basé sur une **architecture en microservices**. Chaque service es
 | Service | Port | Endpoints Principaux | Description |
 | --- | --- | --- | --- |
 | **API Gateway** | `8081` | `/` | Point d'entrée unique qui redirige vers les autres services. |
-| **Users** | `3000` | `POST /register`, `GET /user`, `PUT /user/updateUser/:id` | Gestion des utilisateurs (création, lecture, mise à jour, suppression). |
+| **Monitoring** | `8080` | `GET /status`, `GET /health` | Vérification de l'état des microservices. |
+| **Utilisateurs** | `3000` | `POST /register`, `GET /user`, `PUT /user/updateUser/:id` | Gestion des utilisateurs (création, lecture, mise à jour, suppression). |
 | **OAuth** | `5000` | `POST /login`, `POST /logout`, `GET /auth/google` | Gestion de l'authentification (classique et Google). |
-| **Stores** | `3002` | `POST /seller/createStore`, `GET /seller/store/:id` | Gestion des boutiques des vendeurs. |
-| **Products** | `3004` | `POST /product/createProduct`, `GET /product/listProducts` | Gestion des produits. |
-| **Orders** | `3005` | `POST /orders`, `GET /orders` | Gestion des commandes. |
-| **Carts** | `3007` | `GET /cart`, `POST /cart/add`, `DELETE /cart/remove` | Gestion des paniers utilisateurs. |
-| **Ratings** | `3003` | `POST /rating/create`, `GET /rating/product/:productId` | Gestion des avis et notes. |
+| **Magasins** | `3002` | `POST /seller/createStore`, `GET /seller/store/:id` | Gestion des boutiques des vendeurs. |
+| **Produits** | `3004` | `POST /product/createProduct`, `GET /product/listProducts` | Gestion des produits. |
+| **Commandes** | `3005` | `POST /orders`, `GET /orders` | Gestion des commandes. |
+| **Catégories** | `3006` | `GET /category`, `POST /category/createCategory` | Gestion des catégories de produits. |
+| **Paniers** | `3007` | `GET /cart`, `POST /cart/add`, `DELETE /cart/remove` | Gestion des paniers utilisateurs. |
+| **2FA** | `3008` | `GET /2fa/setup`, `POST /2fa/verify` | Gestion de l'authentification à deux facteurs. |
+| **Avis** | `3003` | `POST /rating/create`, `GET /rating/product/:productId` | Gestion des avis et notes. |
 | **Rapports** | `7000` | `POST /reports/generate`, `GET /reports/:id` | Génération de rapports PDF. |
 | **Notifications**| `8000` | `GET /notifications/:userId` | Envoi de notifications via WebSockets. |
 
