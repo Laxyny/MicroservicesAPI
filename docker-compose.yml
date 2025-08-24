@@ -83,6 +83,18 @@ services:
             - /app/node_modules
         networks: [ msnet ]
 
+    back_wishlist:
+        build: "./MicroservicesAPI - Back Wishlist"
+        container_name: ms_wishlist
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+        ports:
+            - "${PORT_WISHLIST}:3011"
+        volumes:
+            - ./MicroservicesAPI - Back Wishlist:/app
+            - /app/node_modules
+        networks: [ msnet ]
+
     oauth:
         build: "./MicroservicesAPI - Back OAuth"
         container_name: ms_oauth
@@ -143,6 +155,7 @@ services:
             - back_orders
             - back_categories
             - back_carts
+            - back_wishlist
             - oauth
             - reports
             - notification-service

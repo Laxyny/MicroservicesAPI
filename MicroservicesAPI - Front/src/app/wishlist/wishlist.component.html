@@ -1,0 +1,42 @@
+<div class="wishlist-container">
+  <div class="wishlist-header">
+    <h1>Ma liste de favoris</h1>
+    <p *ngIf="products.length === 0">Vous n'avez pas encore de produits dans vos favoris.</p>
+  </div>
+
+  <div class="products-grid">
+    <div class="product-card" *ngFor="let product of products">
+      <div class="product-image" (click)="goToProductDetails(product._id)">
+        <img [src]="product.image" [alt]="product.name">
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">{{ product.name }}</h3>
+        <div class="rating">
+          <span *ngFor="let star of [1,2,3,4,5]">
+            <i class="fa" [ngClass]="product.rating >= star ? 'fa-star' : 'fa-star-o'"></i>
+          </span>
+          <span class="rating-count">({{ product.reviewCount || 0 }})</span>
+        </div>
+        <p class="product-description">{{ product.description | slice:0:60 }}{{ product.description.length > 60 ? '...'
+          : '' }}</p>
+        <div class="product-price">{{ product.price }} €</div>
+
+        <div class="product-actions">
+          <button class="action-btn view-btn" (click)="goToProductDetails(product._id)">Voir</button>
+          <button class="action-btn remove-btn" (click)="removeFromWishlist(product._id)">
+            <i class="fa fa-heart"></i> Retirer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-wishlist" *ngIf="products.length === 0">
+    <div class="empty-content">
+      <i class="fa fa-heart-o empty-icon"></i>
+      <h2>Votre liste de favoris est vide</h2>
+      <p>Explorez notre catalogue et ajoutez des produits à vos favoris</p>
+      <button class="browse-btn" routerLink="/homepage">Découvrir des produits</button>
+    </div>
+  </div>
+</div>

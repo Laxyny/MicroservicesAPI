@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { RatingService } from '../services/rating.service';
 import { StarRatingComponent } from '../shared/star-rating/star-rating.component';
+import { WishlistService } from '../services/wishlist.service';
 
 @Component({
   selector: 'app-product-details',
@@ -23,6 +24,7 @@ export class ProductDetailsComponent implements OnInit {
   store: any = null;
   category: any = null;
   isOwner: boolean = false;
+  isInWishlist = false;
 
   showEditModal = false;
   editProduct: any = {};
@@ -54,6 +56,7 @@ export class ProductDetailsComponent implements OnInit {
     private categoryApi: ApiCategoriesService,
     private cartService: CartService,
     private authService: AuthService,
+    private wishlistService: WishlistService,
     private ratingService: RatingService
   ) { }
 
@@ -63,6 +66,7 @@ export class ProductDetailsComponent implements OnInit {
       this.fetchProductDetails(id);
     }
     this.loadCategories();
+    this.checkWishlistStatus();
   }
 
   ngAfterViewInit() {
@@ -92,6 +96,60 @@ export class ProductDetailsComponent implements OnInit {
           this.router.navigate(['/homepage']);
         }
       });
+  }
+
+  checkWishlistStatus() {
+    this.authService.getUserId().then(userId => {
+      if (userId && this.product?._id) {
+        this.wishlistService.getWishlist(userId).subscribe({
+          next: (wishlistIds: string[]) => {
+            this.isInWishlist = wishlistIds.includes(this.product._id);
+          },
+          error: (err) => console.error('Erreur lors de la vérification de la wishlist', err)
+        });
+      }
+    });
+  }
+
+  toggleWishlist() {
+    console.log('Tentative d\'ajout/suppression à la wishlist');
+
+    this.authService.getUserId().then(userId => {
+      console.log('User ID récupéré:', userId);
+
+      if (!userId) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      if (this.isInWishlist) {
+        // Retirer de la wishlist
+        console.log('Tentative de suppression du produit', this.product._id);
+        this.wishlistService.removeFromWishlist(userId, this.product._id).subscribe({
+          next: (response) => {
+            console.log('Réponse de suppression:', response);
+            this.isInWishlist = false;
+          },
+          error: (err) => {
+            console.error('Erreur lors du retrait de la wishlist', err);
+            // Ajouter une gestion d'erreur pour l'utilisateur
+          }
+        });
+      } else {
+        // Ajouter à la wishlist
+        console.log('Tentative d\'ajout du produit', this.product._id);
+        this.wishlistService.addToWishlist(userId, this.product._id).subscribe({
+          next: (response) => {
+            console.log('Réponse d\'ajout:', response);
+            this.isInWishlist = true;
+          },
+          error: (err) => {
+            console.error('Erreur lors de l\'ajout à la wishlist', err);
+            // Ajouter une gestion d'erreur pour l'utilisateur
+          }
+        });
+      }
+    });
   }
 
   objectKeys(obj: any): string[] {

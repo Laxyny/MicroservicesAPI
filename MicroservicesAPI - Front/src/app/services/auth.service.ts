@@ -94,4 +94,11 @@ export class AuthService {
     verifyTwoFactorCode(userId: string, code: string): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/2fa/verify`, { userId, code });
     }
+
+    /**  nouvelle méthode */
+    getUserId(): Promise<string | null> {
+        return this.getUser()
+            .then(user => user?._id || null)
+            .catch(() => null);
+    }
 }

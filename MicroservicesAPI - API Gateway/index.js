@@ -39,3 +39,8 @@ app.get('/health', (req, res) => {
 app.listen(port, () => {
     console.log(`API Gateway en cours d'exécution sur http://localhost:${port}`);
 });
+
+app.use('/wishlist', createProxyMiddleware({
+    target: 'http://ms_wishlist:3011',
+    changeOrigin: true
+}));

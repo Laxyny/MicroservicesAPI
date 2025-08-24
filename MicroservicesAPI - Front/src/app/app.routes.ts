@@ -18,6 +18,8 @@ import { OrdersComponent } from './orders/orders.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { StatusPageComponent } from './status-page/status-page.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { WishlistComponent } from './wishlist/wishlist.component';
+
 
 export const routes: Routes = [
     //AUTH
@@ -56,7 +58,10 @@ export const routes: Routes = [
     { path: 'legal/:type', component: LegalComponent },
 
     //STATUTS
-    { path: 'status', component: StatusPageComponent }
+    { path: 'status', component: StatusPageComponent },
+
+    { path: 'wishlist', component: WishlistComponent, canActivate: [AuthGuard] },
+
 ];
 
 @NgModule({

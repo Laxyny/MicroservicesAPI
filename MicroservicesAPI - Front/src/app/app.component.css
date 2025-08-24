@@ -1,15 +1,23 @@
-html,
-body {
-    height: 100%;
-    margin: 0;
+.wishlist-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.page-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.wishlist-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.content-wrap {
-    flex: 1;
+.wishlist-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 180px;
+  text-align: center;
+}
+
+.wishlist-img {
+  max-width: 100%;
+  height: auto;
 }
