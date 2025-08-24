@@ -17,11 +17,6 @@
 
   <div *ngIf="filteredProducts.length > 0; else noProducts" class="product-grid">
     <div class="product-card" *ngFor="let product of filteredProducts" (click)="goToProductDetails(product._id)">
-      <div class="wishlist-btn-container">
-        <button (click)="toggleWishlist(product._id, $event)">
-          <i [ngClass]="isInWishlist(product._id) ? 'fa fa-heart' : 'fa fa-heart-o'"></i>
-        </button>
-      </div>
       <div class="image-wrapper">
         <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
       </div>

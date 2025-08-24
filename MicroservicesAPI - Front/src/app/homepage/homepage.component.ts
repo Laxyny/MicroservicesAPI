@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { ApiStoresService } from '../services/stores.service';
 import { ApiProductsService } from '../services/products.service';
 import { SearchService } from '../services/search.service';
@@ -20,7 +20,8 @@ import { StarRatingComponent } from '../shared/star-rating/star-rating.component
     NgFor,
     RouterModule,
     FormsModule,
-    StarRatingComponent
+    StarRatingComponent,
+    CommonModule
   ],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']

@@ -29,6 +29,10 @@
             "url": "http://ms_carts:3007/health"
         },
         {
+            "name": "MicroserviceAPI - Wishlist",
+            "url": "http://ms_wishlist:3011/health"
+        },
+        {
             "name": "MicroserviceAPI - Back OAuth",
             "url": "http://ms_oauth:5000/health"
         },

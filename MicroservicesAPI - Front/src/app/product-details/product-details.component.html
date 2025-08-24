@@ -57,6 +57,10 @@
             <button class="delete-btn" (click)="deleteProduct()">Supprimer</button>
         </div>
 
+        <button class="action-btn wishlist-btn" (click)="toggleWishlist()" [class.in-wishlist]="isInWishlist">
+            <i class="fa" [ngClass]="isInWishlist ? 'fa-heart' : 'fa-heart-o'"></i>
+            {{ isInWishlist ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+        </button>
         <button class="buy-button" (click)="addToCart()">Ajouter au panier</button>
     </div>
 </div>

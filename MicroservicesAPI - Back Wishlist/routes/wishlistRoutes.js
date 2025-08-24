@@ -5,6 +5,6 @@ const { authenticate } = require('../middlewares/authMiddleware');
 
 router.get('/', authenticate, controller.getWishlist);
 router.post('/', authenticate, controller.addToWishlist);
-router.delete('/:productId', authenticate, controller.removeFromWishlist);
+router.delete('/', authenticate, controller.removeFromWishlist);
 
 module.exports = router;

@@ -426,6 +426,45 @@
     min-width: 120px;
 }
 
+.action-btn {
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.wishlist-btn {
+    background-color: rgba(3, 218, 198, 0.15);
+    color: #03dac6;
+    border: 2px solid #03dac6;
+}
+
+.wishlist-btn:hover {
+    background-color: rgba(3, 218, 198, 0.25);
+    transform: translateY(-2px);
+}
+
+.wishlist-btn.in-wishlist {
+    background-color: rgba(255, 77, 79, 0.15);
+    color: #ff4d4f;
+    border: 2px solid #ff4d4f;
+}
+
+.wishlist-btn.in-wishlist:hover {
+    background-color: rgba(255, 77, 79, 0.25);
+}
+
+.wishlist-btn i {
+    font-size: 18px;
+}
+
 .rating-form {
     margin-top: 20px;
     padding: 15px;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class WishlistService {
   private apiUrl = 'http://localhost:3011/wishlist';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getWishlist(userId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
@@ -19,8 +19,13 @@ export class WishlistService {
   }
 
   removeFromWishlist(userId: string, productId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${productId}`, {
-      body: { userId }
+    const params = new HttpParams()
+      .set('userId', userId)
+      .set('productId', productId);
+
+    return this.http.delete(this.apiUrl, {
+      params,
+      withCredentials: true
     });
   }
 }

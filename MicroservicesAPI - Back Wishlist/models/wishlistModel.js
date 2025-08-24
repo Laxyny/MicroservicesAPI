@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(process.env.MONGODB_URI);
 
-const dbName = 'Stockage';
+const dbName = 'Wishlist';
 const collectionName = 'Wishlist';
 
 const WishlistModel = {

@@ -44,6 +44,7 @@ La plateforme "Le Petit Livreur" offre les fonctionnalités suivantes :
     * Consultation des détails d'un produit et des avis clients.
 * **Gestion des Commandes et du Panier :**
     * Ajout de produits au panier.
+    * Ajout de produits dans sa wishlist pour les consulter ultérieurement.
     * Processus de commande complet avec saisie de l'adresse de livraison.
     * Consultation de l'historique de ses commandes.
 * **Avis et Évaluations :**
@@ -126,6 +127,7 @@ Le projet est basé sur une **architecture en microservices**. Chaque service es
 | **Catégories** | `3006` | `GET /category`, `POST /category/createCategory` | Gestion des catégories de produits. |
 | **Paniers** | `3007` | `GET /cart`, `POST /cart/add`, `DELETE /cart/remove` | Gestion des paniers utilisateurs. |
 | **2FA** | `3008` | `GET /2fa/setup`, `POST /2fa/verify` | Gestion de l'authentification à deux facteurs. |
+| **Wishlist** | `3011` | `GET /`, `POST /`, `DELETE /` | Gestion de la wishlist des utilisateurs. |
 | **Avis** | `3003` | `POST /rating/create`, `GET /rating/product/:productId` | Gestion des avis et notes. |
 | **Rapports** | `7000` | `POST /reports/generate`, `GET /reports/:id` | Génération de rapports PDF. |
 | **Notifications**| `8000` | `GET /notifications/:userId` | Envoi de notifications via WebSockets. |

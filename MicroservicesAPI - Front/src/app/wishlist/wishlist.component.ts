@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { WishlistService } from '../services/wishlist.service';
 import { ApiProductsService } from '../services/products.service';
 import { AuthService } from '../services/auth.service';
@@ -19,7 +19,8 @@ export class WishlistComponent implements OnInit {
   constructor(
     private wishlistService: WishlistService,
     private productsService: ApiProductsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -48,6 +49,26 @@ export class WishlistComponent implements OnInit {
         this.products = allProducts.filter(p => this.wishlistProductIds.includes(p._id));
       },
       error: (err: any) => console.error('Erreur chargement produits', err)
+    });
+  }
+
+  goToProductDetails(productId: string) {
+    this.router.navigate(['/product', productId]);
+  }
+
+  removeFromWishlist(productId: string) {
+    this.authService.getUserId().then(userId => {
+      if (userId) {
+        this.wishlistService.removeFromWishlist(userId, productId).subscribe({
+          next: () => {
+            this.products = this.products.filter(p => p._id !== productId);
+            this.wishlistProductIds = this.wishlistProductIds.filter(id => id !== productId);
+
+            console.log('Produit retiré de la wishlist');
+          },
+          error: (err) => console.error('Erreur lors de la suppression du produit de la wishlist', err)
+        });
+      }
     });
   }
 }
