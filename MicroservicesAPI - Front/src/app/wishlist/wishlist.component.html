@@ -1,0 +1,17 @@
+<section class="wishlist-section">
+  <h2>Ma Wishlist</h2>
+
+  <div *ngIf="products.length > 0; else emptyWishlist">
+    <div class="wishlist-grid">
+      <div class="wishlist-card" *ngFor="let product of products" (click)="goToProductDetails(product._id)">
+        <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.price }} €</p>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyWishlist>
+    <p>Votre wishlist est vide pour le moment.</p>
+  </ng-template>
+</section>

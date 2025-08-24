@@ -1,64 +1,65 @@
 <section class="product-list-section">
-    <h2>Produits disponibles</h2>
+  <h2>Produits disponibles</h2>
 
-    <div class="category-filter">
-        <button class="category-btn" [class.active]="selectedCategory === null"
-            (click)="filterByCategory(null)">Tous</button>
+  <div class="category-filter">
+    <button class="category-btn" [class.active]="selectedCategory === null" (click)="filterByCategory(null)">Tous</button>
+    <button class="category-btn" *ngFor="let category of categories.slice(0, 5)"
+      [class.active]="selectedCategory === category._id" (click)="filterByCategory(category._id)">
+      {{ category.name }}
+    </button>
+    <button class="category-btn more-btn" *ngIf="categories.length > 5" (click)="openCategoryModal()">
+      <span>Plus</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"></path>
+      </svg>
+    </button>
+  </div>
 
-        <button class="category-btn" *ngFor="let category of categories.slice(0, 5)"
-            [class.active]="selectedCategory === category._id" (click)="filterByCategory(category._id)">
-            {{ category.name }}
+  <div *ngIf="filteredProducts.length > 0; else noProducts" class="product-grid">
+    <div class="product-card" *ngFor="let product of filteredProducts" (click)="goToProductDetails(product._id)">
+      <div class="wishlist-btn-container">
+        <button (click)="toggleWishlist(product._id, $event)">
+          <i [ngClass]="isInWishlist(product._id) ? 'fa fa-heart' : 'fa fa-heart-o'"></i>
         </button>
-
-        <button class="category-btn more-btn" *ngIf="categories.length > 5" (click)="openCategoryModal()">
-            <span>Plus</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9l6 6 6-6"></path>
-            </svg>
-        </button>
-    </div>
-
-    <div *ngIf="filteredProducts.length > 0; else noProducts" class="product-grid">
-        <div class="product-card" *ngFor="let product of filteredProducts" (click)="goToProductDetails(product._id)">
-            <div class="image-wrapper">
-                <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
-            </div>
-            <div class="product-details">
-                <h3>{{ product.name }}</h3>
-                <div class="product-rating">
-                    <app-star-rating [rating]="getProductRating(product._id)"
-                        [ratingCount]="getProductRatingCount(product._id)" [interactive]="false" [showCount]="true">
-                    </app-star-rating>
-                </div>
-                <p class="description">{{ product.description }}</p>
-                <p class="price">{{ product.price }} €</p>
-            </div>
-            <button>Voir</button>
+      </div>
+      <div class="image-wrapper">
+        <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
+      </div>
+      <div class="product-details">
+        <h3>{{ product.name }}</h3>
+        <div class="product-rating">
+          <app-star-rating [rating]="getProductRating(product._id)" [ratingCount]="getProductRatingCount(product._id)"
+            [interactive]="false" [showCount]="true"></app-star-rating>
         </div>
+        <p class="description">{{ product.description }}</p>
+        <p class="price">{{ product.price }} €</p>
+      </div>
+      <button>Voir</button>
     </div>
+  </div>
 
-    <ng-template #noProducts>
-        <p class="info">Aucun produit disponible pour le moment.</p>
-    </ng-template>
+  <ng-template #noProducts>
+    <p>Aucun produit disponible pour le moment.</p>
+  </ng-template>
 </section>
 
 <div class="category-modal-overlay" *ngIf="showCategoryModal" (click)="closeCategoryModal($event)">
-    <div class="category-modal" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>Toutes les catégories</h3>
-            <button class="close-btn" (click)="closeCategoryModal($event)">&times;</button>
-        </div>
-
-        <div class="search-box">
-            <input type="text" placeholder="Rechercher une catégorie..." [(ngModel)]="categorySearch"
-                (input)="filterCategoriesInModal()" />
-        </div>
-
-        <div class="categories-list">
-            <div class="category-item" *ngFor="let category of filteredCategoriesInModal"
-                [class.active]="selectedCategory === category._id" (click)="selectCategoryFromModal(category._id)">
-                {{ category.name }}
-            </div>
-        </div>
+  <div class="category-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Toutes les catégories</h3>
+      <button class="close-btn" (click)="closeCategoryModal($event)">&times;</button>
     </div>
+
+    <div class="search-box">
+      <input type="text" placeholder="Rechercher une catégorie..." [(ngModel)]="categorySearch"
+        (input)="filterCategoriesInModal()" />
+    </div>
+
+    <div class="categories-list">
+      <div class="category-item" *ngFor="let category of filteredCategoriesInModal"
+        [class.active]="selectedCategory === category._id" (click)="selectCategoryFromModal(category._id)">
+        {{ category.name }}
+      </div>
+    </div>
+  </div>
 </div>
