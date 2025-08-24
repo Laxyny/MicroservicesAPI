@@ -1,0 +1,25 @@
+<section class="store-section" *ngIf="isSeller; else notSeller">
+    <h2>Vos boutiques</h2>
+
+    <div *ngIf="stores.length > 0; else noStores" class="store-grid">
+        <div class="store-card" *ngFor="let store of stores" (click)="goToStoreDetails(store._id)">
+            <div class="store-header">
+                <h3>{{ store.name }}</h3>
+                <img *ngIf="store.logo" [src]="store.logo" alt="logo boutique" class="store-logo-mini" />
+            </div>
+
+            <p>{{ store.description }}</p>
+            <button>Gérer</button>
+        </div>
+    </div>
+
+    <ng-template #noStores>
+        <p class="info">Vous n'avez aucune boutique.</p>
+    </ng-template>
+
+    <button class="create-store-btn" (click)="goToCreateStore()">Créer une boutique</button>
+</section>
+
+<ng-template #notSeller>
+    <p class="info">Vous n'êtes pas un vendeur.</p>
+</ng-template>

@@ -1,0 +1,29 @@
+<div class="auth-container">
+    <h1><span>Connexion</span></h1>
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+
+        <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+        <div class="message" *ngIf="message">{{ message }}</div>
+    </form>
+
+    <div class="or-divider">
+        <span>OU</span>
+    </div>
+
+    <button class="google-btn" (click)="loginWithGoogle()">
+        <img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="Google Logo" />
+        <span>Connexion avec Google</span>
+    </button>
+
+    <div class="switch-auth">
+        <span>Pas encore de compte ?</span>
+        <a routerLink="/register">Créer un compte</a>
+    </div>
+
+    <app-two-factor-modal #twoFactorModal [show]="show2FAModal" (verify)="verifyTwoFactorCode($event)"
+        (close)="closeTwoFactorModal()">
+    </app-two-factor-modal>
+</div>

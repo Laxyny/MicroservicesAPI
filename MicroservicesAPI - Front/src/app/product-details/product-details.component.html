@@ -1,0 +1,151 @@
+<div class="product-details-container">
+    <div class="product-left">
+        <div class="zoom-container">
+            <div class="zoom-image-container" #zoomContainer>
+                <img [src]="product?.image" alt="{{ product?.name }}" class="main-image" #zoomImage />
+            </div>
+        </div>
+    </div>
+
+    <div class="product-right product-box">
+        <div class="product-header">
+            <h1 class="product-title">{{ product?.name }}</h1>
+
+            <div class="product-rating">
+                <app-star-rating [rating]="averageRating" [ratingCount]="ratingCount" [interactive]="false"
+                    [showCount]="true">
+                </app-star-rating>
+            </div>
+        </div>
+
+        <p class="product-ref">Réf. produit : {{ product?._id }}</p>
+
+        <div class="product-price">
+            <span>{{ product?.price }} €</span>
+        </div>
+
+        <p class="product-description">
+            <strong>Description :</strong><br />
+            {{ product?.description }}
+        </p>
+
+        <div class="custom-fields" *ngIf="product?.customFields && objectKeys(product.customFields).length > 0">
+            <h3>Caractéristiques</h3>
+            <div class="custom-field-item" *ngFor="let key of objectKeys(product.customFields)">
+                <span class="field-name">{{ key }}:</span>
+                <span class="field-value">{{ product.customFields[key] }}</span>
+            </div>
+        </div>
+
+        <div class="product-info">
+            <p><strong>Catégorie : </strong>
+                <a class="category-link" [routerLink]="['/homepage']" [queryParams]="{category: category?._id}">
+                    {{ category?.name }}
+                </a>
+            </p>
+            <p>
+                <strong>Vendu par : </strong>
+                <a class="store-link" [routerLink]="['/seller/store', product?.storeId]">
+                    {{ store?.name || 'Inconnu' }}
+                </a>
+            </p>
+        </div>
+
+        <!-- Pour la modif d'un produit, uniquement visible par le compte de la boutique -->
+        <div *ngIf="isOwner" class="owner-actions">
+            <button class="edit-btn" (click)="openEditModal()">Modifier</button>
+            <button class="delete-btn" (click)="deleteProduct()">Supprimer</button>
+        </div>
+
+        <button class="action-btn wishlist-btn" (click)="toggleWishlist()" [class.in-wishlist]="isInWishlist">
+            <i class="fa" [ngClass]="isInWishlist ? 'fa-heart' : 'fa-heart-o'"></i>
+            {{ isInWishlist ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+        </button>
+        <button class="buy-button" (click)="addToCart()">Ajouter au panier</button>
+    </div>
+</div>
+
+<div class="rating-section">
+    <ng-container *ngIf="canRate; else noRate">
+        <ng-container *ngIf="isRatingMode || userRating === 0; else alreadyRated">
+            <div class="rating-card">
+                <h3>Laissez votre avis</h3>
+                <app-star-rating [rating]="userRating" [interactive]="true" (rateChange)="onRateProduct($event)">
+                </app-star-rating>
+                <textarea [(ngModel)]="userComment" class="rating-comment" placeholder="Partagez votre expérience…"
+                    rows="4"></textarea>
+                <div class="rating-actions">
+                    <button (click)="submitRating()" class="btn btn-primary">Envoyer</button>
+                    <button (click)="cancelRating()" class="btn btn-secondary">Annuler</button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #alreadyRated>
+            <p>Vous avez déjà noté ce produit.</p>
+        </ng-template>
+    </ng-container>
+    <ng-template #noRate>
+        <p class="cannot-rate-message">
+            Vous pourrez noter ce produit après l'avoir acheté.
+        </p>
+    </ng-template>
+</div>
+
+<div class="reviews-section" *ngIf="ratings && ratings.length > 0">
+    <h3>Avis des clients</h3>
+    <div class="review-list">
+        <div class="review-item" *ngFor="let review of ratings">
+            <div class="review-header">
+                <span class="review-author">{{ userNames.get(review.userId) || 'Chargement...' }}</span>
+                <app-star-rating [rating]="review.rating" [interactive]="false"></app-star-rating>
+                <span class="review-date">{{ review.createdAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <p class="review-comment">{{ review.comment }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" *ngIf="showEditModal">
+    <div class="modal">
+        <h2>Modifier le produit</h2>
+        <form (ngSubmit)="submitEdit()" #editForm="ngForm">
+            <label>Nom</label>
+            <input type="text" [(ngModel)]="editProduct.name" name="name" required maxlength="30" />
+
+            <label>Description</label>
+            <input type="text" [(ngModel)]="editProduct.description" name="description" required maxlength="255" />
+
+            <label>Prix (€)</label>
+            <input type="number" [(ngModel)]="editProduct.price" name="price" min="0" max="1000000" required />
+
+            <label>Catégorie</label>
+            <select [(ngModel)]="editProduct.categoryId" name="categoryId" required>
+                <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
+            </select>
+
+            <div class="custom-fields-section">
+                <h3>Champs personnalisés</h3>
+
+                <div *ngFor="let field of editCustomFieldsList; let i = index; trackBy: trackByIndex"
+                    class="custom-field-row">
+                    <div class="field-inputs">
+                        <input type="text" [(ngModel)]="field.key" name="editFieldKey{{i}}"
+                            placeholder="Nom du champ" />
+
+                        <input type="text" [(ngModel)]="field.value" name="editFieldValue{{i}}" placeholder="Valeur" />
+                    </div>
+                    <button type="button" class="remove-field-btn" (click)="removeCustomField(i)">×</button>
+                </div>
+
+                <button type="button" class="add-field-btn" (click)="addCustomField()">
+                    + Ajouter un champ personnalisé
+                </button>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit">Enregistrer</button>
+                <button type="button" (click)="closeEditModal()">Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>

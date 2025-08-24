@@ -1,0 +1,18 @@
+<div class="container">
+    <h1>Statuts des différents services</h1>
+    <div class="status-box" *ngFor="let service of services">
+        <div class="indicator" [ngClass]="service.status.toLowerCase()"></div>
+        <div class="info">
+            <h2>{{ service.name }}</h2>
+            <p>Statut: <strong>{{ service.status }}</strong></p>
+            <p>Dernière vérification: {{ service.lastChecked | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+    </div>
+    
+    <div *ngIf="services.length === 0" class="status-box">
+        <div class="info" style="text-align: center; width: 100%;">
+            <h2>Chargement des données...</h2>
+            <p>Vérification du statut des services en cours</p>
+        </div>
+    </div>
+</div>

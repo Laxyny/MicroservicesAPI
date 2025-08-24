@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .header p {
+            margin: 4px 0 0 0;
+            font-size: 14px;
+        }
+
+        .logo {
+            height: 60px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-top: 30px;
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 6px 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>
+            <h1>Rapport de la boutique "{{ store.name }}"</h1>
+            {% if store.createdAtFormatted %}
+            <p>Date de création : {{ store.createdAtFormatted }}</p>
+            {% endif %}
+        </div>
+        {% if store.logo %}
+        <img src="{{store.logo}}" alt="Logo" class="logo" />
+        {% endif %}
+    </div>
+
+    {% if products and products | length > 0 %}
+    <h2>Produits vendus</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité vendue</th>
+                <th>Ventes totales</th>
+                <th>Catégorie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.price }} €</td>
+                <td>{{ p.quantity_sold }}</td>
+                <td>{{ p.total_sales }} €</td>
+                <td>{{ p.category or 'Non spécifiée' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Données générales</h2>
+    <p><strong>Ventes totales :</strong> {{ "%.2f"|format(total_sales) }} €</p>
+
+    {% if charts and "sales_chart" in charts %}
+    <h2>Graphique des ventes</h2>
+    <div class="chart">
+        <img src="data:image/png;base64,{{ charts.sales_chart }}" alt="Graphique des ventes" style="max-width: 100%;">
+    </div>
+    {% endif %}
+
+    {% else %}
+    <p>Aucun produit enregistré pour cette boutique.</p>
+    {% endif %}
+</body>
+
+</html>

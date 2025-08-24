@@ -1,0 +1,149 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Mes commandes</h4>
+                    <div class="search-container">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Rechercher une commande..."
+                                [(ngModel)]="searchTerm" (keyup)="applyFilter()">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th (click)="sort('id')">n° <i class="fa fa-sort"></i></th>
+                                    <th (click)="sort('customer')">Client <i class="fa fa-sort"></i></th>
+                                    <th (click)="sort('date')">Date <i class="fa fa-sort"></i></th>
+                                    <th (click)="sort('status')">Statut <i class="fa fa-sort"></i></th>
+                                    <th (click)="sort('total')">Montant <i class="fa fa-sort"></i></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="loading">
+                                    <td colspan="6" class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="sr-only">Chargement...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!loading && paginatedOrders.length === 0">
+                                    <td colspan="6" class="text-center">Aucune commande trouvée</td>
+                                </tr>
+                                <tr *ngFor="let order of paginatedOrders">
+                                    <td>{{ order._id.substring(0, 8) }}...</td>
+                                    <td>{{ getCustomerName(order.userId) }}</td>
+                                    <td>{{ order.date | date: 'dd/MM/yyyy HH:mm' }}</td>
+                                    <td>
+                                        <span class="badge" [ngClass]="{
+                                            'badge-success': order.status === 'Complétée',
+                                            'badge-warning': order.status === 'En attente',
+                                            'badge-danger': order.status === 'Annulée',
+                                            'badge-info': order.status === 'En cours'
+                                        }">{{ order.status }}</span>
+                                    </td>
+                                    <td>{{ order.total | currency: 'EUR' }}</td>
+                                    <td>
+                                        <button class="btn btn-details" (click)="showOrderDetails(order)">
+                                            Détails
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popup détails commande -->
+<div class="order-details-overlay" *ngIf="selectedOrder" (click)="closeOrderDetails($event)">
+    <div class="order-details-modal">
+        <div class="modal-header">
+            <h2>Détails de la commande</h2>
+            <button class="close-btn" (click)="closeOrderDetails($event)">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="order-section">
+                <h3>Informations</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Référence :</span>
+                        <span class="value">{{ selectedOrder._id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Date :</span>
+                        <span class="value">{{ selectedOrder.date | date: 'dd/MM/yyyy à HH:mm' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Statut :</span>
+                        <span class="value status-badge" [ngClass]="{
+                            'status-completed': selectedOrder.status === 'Complétée',
+                            'status-pending': selectedOrder.status === 'En attente',
+                            'status-cancelled': selectedOrder.status === 'Annulée',
+                            'status-processing': selectedOrder.status === 'En cours'
+                        }">{{ selectedOrder.status }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Montant total :</span>
+                        <span class="value total">{{ selectedOrder.total | currency: 'EUR' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-section">
+                <h3>Articles</h3>
+                <div class="order-items">
+                    <div class="item-header">
+                        <span class="item-name">Article</span>
+                        <span class="item-quantity">Quantité</span>
+                        <span class="item-price">Prix unitaire</span>
+                        <span class="item-total">Total</span>
+                    </div>
+                    <div class="item" *ngFor="let item of selectedOrder.items">
+                        <span class="item-name">{{ item.name }}</span>
+                        <span class="item-quantity">{{ item.quantity }}</span>
+                        <span class="item-price">{{ item.price | currency: 'EUR' }}</span>
+                        <span class="item-total">{{ item.price * item.quantity | currency: 'EUR' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-section">
+                <h3>Adresse de livraison</h3>
+                <div class="address" *ngIf="selectedOrder.shippingAddress">
+                    <p>{{ selectedOrder.shippingAddress.firstName }} {{ selectedOrder.shippingAddress.lastName }}</p>
+                    <p>{{ selectedOrder.shippingAddress.address }}</p>
+                    <p>{{ selectedOrder.shippingAddress.zipCode }} {{ selectedOrder.shippingAddress.city }}</p>
+                    <p *ngIf="selectedOrder.shippingAddress.phone">Tél: {{ selectedOrder.shippingAddress.phone }}</p>
+                </div>
+            </div>
+
+            <div class="order-section">
+                <h3>Paiement</h3>
+                <p>Méthode : {{ selectedOrder.paymentMethod === 'card' ? 'Carte bancaire' : 'PayPal' }}</p>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-cancel" *ngIf="selectedOrder.status !== 'Annulée'"
+                (click)="cancelOrder(selectedOrder)">
+                Annuler la commande
+            </button>
+
+            <button class="btn btn-invoice" (click)="downloadInvoice(selectedOrder)">
+                Télécharger la facture
+            </button>
+
+            <button class="btn btn-close" (click)="closeOrderDetails($event)">Fermer</button>
+        </div>
+    </div>
+</div>

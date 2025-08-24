@@ -1,0 +1,56 @@
+<div class="security-container">
+    <h2>Sécurité du compte</h2>
+
+    <div class="section">
+        <h3>Double authentification (2FA)</h3>
+
+        <div *ngIf="isLoading" class="loading">
+            <div class="spinner"></div>
+            <span>Chargement...</span>
+        </div>
+
+        <div *ngIf="!isLoading && twoFactorEnabled && twoFactorVerified" class="status-enabled">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="#4CAF50" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <p><strong>La double authentification est activée</strong></p>
+            <p>Votre compte est protégé par une couche de sécurité supplémentaire.</p>
+            <button class="btn-disable" (click)="disableTwoFactor()">Désactiver la double authentification</button>
+        </div>
+
+        <div *ngIf="!isLoading && !twoFactorEnabled && !setupData" class="status-disabled">
+            <p>La double authentification n'est pas activée sur votre compte.</p>
+            <p>Elle ajoute une couche de sécurité supplémentaire en demandant un code temporaire lors de la connexion.
+            </p>
+            <button class="btn-setup" (click)="setupTwoFactor()">Activer la double authentification</button>
+        </div>
+
+        <div *ngIf="!isLoading && setupData" class="setup-section">
+            <h4>Configuration de l'application d'authentification</h4>
+            <p>Scannez ce QR code avec votre application d'authentification (Google Authenticator, Microsoft
+                Authenticator, etc.) :</p>
+
+            <div class="qr-container">
+                <img [src]="setupData.qrCode" alt="QR Code pour 2FA" class="qr-code">
+            </div>
+
+            <p>Ou saisissez cette clé manuellement dans votre application :</p>
+            <div class="secret-key">{{ setupData.secret }}</div>
+
+            <div class="verify-section">
+                <p>Saisissez le code à 6 chiffres généré par votre application :</p>
+                <div class="code-input">
+                    <input type="text" [(ngModel)]="verificationCode" maxlength="6" placeholder="000000">
+                    <button [disabled]="verificationCode.length !== 6" (click)="verifyCode()">Vérifier</button>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    </div>
+</div>

@@ -1,0 +1,385 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule, NgIf } from '@angular/common';
+import { ApiStoresService } from '../services/stores.service';
+import { FormsModule } from '@angular/forms';
+import { ApiProductsService } from '../services/products.service';
+import { ApiCategoriesService } from '../services/categories.service';
+import { ReportService } from '../services/report.service';
+import { ReportScheduleService } from '../services/report-schedule.service';
+import { AuthService } from '../services/auth.service';
+
+@Component({
+  selector: 'app-store-details',
+  templateUrl: './store-details.component.html',
+  styleUrls: ['./store-details.component.css'],
+  imports: [
+    NgIf,
+    FormsModule,
+    CommonModule,
+  ]
+})
+export class StoreDetailsComponent implements OnInit {
+  store: any = null;
+  showAddProductForm = false;
+
+  productName = '';
+  productDescription = '';
+  productPrice: number = 0;
+  customFields: { key: string, value: string }[] = [];
+  productCategoryId = '';
+  image: File | null = null;
+
+  products: any[] = [];
+
+  categories: any[] = [];
+  filteredCategories: any[] = [];
+  newCategoryName = '';
+  categorySearch = '';
+  showCategoryDropdown = false;
+
+  reportTab: string = 'schedule';
+  reportSchedule: any = {
+    frequency: 'never',
+    dayOfWeek: 1,
+    dayOfMonth: 1,
+    includeProducts: true,
+    includeCharts: true,
+    emailEnabled: false,
+    emailAddress: ''
+  };
+  reportHistory: any[] = [];
+  daysOfMonth: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
+  isOwner = false;
+
+  private apiUploadUrl = 'http://localhost:3004/product/upload-image';
+
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private router: Router,
+    private deleteStoreService: ApiStoresService,
+    private apiProductsService: ApiProductsService,
+    private apiCategories: ApiCategoriesService,
+    private reportService: ReportService,
+    private reportScheduleService: ReportScheduleService,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void {
+    const storeId = this.route.snapshot.paramMap.get('id');
+    if (storeId) {
+      this.fetchStoreDetails(storeId);
+      //this.fetchStoreProducts(storeId);
+      this.loadCategories();
+      //this.loadReportSchedule();
+
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.category-dropdown-wrapper')) {
+          this.showCategoryDropdown = false;
+        }
+      });
+    }
+  }
+
+  loadReportSchedule(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportScheduleService.getReportSchedule(storeId).subscribe({
+      next: (schedule) => {
+        this.reportSchedule = {
+          ...this.reportSchedule,
+          ...schedule,
+          storeId
+        };
+      },
+      error: (err) => console.error('Erreur lors du chargement des préférences de rapport', err)
+    });
+
+    this.loadReportHistory();
+  }
+
+  loadReportHistory(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportScheduleService.getReportHistory(storeId).subscribe({
+      next: (history) => {
+        this.reportHistory = history;
+      },
+      error: (err) => console.error('Erreur lors du chargement de l\'historique des rapports', err)
+    });
+  }
+
+  saveReportSchedule(): void {
+    this.reportSchedule.storeId = this.store._id;
+
+    if (this.reportSchedule.dayOfWeek) {
+      this.reportSchedule.dayOfWeek = Number(this.reportSchedule.dayOfWeek);
+    }
+
+    if (this.reportSchedule.dayOfMonth) {
+      this.reportSchedule.dayOfMonth = Number(this.reportSchedule.dayOfMonth);
+    }
+
+    if (!this.reportSchedule.emailEnabled) {
+      this.reportSchedule.emailAddress = null;
+    }
+
+    console.log('Données envoyées:', this.reportSchedule);
+
+    this.reportScheduleService.saveReportSchedule(this.reportSchedule).subscribe({
+      next: (response) => {
+        alert('Configuration des rapports enregistrée avec succès!');
+      },
+      error: (err) => {
+        console.error('Erreur détaillée:', err);
+        alert('Une erreur est survenue lors de l\'enregistrement des préférences.');
+      }
+    });
+  }
+
+  generateReportNow(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportService.generateReport(storeId).subscribe({
+      next: (res) => {
+        if (res.id) {
+          alert('Rapport généré avec succès!');
+          this.loadReportHistory();
+          this.reportService.downloadReportFile(res.id);
+        } else {
+          alert('Erreur : ID du rapport non reçu.');
+        }
+      },
+      error: (err) => {
+        console.error('Erreur génération du rapport :', err);
+        alert('Une erreur est survenue lors de la génération du rapport.');
+      },
+    });
+  }
+
+  downloadReport(reportId: string): void {
+    this.reportScheduleService.downloadReport(reportId);
+  }
+
+  fetchStoreDetails(storeId: string): void {
+    this.http
+      .get(`http://localhost:3002/seller/store/${storeId}`, {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (store: any) => {
+          this.store = store;
+          this.fetchStoreProducts(store._id);
+          this.loadReportSchedule();
+
+          this.authService.getUser().then(user => {
+            const userIdStr = String(user._id);
+            const storeUserIdStr = String(store.userId);
+
+            this.isOwner = userIdStr.trim() === storeUserIdStr.trim();
+
+            console.log('Est propriétaire:', this.isOwner);
+          }).catch(err => {
+            console.error('Erreur:', err);
+            this.isOwner = false;
+          });
+        },
+        error: (error) => {
+          console.error('Erreur lors de la récupération des détails :', error);
+          this.router.navigate(['/homepage']);
+        },
+      });
+  }
+
+  // A MODIFIER POUR VEFIF S'IL Y A DES PRODUITS ET SI OUI SUPPRIMER LES PRODUITS ASSOCIES
+  deleteStore(): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette boutique ?')) {
+      this.deleteStoreService.deleteStore(this.store._id).subscribe({
+        next: () => {
+          alert('La boutique a été supprimée avec succès.');
+          this.router.navigate(['/homepage']);
+        },
+        error: (error) => {
+          console.error('Erreur lors de la suppression :', error);
+          alert('Une erreur est survenue lors de la suppression.');
+        },
+      });
+    }
+  }
+
+  generateStoreReport(): void {
+    const storeId = this.store?._id;
+    if (!storeId) return;
+
+    this.reportService.generateReport(this.store._id).subscribe({
+      next: (res) => {
+        if (res.id) {
+          this.reportService.downloadReportFile(res.id);
+        } else {
+          alert('Erreur : ID du rapport non reçu.');
+        }
+      },
+      error: (err) => {
+        console.error('Erreur génération du rapport :', err);
+        alert('Une erreur est survenue lors de la génération du rapport.');
+      },
+    });
+  }
+
+
+  toggleProductForm(): void {
+    this.showAddProductForm = !this.showAddProductForm;
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.image = input.files[0];
+      console.log('Fichier sélectionné :', this.image);
+    }
+  }
+
+  async submitProduct(): Promise<void> {
+    if (
+      !this.productName.trim() ||
+      !this.productDescription.trim() ||
+      !this.productPrice ||
+      !this.productCategoryId ||
+      !this.image
+    ) {
+      alert('Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', this.image);
+      console.log('FormData envoyé :', this.image);
+
+      const uploadResponse: any = await this.http.post(this.apiUploadUrl, formData, { withCredentials: true }).toPromise();
+      console.log('Réponse upload image :', uploadResponse);
+
+      const imageUrl = uploadResponse.imageUrl;
+      const storeId = this.store._id;
+
+      console.log(this.productCategoryId);
+      console.log(imageUrl);
+
+      const customFieldsObj: { [key: string]: string } = {};
+      this.customFields.forEach(field => {
+        if (field.key && field.value) {
+          customFieldsObj[field.key] = field.value;
+        }
+      });
+
+      this.apiProductsService.postCreateProduct(this.productName, this.productDescription, this.productPrice, this.productCategoryId, imageUrl, storeId, customFieldsObj).subscribe({
+        next: () => {
+          alert('Produit créé avec succès.');
+          this.toggleProductForm();
+          this.fetchStoreDetails(this.store._id);
+          this.clearFormFields();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la création du produit :', err);
+          alert('Une erreur est survenue lors de la création du produit.');
+        }
+      });
+
+    } catch (error) {
+      console.error('Erreur lors de l\'upload de l\'image :', error);
+      alert('Impossible de téléverser l\'image du produit.');
+    }
+  }
+
+  isFormValid(): boolean {
+    return (
+      this.productName.trim().length > 0 &&
+      this.productDescription.trim().length > 0 &&
+      this.productPrice > 0 &&
+      this.productCategoryId.trim().length > 0 &&
+      this.image !== null
+    );
+  }
+
+  clearFormFields(): void {
+    this.productName = '';
+    this.productDescription = '';
+    this.productPrice = 0;
+    this.productCategoryId = '';
+    this.image = null;
+  }
+
+  addCustomField(): void {
+    this.customFields.push({ key: '', value: '' });
+  }
+
+  removeCustomField(index: number): void {
+    this.customFields.splice(index, 1);
+  }
+
+
+
+  /*PRODUITS A MODIFIER QUAND PAS FLEMME*/
+
+  fetchStoreProducts(storeId: string): void {
+    this.apiProductsService.getStoreProduct(storeId)
+      .subscribe({
+        next: (products: any[]) => {
+          this.products = products;
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération des produits :', err);
+        }
+      });
+  }
+
+  goToProductDetails(productId: string) {
+    this.router.navigate([`/product/${productId}`]);
+  }
+
+
+
+
+
+  loadCategories(): void {
+    this.apiCategories.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.filteredCategories = categories;
+      },
+      error: (err) => console.error('Erreur chargement catégories', err)
+    });
+  }
+
+  filterCategories(): void {
+    this.filteredCategories = this.categories.filter(c =>
+      c.name.toLowerCase().includes(this.categorySearch.toLowerCase())
+    );
+  }
+
+  selectCategory(cat: any): void {
+    this.productCategoryId = cat._id;
+    this.categorySearch = cat.name;
+    this.showCategoryDropdown = false;
+  }
+
+  createCategory(): void {
+    if (!this.newCategoryName.trim()) return;
+
+    this.apiCategories.postCreateCategory(this.newCategoryName).subscribe({
+      next: () => {
+        alert('Catégorie créée avec succès.');
+        this.newCategoryName = '';
+        this.loadCategories();
+      },
+      error: (err) => console.error('Erreur ajout catégorie', err)
+    });
+  }
+
+}

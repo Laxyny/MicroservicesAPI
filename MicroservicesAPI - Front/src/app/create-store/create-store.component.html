@@ -1,0 +1,39 @@
+<div class="create-store-container">
+    <h1>Créer votre boutique</h1>
+
+    <form (ngSubmit)="onSubmit()" #createShopForm="ngForm" class="store-form">
+
+        <label for="name">Nom de la boutique</label>
+        <input type="text" id="name" name="name" [(ngModel)]="name" required maxlength="30" #nameField="ngModel" />
+
+        <small class="field-error" *ngIf="nameField?.dirty && name.length > 30">
+            Nom trop long (max 30 caractères)
+        </small>
+
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" [(ngModel)]="description" required maxlength="255"
+            #descriptionField="ngModel" />
+
+        <small class="field-error" *ngIf="descriptionField?.dirty && description.length > 255">
+            Description trop longue (max 255 caractères)
+        </small>
+
+        <label for="avatar">Logo</label>
+        <input type="file" id="avatar" name="avatar" (change)="onFileSelected($event)" accept="image/png, image/jpeg"
+            required />
+
+        <small class="field-error" *ngIf="logo === null">
+            Veuillez sélectionner un logo.
+        </small>
+
+
+        <label for="website">Site web</label>
+        <input type="text" id="website" name="website" [(ngModel)]="site" required />
+
+        <button [disabled]="!isFormValid()" [ngClass]="{ 'disabled-btn': !isFormValid() }">
+            Créer une boutique
+        </button>
+
+        <p class="message">{{ message }}</p>
+    </form>
+</div>
